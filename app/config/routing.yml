@@ -1,0 +1,4 @@
+halospain_web:
+    resource: "@HalospainWebBundle/Resources/config/routing.yml"
+    prefix:   /
+
