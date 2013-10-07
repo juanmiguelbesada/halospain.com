@@ -1,0 +1,42 @@
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+div#socialNetworks {
+    margin-top: 60px;
+}
+
+div#socialNetworks > a {
+    display: inline-block;
+    background: url('img/socialNetworksSprite.png') no-repeat;
+    width: 125px;
+    height: 124px;
+}
+
+div#socialNetworks > a#facebook {
+    background-position: 0 0;
+}
+div#socialNetworks > a#twitter {
+    background-position: -125px 0;
+}
+div#socialNetworks > a#googlePlus {
+    background-position: -250px 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

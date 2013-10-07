@@ -1,7 +1,0 @@
-parameters:
-#    halospain_web.example.class: Halospain\WebBundle\Example
-
-services:
-#    halospain_web.example:
-#        class: %halospain_web.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
