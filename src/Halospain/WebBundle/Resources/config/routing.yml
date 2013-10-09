@@ -1,3 +1,0 @@
-halospain_web_homepage:
-    pattern:  /
-    defaults: { _controller: HalospainWebBundle:Home:index }
