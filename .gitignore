@@ -3,3 +3,6 @@ store/*
 files/*
 cache/*
 config.php
+
+#PHPStorm
+.idea/*
