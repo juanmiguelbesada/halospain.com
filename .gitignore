@@ -3,6 +3,5 @@ store/*
 files/*
 cache/*
 config.php
-
-#PHPStorm
-.idea/*
+images/avatars/gallery/*
+images/avatars/upload/*
