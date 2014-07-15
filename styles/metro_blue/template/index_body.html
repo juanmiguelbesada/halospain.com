@@ -1,6 +1,6 @@
 <!-- INCLUDE overall_header.html -->
 
-<div id="page-body-inner" class="sidebar">
+<div id="page-body-inner" class="<!-- IF S_REGISTERED_USER -->no-sidebar<!-- ELSE -->sidebar<!-- ENDIF -->">
 
 <!-- INCLUDE forumlist_body.html -->
 
@@ -25,6 +25,6 @@
 </div>
 
 <!-- Sidebar goes below -->
-<!-- INCLUDE sidebar.html -->
+<!-- IF not S_REGISTERED_USER --><!-- INCLUDE sidebar.html --><!-- ENDIF -->
 
 <!-- INCLUDE overall_footer.html -->
