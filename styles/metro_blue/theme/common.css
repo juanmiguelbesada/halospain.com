@@ -200,17 +200,21 @@ p.right {
 	margin-bottom: 12px;
 }
 #header {
-	height: 120px;
+	height: 192px;
 	background-color: #43A6DF;
 	margin-bottom: 12px;
 	position: relative;
+    padding: 20px 0px;
 }
 #header #logo {
 	position: absolute;
 	left: 12px;
-	bottom: 0px;
     color: #F6F6F6;
     font-size: 50pt;
+}
+
+#header #logo img {
+    height: 192px;
 }
 #header #logo span {
     display: block;
@@ -226,14 +230,16 @@ p.right {
 	float: left;
 	padding: 0;
 	margin: 0;
-	height: 120px;
-	width: 120px;
-	border-left: solid 12px #F6F6F6;
+	height: 192px;
+	width: 125px;
+	/*border-left: solid 12px #F6F6F6;*/
 }
 #header li a {
 	color: #fff;
-	height: 120px;
-	width: 120px;
+	/*height: 120px;
+	width: 120px;*/
+    height: 100%;
+    width: 100%;
 	display: block;
 	position: relative;
 	font-size: 1.231em;
@@ -244,38 +250,39 @@ p.right {
 }
 #header li a span {
 	position: absolute;
-	left: 12px;
 	bottom: 12px;
+    width: 100%;
+    text-align: center;
 }
 #header li#members-link a {
 	background-image: url("{T_IMAGESET_PATH}/tab-icon-members.png");
 	background-attachment: scroll;
 	background-repeat: no-repeat;
-	background-position: left top;	
+	background-position: center;
 }
 #header li#faq-link a {
 	background-image: url("{T_IMAGESET_PATH}/tab-icon-faq.png");
 	background-attachment: scroll;
 	background-repeat: no-repeat;
-	background-position: left top;	
+	background-position: center;
 }
 #header li#contacts-link a {
 	background-image: url("{T_IMAGESET_PATH}/tab-icon-contacts.png");
 	background-attachment: scroll;
 	background-repeat: no-repeat;
-	background-position: left top;	
+	background-position: center;
 }
 #header li#news-link a {
 	background-image: url("{T_IMAGESET_PATH}/tab-icon-news.png");
 	background-attachment: scroll;
 	background-repeat: no-repeat;
-	background-position: left top;	
+	background-position: center;
 }
 #header li#sample-link a {
 	background-image: url("{T_IMAGESET_PATH}/tab-icon-sample.png");
 	background-attachment: scroll;
 	background-repeat: no-repeat;
-	background-position: left top;	
+	background-position: center;
 }
 
 #subheader-menu {

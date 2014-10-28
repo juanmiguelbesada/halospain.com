@@ -11,6 +11,7 @@
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/ico" href="{T_IMAGESET_PATH}/favicon.ico">
 {META}
 <title>{SITENAME} &bull; <!-- IF S_IN_MCP -->{L_MCP} &bull; <!-- ELSEIF S_IN_UCP -->{L_UCP} &bull; <!-- ENDIF -->{PAGE_TITLE}</title>
 
@@ -175,6 +176,7 @@ $(document).ready(function() {
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
     ga('create', 'UA-6976864-1', 'halospain.com');
+    ga('require', 'displayfeatures');
     ga('send', 'pageview');
 </script>
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53bd8efe58bb5481"></script>
@@ -253,7 +255,8 @@ $(document).ready(function() {
         </div>
         
         <div id="header">
-        	<a href="{U_INDEX}" id="logo" title="{L_INDEX}">{SITENAME}<span>{SITE_DESCRIPTION}</span></a>
+        	<a href="{U_INDEX}" id="logo" title="{L_INDEX}">
+                <img src="{T_THEME_PATH}/images/halospain.jpg" alt="{SITENAME} - {SITE_DESCRIPTION}" id="logo-img" /></a>
 
 <!-- INCLUDE tabs.html -->
 
