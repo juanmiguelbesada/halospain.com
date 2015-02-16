@@ -1,11 +1,11 @@
 </div>
-	
+
 <div id="page-footer">
 
 	<div class="navbar">
 
 		<ul class="linklist">
-			<li><i class="fa fa-home grey"></i><a href="{U_INDEX}" accesskey="h">{L_INDEX}</a></li>
+			<li><i class="fa fa-home grey"></i><a href="{U_INDEX}">{L_INDEX}</a></li>
 				<!-- IF not S_IS_BOT -->
 					<!-- IF S_WATCH_FORUM_LINK --><li><!-- IF S_WATCHING_FORUM --><i class="fa fa-times grey"></i><!-- ELSE --><i class="fa fa-check-square-o grey"></i><!-- ENDIF --><a href="{S_WATCH_FORUM_LINK}" title="{S_WATCH_FORUM_TITLE}">{S_WATCH_FORUM_TITLE}</a></li><!-- ENDIF -->
 					<!-- IF U_WATCH_TOPIC --><li><!-- IF S_WATCHING_TOPIC --><i class="fa fa-times grey"></i><!-- ELSE --><i class="fa fa-check-square-o grey"></i><!-- ENDIF --><a href="{U_WATCH_TOPIC}" title="{L_WATCH_TOPIC}">{L_WATCH_TOPIC}</a></li><!-- ENDIF -->
@@ -106,15 +106,15 @@
 			$(window).scroll(function(){
 				if ($(this).scrollTop() > 100) {
 					$('.scrollToTop').removeClass('trans-enable').fadeIn(800, function() {
-						$(this).addClass('trans-enable'); 
+						$(this).addClass('trans-enable');
 					});
 				} else {
 					$('.scrollToTop').removeClass('trans-enable').fadeOut(800, function() {
-						$(this).addClass('trans-enable'); 
+						$(this).addClass('trans-enable');
 					});
 				}
 			});
-			
+
 			//Click event to scroll to top
 
 			$('.scrollToTop').click(function(){
@@ -126,7 +126,7 @@
 
 			$('#search-box #keywords').focus(function() {
 				$('#search-box').addClass('active');
-			}); 
+			});
 			$('#search-box #keywords').blur(function() {
 				$('#search-box').removeClass('active');
 			});
@@ -178,72 +178,72 @@
 		        $('.searchbox-responsive-icon').css('display', 'block');
 		    }
 		}
-		<!-- ENDIF -->	
+		<!-- ENDIF -->
 
 	//]]>
 </script>
 
 <!-- IF not S_USER_LOGGED_IN and not S_IS_BOT -->
 <script type="text/javascript">
-$(document).ready(function() {	
+$(document).ready(function() {
 
 	//select all the a tag with name equal to modal
 	$('a[name=login-popup]').click(function(e) {
 		//Cancel the link behavior
 		e.preventDefault();
-		
+
 		//Get the A tag
 		var id = $(this).attr('href');
-	
+
 		//Get the screen height and width
 		var maskHeight = $(document).height();
 		var maskWidth = $(window).width();
-	
+
 		//Set heigth and width to mask to fill up the whole screen
 		$('#mask').css({'width':maskWidth,'height':maskHeight});
-		
-		//transition effect		
-		$('#mask').fadeIn(500);	
-	
+
+		//transition effect
+		$('#mask').fadeIn(500);
+
 		//Get the window height and width
 		var winH = $(window).height();
 		var winW = $(window).width();
-              
+
 		//Set the popup window to center
 		$(id).css('top',  winH/2-$(id).height()/2);
 		$(id).css('left', winW/2-$(id).width()/2);
-	
+
 		//transition effect
-		$(id).fadeIn(500); 
-	
+		$(id).fadeIn(500);
+
 	});
-	
+
 	//if close button is clicked
 	$('.popup-window .close').click(function (e) {
 		//Cancel the link behavior
 		e.preventDefault();
-		
+
 		$('#mask').fadeOut(500);
 		$('.popup-window').fadeOut(500);
-	});		
-	
+	});
+
 	//if mask is clicked
 	$('#mask').click(function () {
 		$(this).fadeOut(500);
 		$('.popup-window').fadeOut(500);
-	});			
+	});
 
 	$(window).resize(function () {
-	 
+
  		var box = $('.popup-window');
- 
+
         //Get the screen height and width
         var maskHeight = $(document).height();
         var maskWidth = $(window).width();
-      
+
         //Set height and width to mask to fill up the whole screen
         $('#mask').css({'width':maskWidth,'height':maskHeight});
-               
+
         //Get the window height and width
         var winH = $(window).height();
         var winW = $(window).width();
@@ -251,9 +251,9 @@ $(document).ready(function() {
         //Set the popup window to center
         box.css('top',  winH/2 - box.height()/2);
         box.css('left', winW/2 - box.width()/2);
-	 
+
 	});
-	
+
 });
 
 </script>
@@ -266,7 +266,7 @@ $(document).ready(function() {
 <a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
 
  <!-- IF not S_USER_LOGGED_IN and not (S_SHOW_COPPA or S_REGISTRATION) -->
- 
+
 	<div id="login-popup" class="popup-window">
 			<div id="login-box" class="login-popup">
 				<div class="login-popup-header">
@@ -290,7 +290,7 @@ $(document).ready(function() {
 							<!-- ENDIF -->
 						</div>
 					</fieldset>
-				</form>			        
+				</form>
 			</div>
 			<div class="login-forgot-password">
 				<a href="./ucp.php?mode=sendpassword">{L_FORGOT_PASS}</a>
