@@ -1,4 +1,15 @@
 <?php
+session_start();
+$toCountdown = true;
+if ( time() >= 1427475600 || isset($_GET['isBetaMember']) || (isset($_SESSION['isBetaMember']) && $_SESSION['isBetaMember'] == true) ) {
+    $_SESSION['isBetaMember'] = true;
+    $toCountdown = false;
+}
+if ( $toCountdown ) {
+    header("Location: ./countdown/");
+    die();
+}
+
 /**
  * Front to the WordPress application. This file doesn't do anything, but loads
  * wp-blog-header.php which does and tells WordPress to load the theme.
