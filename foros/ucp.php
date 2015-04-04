@@ -14,6 +14,11 @@
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
+
+if (isset($_REQUEST['mode']) && ($_REQUEST['mode'] == 'login' || $_REQUEST['mode'] == 'logout' || $_REQUEST['mode'] == 'register')) {
+	define('USING_WP', true);
+}
+
 require($phpbb_root_path . 'common.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
@@ -78,12 +83,36 @@ switch ($mode)
 			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
 		}
 
+		if(!request_var('bridgedd', '')) {
+			define('WP_INSTALLING', $phpbb_root_path);
+			require_once($config['wp_abspath'] . 'wp-load.php');
+			$phpbb_root_path = WP_INSTALLING;
+			$table_prefix = PHPBB_PREFIX;
+			global $current_user;
+			if (is_user_logged_in() && !validate_phpbb_username($current_user->user_login) && !validate_email($current_user->user_email)) {
+				header('Location: ' . $config['wp_url'] . 'index.php?bridgedd=true');
+				exit;
+			}
+		}
+
 		login_box(request_var('redirect', "index.$phpEx"));
 	break;
 
 	case 'logout':
 		if ($user->data['user_id'] != ANONYMOUS && isset($_GET['sid']) && !is_array($_GET['sid']) && $_GET['sid'] === $user->session_id)
 		{
+			$sql = 'SELECT wp_id FROM bridgedd_xuser WHERE phpbb_id = ' . $user->data['user_id'];
+			$result = $db->sql_query($sql);
+			$wp_id = (int) $db->sql_fetchfield('wp_id');
+			$db->sql_freeresult($result);
+			if (!empty($config['wp_path']) && $wp_id) {
+				define('WP_INSTALLING', $phpbb_root_path);
+				require_once($config['wp_abspath'] . 'wp-load.php');
+				$phpbb_root_path = WP_INSTALLING;
+				$table_prefix = PHPBB_PREFIX;
+				wp_clear_auth_cookie();
+				$user->set_cookie('wpid', 'x', time() - (365*24*3600));
+			}
 			$user->session_kill();
 			$user->session_begin();
 			$message = $user->lang['LOGOUT_REDIRECT'];

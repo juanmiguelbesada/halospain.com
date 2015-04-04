@@ -3101,6 +3101,23 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		// The result parameter is always an array, holding the relevant information...
 		if ($result['status'] == LOGIN_SUCCESS)
 		{
+			if (!empty($config['wp_path']) && !$admin && ($user->data['user_type'] == USER_NORMAL || $user->data['user_type'] == USER_FOUNDER)) {
+				$sql = 'SELECT wp_id FROM bridgedd_xuser WHERE phpbb_id = ' . $user->data['user_id'];
+				$result2 = $db->sql_query($sql);
+				$wp_id = (int) $db->sql_fetchfield('wp_id');
+				$db->sql_freeresult($result2);
+
+				// if not an integrated user, integrate them
+				if (!$wp_id && is_user_logged_in()) {
+					global $current_user;
+					$wp_id = $current_user->ID;
+					$sql = "INSERT INTO bridgedd_xuser VALUES({$wp_id},{$user->data['user_id']})";
+					$db->sql_query($sql);
+					wp_clear_auth_cookie();
+					wp_set_auth_cookie($wp_id, $autologin);
+				}
+			}
+
 			$redirect = request_var('redirect', "{$phpbb_root_path}index.$phpEx");
 			$message = ($l_success) ? $l_success : $user->lang['LOGIN_REDIRECT'];
 			$l_redirect = ($admin) ? $user->lang['PROCEED_TO_ACP'] : (($redirect === "{$phpbb_root_path}index.$phpEx" || $redirect === "index.$phpEx") ? $user->lang['RETURN_INDEX'] : $user->lang['RETURN_PAGE']);
@@ -4681,6 +4698,7 @@ function page_header($page_title = '', $display_online_list = true, $item_id = 0
 		'U_PRIVACY'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy'),
 		'U_RESTORE_PERMISSIONS'	=> ($user->data['user_perm_from'] && $auth->acl_get('a_switchperm')) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm') : '',
 		'U_FEED'				=> generate_board_url() . "/feed.$phpEx",
+		'U_WP'					=> $config['wp_url'],
 
 		'S_USER_LOGGED_IN'		=> ($user->data['user_id'] != ANONYMOUS) ? true : false,
 		'S_AUTOLOGIN_ENABLED'	=> ($config['allow_autologin']) ? true : false,
@@ -4895,6 +4913,9 @@ function garbage_collection()
 	}
 
 	// Close our DB connection.
+	if (!empty($dbwp)) {
+		$dbwp->sql_close();
+	}
 	if (!empty($db))
 	{
 		$db->sql_close();
