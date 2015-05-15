@@ -2,8 +2,8 @@
 Contributors: DionDesigns
 Donate link: http://diondesigns.org/bridgedd/support/viewtopic.php?t=75
 Tags: bridge,integration,phpbb
-Requires at least: 3.5
-Tested up to: 4.1
+Requires at least: 3.6
+Tested up to: 4.2
 Stable tag: trunk
 
 BridgeDD creates a stable, resource-light bridge between WordPress and phpBB3.
@@ -11,15 +11,16 @@ BridgeDD creates a stable, resource-light bridge between WordPress and phpBB3.
 == Description ==
 
 > ### BridgeDD is a WordPress&harr;phpBB bridge that...works. <br />
-> <br />
-> <br />
-> You can log in and out from WordPress or phpBB as you always do, and you will be automatically logged in/out of both applications. New members in one application become members in the other application just by browsing to that application. There is no need to worry about "integrating" existing members into both applications &mdash; BridgeDD handles it automatically.
-> 
-> And best of all, the bridging is done using a breakthrough technology that eliminates the bloat, sluggishness, and bugs of other WordPress-based bridge plugins and phpBB-based bridge MODs.
 >
-> You can obtain support by visiting the [**BridgeDD support board**](http://diondesigns.org/bridgedd/support/index.php)
->
-> Those who become a BridgeDD Subscriber will gain access to a private forum where you can download **BridgeDD PRO**, the bridge everyone has been waiting for! You will be able to add your WordPress menus and widgets directly into your phpBB templates *without loading WordPress*, giving you the ability to create an integrated site that looks great and...works.
+> &nbsp;
+
+You can log in and out from WordPress or phpBB as you always do, and you will be automatically logged in/out of both applications. New members in one application become members in the other application just by browsing to that application. There is no need to worry about "integrating" existing members into both applications &mdash; BridgeDD handles it automatically.
+
+And best of all, the bridging is done using a breakthrough technology that eliminates the bloat, sluggishness, and bugs of other WordPress-based bridge plugins and phpBB-based bridge MODs.
+
+You can obtain support by visiting the [**BridgeDD support board**](http://diondesigns.org/bridgedd/support/index.php)
+
+Those who become a BridgeDD Subscriber will gain access to a private forum where you can download **BridgeDD PRO**, the bridge everyone has been waiting for! You will be able to add your WordPress menus and widgets directly into your phpBB templates *without loading WordPress*, giving you the ability to create an integrated site that looks great and...works.
 
 > ### BridgeDD PRO supports phpBB 3.1. <br />
 >
@@ -31,23 +32,22 @@ BridgeDD creates a stable, resource-light bridge between WordPress and phpBB3.
 >
 > &nbsp;
 
-BridgeDD requires WordPress 3.5 or later, phpBB 3.0.9 - 3.0.13PL1, PHP 5.3.0 or later, and the **mysqli** (Improved MySQL) PHP extension. This extension is bundled into PHP by default, and unless you have disabled it manually, it will be available.
+BridgeDD requires WordPress 3.6 or later, phpBB 3.0.9 - 3.0.13PL1, PHP 5.3.0 or later, and the **mysqli** (Improved MySQL) PHP extension. This extension is bundled into PHP by default, and unless you have disabled it manually, it will be available.
 
 BridgeDD modifies phpBB files, and you should take the same precautions before installing BridgeDD as you do before installing a phpBB MOD through AutoMOD.
 
 BridgeDD will create a new directory on your system called **bridgedd**, and it will be at the same directory level as the WordPress **wp-content** directory. This directory will contain files that allow BridgeDD to upgrade you to new versions without the hassles you would encounter when upgrading other bridge plugins.
 
-> **INSTALLATION INSTRUCTIONS**
->
-> 1. If a bridge plugin such as _WP-United_ or _wp-phpbb-bridge_ is activated, follow its instructions to **deactivate it**
-> 2. If you have installed the _XCache_ or _eAccelerator_ PHP cache extension, **disable it**
-> 3. Log in as administrator to your phpBB board
-> 4. Upload the _bridgedd.latest.zip_ file via the Install Plugins interface
-> 5. Activate the BridgeDD plugin
+### INSTALLATION INSTRUCTIONS
+> 1. Download and activate the [**BridgeDD Requirements plugin**](http://plugins.svn.wordpress.org/bridgedd/tags/public/bridgedd-require.zip). If you see an error message on the plugins page, **do not install BridgeDD**!
+> 2. If a bridge plugin such as _WP-United_ or _wp-phpbb-bridge_ is activated, follow its instructions to **deactivate it**
+> 3. If you have installed the _XCache_ or _eAccelerator_ PHP cache extension, **disable it**
+> 4. Log in as administrator to your phpBB board
+> 5. Upload the BridgeDD plugzin ZIP file via the Install Plugins interface, and activate it
 > 6. Select your phpBB installation in BridgeDD Settings
-> 7. Verify that the phpBB displayed URL and board preview are correct, _and that you are logged in_, then click **Save Changes**
+> 7. Verify that the phpBB displayed URL and board preview are correct, _and that you are logged in to the phpBB board_, then click **Save Changes**
 > 8. Set the BridgeDD settings options as required, then click **Save Changes** again
-> 9. Re-enable _XCache_ or _eAccelerator_ if it was disabled in step (2)
+> 9. Re-enable _XCache_ or _eAccelerator_ if it was disabled in step (3)
 
 == Frequently Asked Questions ==
 
@@ -69,6 +69,24 @@ The WordPress and phpBB installations must be in the same domain, and WordPress 
 Ask them at the [**BridgeDD support board**](http://diondesigns.org/bridgedd/support/index.php).
 
 == Changelog ==
+
+= 1.3.10 =
+* Bug fix: logins to WordPress by non-integrated users will cause blank screens
+
+= 1.3.9 =
+* Improved compatibility with WordPress plugins (eg, NextGEN Gallery)
+* Several action hooks added to give WordPress plugins access to phpBB
+* Bug fix: phpBB Login/Logout widget does not redirect back to WordPress after login
+* Danish translation - _by ljorg_
+
+= 1.3.8 =
+* Bug fix: adding a new user to phpBB will cause blank screens
+
+= 1.3.7 =
+* Recent Board Topics widget supports i18n for last post times
+* New hooks added to allow other plugins to access phpBB features
+* Bug fix: several potential variable conflicts could result in blank pages
+* Bug fix: blank page when no add-ons selected
 
 = 1.3.6 =
 * Bug fix: system tab in phpBB stops working when BridgeDD is installed
@@ -169,6 +187,26 @@ Spanish, French, German, Japanese, Polish, Portuguese, and Italian translations 
 
 == Upgrade Notice ==
 
+= 1.3.10 =
+
+### BridgeDD 1.3.10 is a MANDATORY update!
+
+BridgeDD 1.3.10 fixes a serious bug introduced in BridgeDD 1.3.9.
+
+= 1.3.9 =
+
+Just another BridgeDD update
+
+= 1.3.8 =
+
+### BridgeDD 1.3.8 is a MANDATORY update!
+
+BridgeDD 1.3.8 fixes a serious bug introduced in BridgeDD 1.3.7.
+
+= 1.3.7 =
+
+Just another BridgeDD update
+
 = 1.3.6 =
 
 ### BridgeDD 1.3.6 is a MANDATORY update!
@@ -226,3 +264,5 @@ The following translations were done by Maxim Tkachenko: _Russian, Ukranian_
 The following translation was done by Juliana Cristine: _Brazilian Portuguese_
 
 The following translation was done by [mohamedh](http://animefn.com): _Arabic_
+
+The following translation was done by [ljorg](http://nørdkultur.dk): _Danish_

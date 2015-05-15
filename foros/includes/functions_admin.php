@@ -671,7 +671,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 
 	$db->sql_transaction('begin');
 
-	$table_ary = array(BOOKMARKS_TABLE, TOPICS_TRACK_TABLE, TOPICS_POSTED_TABLE, POLL_VOTES_TABLE, POLL_OPTIONS_TABLE, TOPICS_WATCH_TABLE, TOPICS_TABLE, 'bridgedd_xpost');
+	$table_ary = array(BOOKMARKS_TABLE, TOPICS_TRACK_TABLE, TOPICS_POSTED_TABLE, POLL_VOTES_TABLE, POLL_OPTIONS_TABLE, TOPICS_WATCH_TABLE, TOPICS_TABLE);
 
 	foreach ($table_ary as $table)
 	{
@@ -796,9 +796,6 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 	{
 		return false;
 	}
-
-	$sql = 'DELETE FROM bridgedd_xpost WHERE ' . $db->sql_in_set('phpbb_id', $post_ids);
-	$db->sql_query($sql);
 
 	$db->sql_transaction('begin');
 

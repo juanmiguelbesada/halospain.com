@@ -895,15 +895,6 @@ class acp_users
 							);
 
 							$user->reset_login_keys($user_id);
-							$sql = 'SELECT wp_id FROM bridgedd_xuser WHERE phpbb_id = ' . $user_id;
-							$result = $db->sql_query($sql);
-							$wp_id = (int) $db->sql_fetchfield('wp_id');
-							$db->sql_freeresult($result);
-							if ($wp_id) {
-								global $dbwp;
-								$sql = 'UPDATE ' . $config['wp_user_table'] . " SET user_pass = '" . $sql_ary['user_password'] . "' WHERE ID = " . $wp_id;
-								$dbwp->sql_query($sql);
-							}
 							add_log('user', $user_id, 'LOG_USER_NEW_PASSWORD', $user_row['username']);
 						}
 

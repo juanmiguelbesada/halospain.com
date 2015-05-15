@@ -656,13 +656,7 @@ function make_clickable_callback($type, $whitespace, $url, $relative_url, $class
 * Cuts down displayed size of link if over 50 chars, turns absolute links
 * into relative versions when the server/script path matches the link
 */
-if (!defined('WPINC') && !defined('USING_WP')) {
-	function make_clickable($text, $server_url = false, $class = 'postlink') {
-		return phpbb_make_clickable($text, $server_url, $class);
-	}
-}
-
-function phpbb_make_clickable($text, $server_url = false, $class = 'postlink')
+function make_clickable($text, $server_url = false, $class = 'postlink')
 {
 	if ($server_url === false)
 	{

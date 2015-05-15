@@ -118,33 +118,6 @@ unset($dbpasswd);
 // Grab global variables, re-cache if necessary
 $config = $cache->obtain_config();
 
-if (!empty($config['wp_bridge']) && !empty($config['wp_db'])) {
-	@ini_set('open_basedir', '');
-	define('SERVER_DOCUMENT_ROOT', substr(getenv('SCRIPT_FILENAME'), 0, strpos(getenv('SCRIPT_FILENAME'), getenv('SCRIPT_NAME'))));
-	define('PHPBB_PREFIX', $table_prefix);
-	$wp_dd = unserialize($config['wp_bridge']);
-	$config['wp_url'] = $wp_dd['path'];
-	$config['wp_path'] = substr($config['wp_url'], strpos($config['wp_url'], '//') + 2);
-	$config['wp_path'] = substr($config['wp_path'], strpos($config['wp_path'], '/'));
-	$config['wp_prefix'] = $wp_dd['pf'];
-	$config['wp_user_table'] = $wp_dd['pf'] . 'users';
-	$config['wp_option_table'] = $wp_dd['pf'] . 'options';
-	$wp_dd = unserialize($config['wp_db']);
-	$host = $wp_dd['hs'];
-	$port = '';
-	if (strpos($host, ':')) {
-		list($host, $port) = explode(':', $host);
-	}
-	include_once($phpbb_root_path . 'includes/db/mysqli.' . $phpEx);
-	$dbwp = new dbal_mysqli();
-	$dbwp->sql_connect($host, $wp_dd['us'], $wp_dd['pw'], $wp_dd['nm'], $port, false, false);
-	unset($wp_dd);
-
-	function bridgedd_approve_username($garbage, $username) {
-		return $username;
-	}
-}
-
 // Add own hook handler
 require($phpbb_root_path . 'includes/hooks/index.' . $phpEx);
 $phpbb_hook = new phpbb_hook(array('exit_handler', 'phpbb_user_session_handler', 'append_sid', array('template', 'display')));
