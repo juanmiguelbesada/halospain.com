@@ -1,0 +1,7 @@
+# PHPBB3
+store/*
+files/*
+cache/*
+config.php
+images/avatars/gallery/*
+images/avatars/upload/*

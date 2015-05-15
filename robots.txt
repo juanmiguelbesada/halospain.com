@@ -1,3 +1,14 @@
-# robotstxt.org/
-
-User-agent: *
+User-Agent: *
+Disallow: /blog/
+Disallow: /exofauna.com/
+Disallow: /acuariofiliablog.es/
+Disallow: /antoniofdez.es/
+Disallow: /ciberatletas.es/
+Disallow: /pastelerialaflor.com/
+Disallow: /animegamesblog.com/
+Disallow: /beta/
+Disallow: /bichoshop.es/
+Disallow: /lastdance.es/
+Disallow: /networkgs.es/
+Disallow: /pokemonblog.es/
+Disallow: /wp-admin/
