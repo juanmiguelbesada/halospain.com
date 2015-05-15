@@ -36,6 +36,14 @@ return apply_filters('bunyad_theme_options', array(
 					),
 					
 					array(
+						'name'   => 'sticky_sidebar',
+						'value' => 0,
+						'label' => __('Sticky Sidebar', 'bunyad'),
+						'desc'  => __('Setting this to Yes will make sidebar sticky as the user scrolls.', 'bunyad'),
+						'type'  => 'checkbox'
+					),
+					
+					array(
 						'name'   => 'no_responsive',
 						'value' => 0,
 						'label' => __('Disable Responsive Layout', 'bunyad'),
@@ -51,6 +59,22 @@ return apply_filters('bunyad_theme_options', array(
 						'type'  => 'textarea',
 						'options' => array('cols' => 75, 'rows' => 10),
 						'strip' => 'none',
+					),
+					
+					array(
+						'name'   => 'search_posts_only',
+						'value' => 1,
+						'label' => __('Limit Search To Posts', 'bunyad'),
+						'desc'  => __('WordPress, by default, uses pages and other posts types to display search results. Enabling this feature will limit it to posts only.', 'bunyad'),
+						'type'  => 'checkbox'
+					),
+					
+					array(
+						'name'   => 'editor_styling',
+						'value' => 1,
+						'label' => __('Post Editor Front-end Styles', 'bunyad'),
+						'desc'  => __('While not exactly same as front-end, this will make the post editor mimimc font sizes, blockquote styles, width etc. from the front-end.', 'bunyad'),
+						'type'  => 'checkbox'
 					),
 					
 				),
@@ -132,7 +156,23 @@ return apply_filters('bunyad_theme_options', array(
 		'title' => __('Header & Navigation', 'bunyad'),
 		'id'    => 'options-header',
 		'icon'  => 'dashicons-welcome-widgets-menus',
-		'sections' => array(	
+		'sections' => array(
+		
+			array(
+				'fields' => array(
+					array(
+						'name'  => 'header_style',
+						'value' => '',
+						'label' => __('Header Style', 'bunyad'),
+						'desc'  => __('Select the header style you want to use.', 'bunyad'),
+						'type'  => 'radio',
+						'options' => array(
+							'' => __('Left Logo + Right Ad', 'bunyad'),
+							'centered'   => __('Centered Logo', 'bunyad'),
+						),
+					),
+				)
+			),
 			
 			array(
 				'title'  => __('Logo', 'bunyad'),
@@ -223,6 +263,31 @@ return apply_filters('bunyad_theme_options', array(
 						'desc'  => __('Enter the text you wish to display before the headlines in the ticker.', 'bunyad'),
 						'type'  => 'text'
 					),
+					
+					array(
+						'name'  => 'topbar_search',
+						'value' => 1,
+						'label' => __('Show Search Box', 'bunyad'),
+						'desc'  => __('Enabling search shows a search box in the top bar.', 'bunyad'),
+						'type'  => 'checkbox'
+					),
+					
+					array(
+						'name'  => 'topbar_live_search',
+						'value' => 1,
+						'label' => __('Enable Live Search', 'bunyad'),
+						'desc'  => __('Live search shows results using AJAX as you type, in the top bar search.', 'bunyad'),
+						'type'  => 'checkbox',
+						'events' => array('change' => array('value' => 'checked', 'actions' => array('show' => 'live_search_number')))
+					),
+					
+					array(
+						'name'   => 'live_search_number',
+						'value'  => 4,
+						'label'  => __('Live Search Results', 'bunyad'),
+						'desc'   => __('Set the number of results to show when using the live search.', 'bunyad'),
+						'type'   => 'number',
+					)
 				)
 			), // end section 
 			
@@ -230,6 +295,18 @@ return apply_filters('bunyad_theme_options', array(
 			array(
 				'title'  => __('Navigation', 'bunyad'),
 				'fields' => array(
+			
+					array(
+						'name'  => 'nav_align',
+						'value' => '',
+						'label' => __('Alignment', 'bunyad'),
+						'desc'  => __('You can center the top-level navigation items or keep them left-aligned.', 'bunyad'),
+						'type'  => 'radio',
+						'options' => array(
+							'' => __('Left', 'bunyad'),
+							'nav-center'   => __('Centered', 'bunyad'),
+						),
+					),
 								
 					array(
 						'name' => 'sticky_nav',
@@ -302,9 +379,12 @@ return apply_filters('bunyad_theme_options', array(
 						'type'    => 'select',
 						'options' =>  array(
 							'modern' => __('Modern Style - 2 Column', 'bunyad'),
-							'alt' => __('Blog Style', 'bunyad'), 
+							'modern-3' => __('Modern Style - 3 Column', 'bunyad'),
+							'grid-overlay' => __('Grid Overlay - 2 Column', 'bunyad'),
+							'grid-overlay-3' => __('Grid Overlay - 3 Column', 'bunyad'),
+							'alt' => __('Blog Style', 'bunyad'),
 							'classic'  => __('Classic - Large Blog Style', 'bunyad'),
-							'timeline' => __('Timeline Style', 'bunyad'),
+							'timeline' => __('Timeline Style', 'bunyad'),	
 						)
 					),
 
@@ -316,6 +396,9 @@ return apply_filters('bunyad_theme_options', array(
 						'type'    => 'select',
 						'options' =>  array(
 							'loop' => __('Modern Style - 2 Column', 'bunyad'),
+							'loop-3' => __('Modern Style - 3 Column', 'bunyad'),
+							'loop-grid-overlay' => __('Grid Overlay - 2 Column', 'bunyad'),
+							'loop-grid-overlay-3' => __('Grid Overlay - 3 Column', 'bunyad'),
 							'loop-alt' => __('Blog Style', 'bunyad'),
 							'loop-classic'  => __('Classic - Large Blog Style', 'bunyad'),
 							'loop-timeline' => __('Timeline Style', 'bunyad'),
@@ -330,6 +413,9 @@ return apply_filters('bunyad_theme_options', array(
 						'type'    => 'select',
 						'options' =>  array(
 							'modern' => __('Modern Style - 2 Column', 'bunyad'),
+							'modern-3' => __('Modern Style - 3 Column', 'bunyad'),
+							'grid-overlay' => __('Grid Overlay - 2 Column', 'bunyad'),
+							'grid-overlay-3' => __('Grid Overlay - 3 Column', 'bunyad'),
 							'alt' => __('Blog Style', 'bunyad'),
 							'classic'  => __('Classic - Large Blog Style', 'bunyad'),
 							'timeline' => __('Timeline Style', 'bunyad'),
@@ -473,6 +559,19 @@ return apply_filters('bunyad_theme_options', array(
 			array(
 				'title'  => __('Single Post / Article Page', 'bunyad'),
 				'fields' => array(
+					
+					array(
+						'name' => 'post_layout_template',
+						'label'   => __('Default Posts Layout', 'bunyad'),
+						'value'   => 'classic',
+						'desc'    => __('Default single post layout to use, unless explicitly overriden in the post options.', 'bunyad'),
+						'type'    => 'select',
+						'options' =>  array(
+							'classic' => __('Classic', 'bunyad'),
+							'cover' => __('Post Cover', 'bunyad'),
+							'classic-above' => __('Classic - Title First', 'bunyad'),
+						)
+					),
 
 					array(
 						'name'   => 'lightbox_prettyphoto',
@@ -494,7 +593,7 @@ return apply_filters('bunyad_theme_options', array(
 						'name'   => 'css_first_paragraph',
 						'value'  => '',
 						'label'  => __('First Paragraph', 'bunyad'),
-						'desc'   => __('By default, the first paragraph is treated as a summary and thus emphasized with larger font.', 'bunyad'),
+						'desc'   => __('By default, the first paragraph is treated as a summary and thus emphasized with larger font. NOTE: Applies to classic post layout only.', 'bunyad'),
 						'css'    => array('selectors' => array('.post .post-content > p:first-child' => 'font-size: inherit; color: inherit;')),
 						'type'   => 'radio',
 						'options' => array(
@@ -788,7 +887,7 @@ return apply_filters('bunyad_theme_options', array(
 				'fields' => array(
 					array(
 						'name' => 'font_charset',
-						'label'   => __('Font Character Set', 'bunyad'),
+						'label'   => __('Google Fonts Character Set', 'bunyad'),
 						'value'   => '',
 						'desc'    => __('For some languages, you will need an extended character set. Please note, not all fonts will have the subset. Check the google font to make sure.', 'bunyad'),
 						'type'    => 'checkbox',
@@ -809,6 +908,50 @@ return apply_filters('bunyad_theme_options', array(
 						'label' => __('Use FontAwesome CDN', 'bunyad'),
 						'desc'  => __('FontAwesome is loaded locally by default. Using the CDN will save a the font and CSS download if the user has already visited a site that used FontAwesome.', 'bunyad'),
 						'type'  => 'checkbox'
+					),
+				),
+
+			),
+			
+			array(
+				'title'  => __('Adobe Typekit Fonts', 'bunyad'),
+				'desc'   => __('First, please get your Kit Javascript code from Typekit and add it to Theme Settings > General > Head Code.', 'bunyad'),
+				'fields' => array(
+					array(
+						'name' => 'fonts_typekit',
+						'label'   => __('Font Family Names', 'bunyad'),
+						'value'   => '',
+						'desc'    => __('A font name of "Source Sans Pro" should be source-sans-pro. You can click "Using fonts in CSS" link in Typekit Kit Editor to find exact name.', 'bunyad'),
+						'type'    => 'multiple',
+						'sub_fields' => array(
+							array('type' => 'text', 'label' => __('Font Name', 'bunyad'))
+						),
+					),
+				),
+			),
+			
+			array(
+				'title'  => __('Custom Fonts', 'bunyad'),
+				'desc'   => sprintf(__('You have to convert your font to the .woff format. Use <a href="%s">FontSquirrel WebFont Generator</a> to get a .woff file.', 'bunyad'), 'http://www.fontsquirrel.com/tools/webfont-generator'),
+				'fields' => array(
+					array(
+						'name' => 'fonts_custom',
+						'label'   => __('Custom Fonts', 'bunyad'),
+						'value'   => '',
+						'desc'    => __('Upload your font in woff format and enter the font name. You can upload your font file using FTP, or via Media > Add New and then paste the URL.', 'bunyad'),
+						'type'    => 'multiple',
+						'sub_fields' => array(
+							array(
+								'label' => __('File URL', 'bunyad'),
+								'name'  => 'url',
+								'type'  => 'text'
+							),
+							array(
+								'label' =>__('Font Name', 'bunyad'),
+								'name'  => 'name',
+								'type'  => 'text'
+							),
+						)
 					),
 				),
 			),
@@ -864,7 +1007,7 @@ return apply_filters('bunyad_theme_options', array(
 									'::selection' => 'background: %s',
 									':-moz-selection' => 'background: %s',
 									
-									'.top-bar' => 'border-top-color: %s',
+									'.top-bar, .post-content .modern-quote' => 'border-top-color: %s',
 
 									'.trending-ticker .heading, .breadcrumbs .location, .news-focus .heading, .gallery-title, .related-posts .section-head, 
 									.news-focus .heading .subcats a.active, .post-content a, .comments-list .bypostauthor .comment-author a, .error-page 

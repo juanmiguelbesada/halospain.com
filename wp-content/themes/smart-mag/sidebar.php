@@ -1,7 +1,17 @@
 
-	<?php do_action('bunyad_sidebar_start'); ?>		
+	<?php
+	
+		// sidebar HTML attributes
+		$attribs = array('class' => 'col-4 sidebar');
+		if (Bunyad::options()->sticky_sidebar) {
+			$attribs['data-sticky'] = 1;
+		}
+	
+		do_action('bunyad_sidebar_start'); 	
+	?>		
 		
-		<aside class="col-4 sidebar">
+		
+		<aside <?php Bunyad::markup()->attribs('sidebar', $attribs); ?>>
 			<ul>
 			
 			<?php if (!dynamic_sidebar('primary-sidebar')) : ?>

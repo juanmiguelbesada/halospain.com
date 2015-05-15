@@ -1,4 +1,7 @@
 <?php
+/**
+ * Meta box for post options
+ */
 
 $options = array(
 
@@ -7,6 +10,19 @@ $options = array(
 		'name'  => 'featured_post', // _bunyad_featured_post
 		'type'  => 'checkbox',
 		'value' => 0
+	),
+	
+	array(
+		'label' => __('Post Layout', 'bunyad'),
+		'name'  => 'layout_template', // will be _bunyad_layout_style
+		'type'  => 'select',
+		'options' => array(
+			'' => __('Default (from Theme Settings)', 'bunyad'),
+			'classic' => __('Classic', 'bunyad'),
+			'cover' => __('Post Cover', 'bunyad'),
+			'classic-above' => __('Classic - Title First', 'bunyad'),
+		),
+		'value' => '' // default
 	),
 	
 	array(
@@ -87,9 +103,9 @@ $options = $this->options($options);
 
 <div class="bunyad-meta cf">
 
-<?php foreach ($options as $element): ?>
+<?php foreach ($options as $element): ?> 
 	
-	<div class="option">
+	<div class="option <?php echo esc_attr($element['name']); ?>">
 		<span class="label"><?php echo esc_html(isset($element['label_left']) ? $element['label_left'] : $element['label']); ?></span>
 		<span class="field">
 			<?php echo $this->render($element); ?>
@@ -108,3 +124,33 @@ $options = $this->options($options);
 </div>
 
 <?php wp_enqueue_script('theme-options', get_template_directory_uri() . '/admin/js/options.js', array('jquery')); ?>
+
+<script>
+/**
+ * Conditional show/hide 
+ */
+
+jQuery(function($) {
+
+	/**
+	 * Hide disable featured and featured video option on cover layout
+	 */
+	var default_layout = '<?php echo esc_js(Bunyad::options()->post_layout_template); ?>';
+	
+	$('._bunyad_layout_template select').on('change', function() {
+
+		var depend = '._bunyad_featured_disable, ._bunyad_featured_video', layout = '';
+
+		// if current selection is cover or the default is cover format
+		if ($(this).val() == 'cover' || (!$(this).val() && default_layout == 'cover')) {
+			layout = 'cover';
+		}
+		
+		(layout == 'cover' ? $(depend).hide() : $(depend).show());
+	});
+
+	// on-load
+	$('._bunyad_layout_template select').trigger('change');
+		
+});
+</script>

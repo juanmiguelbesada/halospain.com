@@ -1,5 +1,26 @@
 <?php
 
+/**
+ * SmartMag Theme!
+ * 
+ * This is the typical theme initialization file. Sets up the Bunyad Framework
+ * and the theme functionality.
+ * 
+ * ----
+ * 
+ * Other Code Locations:
+ * 
+ *  /          -  WordPress default template files
+ *  lib/       -  Contains the core Bunyad framework files
+ *  admin/     -  Admin-only content
+ *  partials/  -  Template parts (partials) called via get_template_part()
+ *  blocks/    -  Page-builder block views
+ *  
+ * Note: If you're looking to edit HTML, look for default WordPress templates in
+ * top-level / and in partials/ folder.
+ * 
+ */
+
 // already initialized? some buggy plugin call?
 if (class_exists('Bunyad_Core')) {
 	return;
@@ -18,10 +39,10 @@ $bunyad = Bunyad::core()->init(apply_filters('bunyad_init_config', array(
 
 	'theme_name' => 'smartmag',
 	'meta_prefix' => '_bunyad',
-	'theme_version' => '2.4.1',
+	'theme_version' => '2.5.1',
 
 	// widgets enabled
-	'widgets'    => array('about', 'latest-posts', 'popular-posts', 'tabbed-recent', 'flickr', 'ads', 'latest-reviews', 'bbp-login', 'tabber'),
+	'widgets'    => array('about', 'latest-posts', 'popular-posts', 'tabbed-recent', 'flickr', 'ads', 'latest-reviews', 'bbp-login', 'tabber', 'blocks'),
 	'post_formats' => array('gallery', 'image', 'video', 'audio'),
 
 	'shortcode_config' => array(
@@ -109,6 +130,8 @@ class Bunyad_Theme_SmartMag
 		add_image_size('main-block', 351, 185, true); // also usable at 326x160
 		add_image_size('slider-small', 168, 137, true); // small thumb for slider
 		add_image_size('gallery-block', 214, 140, true); // small thumb for slider
+		
+		add_image_size('grid-overlay', 343, 215, true); // size for grid overlay listing
 
 		// i18n
 		load_theme_textdomain('bunyad', get_template_directory() . '/languages');
@@ -168,9 +191,6 @@ class Bunyad_Theme_SmartMag
 		// video format auto-embed
 		add_filter('bunyad_featured_video', array($this, 'video_auto_embed'));
 		
-		// fix search for pages
-		add_filter('pre_get_posts', array($this, 'fix_search'));
-		
 		// add custom category per_page limits, if any
 		add_filter('pre_get_posts', array($this, 'add_category_limits'));
 		
@@ -185,6 +205,11 @@ class Bunyad_Theme_SmartMag
 		
 		// ajax post content slideshow - add wrapper
 		add_filter('the_content', array($this, 'add_post_slideshow_wrap'));
+		
+		// limit search to posts?
+		if (Bunyad::options()->search_posts_only) {
+			add_filter('pre_get_posts', array($this, 'limit_search'));
+		}
 		
 		/*
 		 * Prevent duplicate posts
@@ -225,13 +250,16 @@ class Bunyad_Theme_SmartMag
 		// add image sizes to the editor
 		add_filter('image_size_names_choose', array($this, 'add_image_sizes_editor'));
 		
-		
 		// sample import actions
 		add_filter('bunyad_import_menu_fields', array($this, 'import_menu_fields'));
 		add_action('bunyad_import_completed', array($this, 'import_fix_menu'));
 		
 		// set dynamic widget columns for footer
 		add_filter('dynamic_sidebar_params', array($this, 'set_footer_columns'));
+		
+		// add support for live search
+		add_action('wp_ajax_bunyad_live_search', array($this, 'live_search'));
+		add_action('wp_ajax_nopriv_bunyad_live_search', array($this, 'live_search'));
 		
 		// setup the init hook
 		add_action('init', array($this, 'init'));
@@ -322,10 +350,14 @@ class Bunyad_Theme_SmartMag
 			 */
 			
 			// add google fonts
-			$args = array('family' => 'Open+Sans:400,600,700|Roboto+Slab');
+			$args = array('family' => 'Open+Sans:400,400Italic,600,700|Roboto+Slab');
 			if (Bunyad::options()->font_charset) {
-				$args['subset'] = implode(',', array_keys(Bunyad::options()->font_charset));
-				
+				$args['subset'] = implode(',', array_keys(array_filter(Bunyad::options()->font_charset)));
+			}
+			
+			// blockquote font for single
+			if (is_singular()) {
+				$args['family'] .= '|Merriweather:300italic';
 			}
 			
 			wp_enqueue_style('smartmag-fonts', add_query_arg($args, (is_ssl() ? 'https' : 'http') . '://fonts.googleapis.com/css'),	array(), null);
@@ -364,6 +396,13 @@ class Bunyad_Theme_SmartMag
 			// flexslider to the footer
 			wp_enqueue_script('flex-slider', 
 				get_template_directory_uri() . '/js/' . (is_rtl() ? 'rtl-' : '') . 'jquery.flexslider-min.js', array('jquery'), 
+				Bunyad::options()->get_config('theme_version'),
+				true
+			);
+			
+			// sticky sidebar where enabled
+			wp_enqueue_script('sticky-sidebar',
+				get_template_directory_uri() . '/js/jquery.sticky-sidebar.min.js', array('jquery'), 
 				Bunyad::options()->get_config('theme_version'),
 				true
 			);
@@ -626,25 +665,25 @@ class Bunyad_Theme_SmartMag
 			),
 			
 			array(
-				'name' => 'Custom sidebars',
+				'name' => 'Custom sidebars (Optional)',
 				'slug' => 'custom-sidebars',
 				'required' => false,			
 			),
 			
 			array(
-				'name' => 'WP Retina 2x',
+				'name' => 'WP Retina 2x (Recommended)',
 				'slug' => 'wp-retina-2x',
 				'required' => false,	
 			),
 			
 			array(
-				'name'   => 'Contact Form 7',
+				'name'   => 'Contact Form 7 (Optional)',
 				'slug'   => 'contact-form-7',
 				'required' => false,
 			),
 			
 			array(
-				'name'     => 'Revolution Slider',
+				'name'     => 'Revolution Slider (Optional)',
 				'slug'     => 'revslider',
 				'source'   => get_template_directory() . '/lib/vendor/plugins/revslider.zip',
 				'required' => false,
@@ -700,10 +739,73 @@ class Bunyad_Theme_SmartMag
 		if (is_admin()) {
 			add_filter('bunyad_shortcodes_list', array($this, 'shortcodes_list'));
 			add_filter('bunyad_shortcodes_lists_options', array($this, 'shortcodes_lists_options'));
+			
+			// add editor styling
+			if (Bunyad::options()->editor_styling) {
+				add_editor_style('css/editor-style.css');
+			}
+			
+			add_filter('mce_buttons', array($this, 'add_editor_buttons'));
+			add_filter('tiny_mce_before_init', array($this, 'add_editor_formats'), 1);
 		}
-		
 	}
+
+
+	public function add_editor_buttons($buttons) {
+		array_push($buttons, 'styleselect');
+		return $buttons;
+	}
+
+	/**
+	 * Filter callback: Add formats to the TinyMCE Editor
+	 * 
+	 * @param array $settings
+	 */
+	public function add_editor_formats($settings) {
 	
+		$formats = array(
+		
+			array(
+				'title'   => __('Quote - Modern', 'bunyad'),
+				'block'   => 'blockquote',
+				'classes' => 'modern-quote full',
+				'wrapper' => true,
+			),
+			
+			array(
+				'title'  => __('Citation (for quote)', 'bunyad'),
+				'inline' => 'cite',
+			),
+			
+			array(
+				'title'   => __('Quote Left - Modern', 'bunyad'),
+				'block'   => 'aside',
+				'classes' => 'modern-quote pull alignleft',
+				'wrapper' => true,
+			),
+			
+			array(
+				'title'   => __('Quote Right - Modern', 'bunyad'),
+				'block'   => 'aside',
+				'classes' => 'modern-quote pull alignright',
+				'wrapper' => true,
+			),
+		);
+	
+		$settings = array_merge($settings, array(
+			'style_formats_merge' => false,
+			'style_formats' =>  json_encode($formats),
+		));
+		
+		// editor styling enabled?
+		if (Bunyad::options()->editor_styling) {
+			$settings['body_class'] = 'post-content';
+		}
+	
+		// Return New Settings
+		return $settings;
+	}
+
 	public function shortcodes_list($list)
 	{
 		// de-register unsupported shortcodes
@@ -802,7 +904,7 @@ class Bunyad_Theme_SmartMag
 		wp_enqueue_script('theme-options', get_template_directory_uri() . '/admin/js/options.js', array('jquery'));
 		
 		// get our category meta template
-		include_once get_template_directory() . '/admin/category-meta.php';
+		include_once locate_template('admin/category-meta.php');
 	}	
 	
 	/**
@@ -961,14 +1063,20 @@ class Bunyad_Theme_SmartMag
 	 * 
 	 * @param object $query
 	 */
-	public function fix_search($query)
+	public function limit_search($query)
 	{
-		global $wp_query;
-		
-		// not in admin and not on bbpress search
-		if (!is_admin() && $query->is_search && empty($wp_query->bbp_search_terms) && (function_exists('is_woocommerce') && !is_woocommerce())) {
-			$query->set('post_type', 'post');
+		// not search query? reutrn early
+		if (!$query->is_search) {
+			return $query;
 		}
+		
+		// ignore if on bbpress and woocommerce - is_bbpress() / is_woocommerce() cause 404 due to using get_queried_object()
+		if (is_admin() OR (function_exists('bbp_get_query_name') && bbp_get_query_name()) OR (function_exists('is_shop') && is_shop())) {
+			return $query;
+		}
+		
+		// limit it to posts
+		$query->set('post_type', 'post');
 		
 		return $query;
 	}
@@ -1282,6 +1390,18 @@ class Bunyad_Theme_SmartMag
 		}
 		
 		return $columns;
+	}
+	
+	/**
+	 * Action callback: AJAX handler for live search results
+	 */
+	public function live_search()
+	{
+		
+		get_template_part('partials/live-search');
+
+		// terminate ajax request
+		wp_die();
 	}
 	
 	

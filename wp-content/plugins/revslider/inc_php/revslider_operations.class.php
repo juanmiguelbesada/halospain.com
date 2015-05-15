@@ -544,7 +544,8 @@
 			//parse css captions file
 			$parser = new UniteCssParserRev();
 			$parser->initContent($contentCSS);
-			$arrCaptionClasses = $parser->getArrClasses();
+			$arrCaptionClasses = $parser->getArrClasses('','',true);
+			
 			return($arrCaptionClasses);
 		}
 
@@ -1000,11 +1001,8 @@
 						$styles = $db->fetch(GlobalsRevSlider::$table_css);
 						$styles = UniteCssParserRev::parseDbArrayToCss($styles, "\n");
 						$styles = UniteCssParserRev::compress_css($styles);
-						// KRISZTIAN MODIFICATION
-						$stylesinnerlayers = str_replace('.tp-caption', '',$styles);
-						// KRISZTIAN MODIFICATION ENDS
 
-						echo '<style type="text/css">'.$styles.$stylesinnerlayers.'</style>';
+						echo '<style type="text/css">'.$styles.'</style>'; //.$stylesinnerlayers
 
 						$http = (is_ssl()) ? 'https' : 'http';
 

@@ -1,15 +1,19 @@
+/**
+ * SmartMag JS functions & 3rd party libraries
+ */
 
 var Bunyad_Theme = (function($) {
 	"use strict";
 	
 	var hasTouch = false,
-		responsive_menu = false;
+	    responsive_menu = false;
 	
 	// module
 	return {
 		
 		init: function() 
 		{
+			
 			// posts grid 
 			var grid = $('.posts-grid').data('grid-count');
 			if (parseInt(grid) > 0) {
@@ -110,9 +114,11 @@ var Bunyad_Theme = (function($) {
 			// use sticky navigation if enabled
 			this.sticky_nav();
 			
+			// use sticky sidebar if enabled
+			this.sticky_sidebar();
+			
 			// user ratings
 			this.user_ratings();
-			
 			
 			// infinite scroll if enabled
 			this.infinite_scroll();
@@ -450,6 +456,19 @@ var Bunyad_Theme = (function($) {
 		},
 		
 		/**
+		 * Setup sticky sidebar
+		 */
+		sticky_sidebar: function() 
+		{
+			var sticky = $('.sidebar').data('sticky');
+			if (!sticky) {
+				return;
+			}
+			
+			$('.main .sidebar').theiaStickySidebar({minWidth: 800, updateSidebarHeight: false});
+		},
+		
+		/**
 		 * Setup all the sliders available
 		 */
 		sliders: function()
@@ -511,6 +530,13 @@ var Bunyad_Theme = (function($) {
 				controlNav: false,
 				pauseOnHover: true,
 				rtl: is_rtl
+			});
+			
+			// post galleries in post cover
+			$('.post-cover .gallery-slider li, .post-cover .featured').each(function() {
+				var img = $(this).find('img');
+				$(this).css('background-image', 'url("' + img.attr('src') + '")');
+				img.addClass('hidden');
 			});
 			
 			/**
@@ -654,12 +680,12 @@ var Bunyad_Theme = (function($) {
 				
 				var container = $(this).parents('.sc-accordions');
 				container.find('.sc-accordion-title').removeClass('active');
-				container.find('.sc-accordion-pane').slideUp().toggleClass('active');
+				container.find('.sc-accordion-pane').slideUp().removeClass('active');
 				
 				var pane = $(this).parent().next();
 				if (!pane.is(':visible')) {
 					$(this).parent().addClass('active');
-					pane.slideDown();
+					pane.slideDown().addClass('active');
 				}
 				
 				return false;
@@ -681,8 +707,18 @@ var Bunyad_Theme = (function($) {
 		{
 			
 			var compute_percent = function(e) {
+				
+				
 				var offset = $(this).offset(),
-					percent = Math.round((e.pageX - Math.max(0, offset.left)) / $(this).width() * 100);
+				    position, percent;
+				
+				// count from right for RTL
+				if ($('html').attr('dir') == 'rtl')  {
+					offset.left = offset.left + $(this).outerWidth();
+				}
+				
+				position = Math.abs(e.pageX - Math.max(0, offset.left));
+				percent  = Math.min(100, Math.round(position / $(this).width() * 100));
 				
 				return percent;
 			};
@@ -781,7 +817,6 @@ var Bunyad_Theme = (function($) {
 		/**
 		 * Infinite Scroll
 		 */
-		
 		infinite_scroll: function() 
 		{
 			// require jquery plugin
@@ -841,6 +876,7 @@ var Bunyad_Theme = (function($) {
 					});
 					
 					$(window).trigger('checkInView.inview');
+					$(window).trigger('resize'); // for sticky sidebar
 				};
 				
 				// setup infinitescroll instance and set callbacks
@@ -852,10 +888,16 @@ var Bunyad_Theme = (function($) {
 					
 					$(opts.loading.msg).insertAfter(that).show();
 					instance.beginAjax(opts);
+					
+					// for sticky sidebar
+					$(window).trigger('resize');
 				};
 				
 				opts.errorCallback = function() {
 					$(opts.loading.msg).hide();
+					
+					// for sticky sidebar
+					$(window).trigger('resize');
 				};
 				
 				// hide pagination if valid infinite scroll page
@@ -912,9 +954,127 @@ var Bunyad_Theme = (function($) {
 
 // load when ready
 jQuery(function($) {
+	
 	Bunyad_Theme.init();
+	
+	// requestAnimationFrame pollyfill
+	var requestAnimationFrame = (
+			window.requestAnimationFrame
+			|| window.webkitRequestAnimationFrame
+			|| window.mozRequestAnimationFrame
+			|| function(callback) { return setTimeout(callback, 1000 / 60); }
+	);
 });
 
+/**
+ * Live Search Handler
+ */
+var Bunyad_Live_Search = (function($) {
+	"use strict";
+	
+	var cache = {}, timer, element;
+	
+	return {
+		
+		init: function() {
+			
+			var self = this,
+			    search = $('.live-search-query');
+
+			if (!search.length) {
+				return;
+			}
+			
+			// turn off browser's own auto-complete
+			$('.live-search-query').attr('autocomplete', 'off');
+			
+			// setup the live search on key press
+			$('.live-search-query').on('keyup', function() {
+				
+				element = $(this).parent();
+				
+				var query = $(this).val(), result;
+				
+				
+				// clear existing debounce
+				clearTimeout(timer);
+				
+				// minimum of 1 character
+				if (query.length < 1) {
+					self.add_result('');
+					return;
+				}
+				
+				// debounce to prevent excessive ajax queris
+				timer = setTimeout(function() {
+					self.process(query);
+				}, 250);
+			});
+			
+			// setup hide 
+			$(document).on('click', function(e) {
+				
+				var results = $('.live-search-results');
+				
+				if (results.is(':visible') && !$(e.target).closest('.search').length) {
+					results.removeClass('fade-in');
+				}
+			});
+		},
+		
+		/**
+		 * Process the search query
+		 */
+		process: function(query) {
+			
+			var self = this;
+			
+			// have it in cache?
+			if (query in cache) {
+				self.add_result(cache[query]);
+			}
+			else {
+				$.get(Bunyad.ajaxurl, {action: 'bunyad_live_search', 'query': query}, function(data) {
+					
+					// add to cache and add results
+					cache[query] = data;
+					self.add_result(data);
+				});
+			}
+		},
+		
+		/**
+		 * Add live results to the container
+		 */
+		add_result: function(result) {
+			
+			if (!element.find('.live-search-results').length) {
+				element.append($('<div class="live-search-results"></div>'));
+			}
+			
+			var container = element.find('.live-search-results');
+
+			if (!result) {
+				container.removeClass('fade-in');
+				return;
+			}
+			
+			// add the html result
+			container.html(result);
+			
+			requestAnimationFrame(function() {
+				container.addClass('fade-in');
+			});
+			
+		}
+	};
+	
+})(jQuery);
+
+// fire up when ready
+jQuery(function() {
+	Bunyad_Live_Search.init();
+});
 
 /**
  * Plugins and 3rd Party Libraries
@@ -944,10 +1104,22 @@ jQuery(function($) {
 */
 !function(a){var b=function(b,c){this.options=c,this.$element=a(b).delegate('[data-dismiss="modal"]',"click.dismiss.modal",a.proxy(this.hide,this)),this.options.remote&&this.$element.find(".modal-body").load(this.options.remote)};b.prototype={constructor:b,toggle:function(){return this[this.isShown?"hide":"show"]()},show:function(){var b=this,c=a.Event("show");this.$element.trigger(c);if(this.isShown||c.isDefaultPrevented())return;this.isShown=!0,this.escape(),this.backdrop(function(){var c=a.support.transition&&b.$element.hasClass("fade");b.$element.parent().length||b.$element.appendTo(document.body),b.$element.show(),c&&b.$element[0].offsetWidth,b.$element.addClass("in").attr("aria-hidden",!1),b.enforceFocus(),c?b.$element.one(a.support.transition.end,function(){b.$element.focus().trigger("shown")}):b.$element.focus().trigger("shown")})},hide:function(b){b&&b.preventDefault();var c=this;b=a.Event("hide"),this.$element.trigger(b);if(!this.isShown||b.isDefaultPrevented())return;this.isShown=!1,this.escape(),a(document).off("focusin.modal"),this.$element.removeClass("in").attr("aria-hidden",!0),a.support.transition&&this.$element.hasClass("fade")?this.hideWithTransition():this.hideModal()},enforceFocus:function(){var b=this;a(document).on("focusin.modal",function(a){b.$element[0]!==a.target&&!b.$element.has(a.target).length&&b.$element.focus()})},escape:function(){var a=this;this.isShown&&this.options.keyboard?this.$element.on("keyup.dismiss.modal",function(b){b.which==27&&a.hide()}):this.isShown||this.$element.off("keyup.dismiss.modal")},hideWithTransition:function(){var b=this,c=setTimeout(function(){b.$element.off(a.support.transition.end),b.hideModal()},500);this.$element.one(a.support.transition.end,function(){clearTimeout(c),b.hideModal()})},hideModal:function(){var a=this;this.$element.hide(),this.backdrop(function(){a.removeBackdrop(),a.$element.trigger("hidden")})},removeBackdrop:function(){this.$backdrop&&this.$backdrop.remove(),this.$backdrop=null},backdrop:function(b){var c=this,d=this.$element.hasClass("fade")?"fade":"";if(this.isShown&&this.options.backdrop){var e=a.support.transition&&d;this.$backdrop=a('<div class="modal-backdrop '+d+'" />').appendTo(document.body),this.$backdrop.click(this.options.backdrop=="static"?a.proxy(this.$element[0].focus,this.$element[0]):a.proxy(this.hide,this)),e&&this.$backdrop[0].offsetWidth,this.$backdrop.addClass("in");if(!b)return;e?this.$backdrop.one(a.support.transition.end,b):b()}else!this.isShown&&this.$backdrop?(this.$backdrop.removeClass("in"),a.support.transition&&this.$element.hasClass("fade")?this.$backdrop.one(a.support.transition.end,b):b()):b&&b()}};var c=a.fn.modal;a.fn.modal=function(c){return this.each(function(){var d=a(this),e=d.data("modal"),f=a.extend({},a.fn.modal.defaults,d.data(),typeof c=="object"&&c);e||d.data("modal",e=new b(this,f)),typeof c=="string"?e[c]():f.show&&e.show()})},a.fn.modal.defaults={backdrop:!0,keyboard:!0,show:!0},a.fn.modal.Constructor=b,a.fn.modal.noConflict=function(){return a.fn.modal=c,this},a(document).on("click.modal.data-api",'[data-toggle="modal"]',function(b){var c=a(this),d=c.attr("href"),e=a(c.attr("data-target")||d&&d.replace(/.*(?=#[^\s]+$)/,"")),f=e.data("modal")?"toggle":a.extend({remote:!/#/.test(d)&&d},e.data(),c.data());b.preventDefault(),e.modal(f).one("hide",function(){c.focus()})})}(window.jQuery);
 
-/*
- * FitVids 1.0.3 - Modified - https://github.com/davatron5000/FitVids.js
+/*!
+* FitVids 1.1
+*
+* Copyright 2013, Chris Coyier - http://css-tricks.com + Dave Rupert - http://daverupert.com
+* Credit to Thierry Koblentz - http://www.alistapart.com/articles/creating-intrinsic-ratios-for-video/
+* Released under the WTFPL license - http://sam.zoy.org/wtfpl/
+*
+*/
+;(function($){$.fn.fitVids=function(options){var settings={customSelector:null,ignore:null};if(!document.getElementById("fit-vids-style")){var head=document.head||document.getElementsByTagName("head")[0];var css=".fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}";var div=document.createElement("div");div.innerHTML='<p>x</p><style id="fit-vids-style">'+css+"</style>";head.appendChild(div.childNodes[1])}if(options){$.extend(settings,options)}return this.each(function(){var selectors=['iframe[src*="player.vimeo.com"]','iframe[src*="youtube.com"]','iframe[src*="youtube-nocookie.com"]','iframe[src*="kickstarter.com"][src*="video.html"]',"object","embed"];if(settings.customSelector){selectors.push(settings.customSelector)}var ignoreList=".fitvidsignore";if(settings.ignore){ignoreList=ignoreList+", "+settings.ignore}var $allVideos=$(this).find(selectors.join(","));$allVideos=$allVideos.not("object object");$allVideos=$allVideos.not(ignoreList);$allVideos.each(function(){var $this=$(this);if($this.parents(ignoreList).length>0){return}if(this.tagName.toLowerCase()==="embed"&&$this.parent("object").length||$this.parent(".fluid-width-video-wrapper").length){return}if((!$this.css("height")&&!$this.css("width"))&&(isNaN($this.attr("height"))||isNaN($this.attr("width")))){$this.attr("height",9);$this.attr("width",16)}var height=(this.tagName.toLowerCase()==="object"||($this.attr("height")&&!isNaN(parseInt($this.attr("height"),10))))?parseInt($this.attr("height"),10):$this.height(),width=!isNaN(parseInt($this.attr("width"),10))?parseInt($this.attr("width"),10):$this.width(),aspectRatio=height/width;if(!$this.attr("id")){var videoID="fitvid"+Math.floor(Math.random()*999999);$this.attr("id",videoID)}$this.wrap('<div class="fluid-width-video-wrapper"></div>').parent(".fluid-width-video-wrapper").css("padding-top",(aspectRatio*100)+"%");$this.removeAttr("height").removeAttr("width")})})}})(window.jQuery||window.Zepto);
+
+/**
+ * Plus/minus polyfill for numbers - used in WooCommerce
+ * 
+ * Author Bryce Adams
  */
-(function(e){"use strict";e.fn.fitVids=function(t){var n={customSelector:null};if(!document.getElementById("fit-vids-style")){var r=document.head||document.getElementsByTagName("head")[0];var i=".fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}";var s=document.createElement("div");s.innerHTML='<p>x</p><style id="fit-vids-style">'+i+"</style>";r.appendChild(s.childNodes[1])}if(t){e.extend(n,t)}return this.each(function(){var t=["iframe[src*='player.vimeo.com']","iframe[src*='youtube.com']","iframe[src*='youtube-nocookie.com']","iframe[src*='kickstarter.com'][src*='video.html']","object","embed"];if(n.customSelector){t.push(n.customSelector)}var r=e(this).find(t.join(","));r=r.not("object object");r.each(function(){var t=e(this);if(this.tagName.toLowerCase()==="embed"&&t.parent("object").length||t.parent(".fluid-width-video-wrapper").length){return}var n=this.tagName.toLowerCase()==="object"||t.attr("height")&&!isNaN(parseInt(t.attr("height"),10))?parseInt(t.attr("height"),10):t.height(),r=!isNaN(parseInt(t.attr("width"),10))?parseInt(t.attr("width"),10):t.width(),i=n/r;if(!t.attr("id")){var s="fitvid"+Math.floor(Math.random()*999999);t.attr("id",s)}t.wrap('<div class="fluid-width-video-wrapper"></div>').parent(".fluid-width-video-wrapper").css("padding-top",i*100+"%");t.removeAttr("height").removeAttr("width")})})}})(window.jQuery||window.Zepto);
+!function($){$("div.quantity:not(.buttons_added), td.quantity:not(.buttons_added)").addClass("buttons_added").append('<input type="button" value="+" class="plus" />').prepend('<input type="button" value="-" class="minus" />'),$(document).on("click",".plus, .minus",function(){var t=$(this).closest(".quantity").find(".qty"),a=parseFloat(t.val()),n=parseFloat(t.attr("max")),s=parseFloat(t.attr("min")),e=t.attr("step");a&&""!==a&&"NaN"!==a||(a=0),(""===n||"NaN"===n)&&(n=""),(""===s||"NaN"===s)&&(s=0),("any"===e||""===e||void 0===e||"NaN"===parseFloat(e))&&(e=1),$(this).is(".plus")?t.val(n&&(n==a||a>n)?n:a+parseFloat(e)):s&&(s==a||s>a)?t.val(s):a>0&&t.val(a-parseFloat(e)),t.trigger("change")})}(jQuery);
 
 
 /*! http://mths.be/placeholder v2.0.7 by @mathias */

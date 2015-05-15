@@ -7,18 +7,21 @@ if (empty($type)) {
 	$type = Bunyad::options()->default_cat_template;
 }
 
-switch ($type) {
-	case 'modern':
-		$template = 'loop';
-		break;
-		
-	default:
-		if (!empty($type)) {
-			$template = 'loop-' . $type;
-		}
+// loop template
+$template = strstr($type, 'modern') ? 'loop' : 'loop-' . $type;
 
-		break;
+// set loop grid type
+$loop_grid = '';
+
+if (strstr($type, '-3')) {
+	$loop_grid = 3;
+	
+	// remove -3 suffix
+	$template = str_replace('-3', '', $template);
 }
+
+Bunyad::registry()->set('loop_grid', $loop_grid);
+
 
 // save current options so that can they can be restored later
 $options = Bunyad::options()->get_all();

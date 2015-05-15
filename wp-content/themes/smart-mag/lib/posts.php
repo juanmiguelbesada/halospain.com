@@ -179,6 +179,7 @@ class Bunyad_Posts
 	 * @param string|null $key
 	 * @param integer|null $post_id
 	 * @param boolean $defaults  whether or not to use default options mapped to certain keys - only when $key is set
+	 * @uses  Bunyad::options()  used when defaults are tested for a specific key
 	 */
 	public function meta($key = null, $post_id = null, $defaults = true)
 	{
@@ -193,9 +194,17 @@ class Bunyad_Posts
 			
 			$meta = get_post_meta($post_id, $prefix . $key, true);
 
+			/**
+			 * Use values from specified key mapping of Bunyad::options() if meta value is empty
+			 */
 			if ($defaults) {
 			
-				$default_map = array('featured_disable' => array('key' => 'show_featured', 'bool_inverse' => true));
+				
+				// bool_inverse will inverse the value in Bunyad::options() 
+				$default_map = array(
+					'featured_disable' => array('key' => 'show_featured', 'bool_inverse' => true),
+					'layout_template'  => array('key' => 'post_layout_template', 'bool_inverse' => false),
+				);
 				
 				// have a key association with theme settings?
 				if (!$meta && array_key_exists($key, $default_map)) {
@@ -312,7 +321,7 @@ class Bunyad_Posts
 		
 		$args = array(
 			'base'    => add_query_arg('paged', '%#%'), 
-			'format'  => '',  
+			'format'  => '',
 			'current' => max(1, $paged),
 			'total'   => $total_pages,
 
@@ -321,24 +330,32 @@ class Bunyad_Posts
 			'prev_text' => '<i class="fa fa-angle-left"></i><span class="visuallyhidden">' . _x('Previous', 'pagination', 'bunyad') . '</span>'
 		);
 	
-		if ($wp_rewrite->using_permalinks()) {
-			$args['base'] = user_trailingslashit(trailingslashit(remove_query_arg('s', get_pagenum_link(1))) . 'page/%#%', 'paged');
+
+		if ($wp_rewrite->using_permalinks() && !is_search()) {
+			
+			// Use an unlikely page number with get_pagenum_link to get the format /page/1?q=1 instead of /?q=1/page/1
+			// Note: Don't use a small number - which can be used in a directory name or domain name and would be replaced below.
+			$number = 999999999;
+			$args['base'] = str_replace($number, '%#%', remove_query_arg('s', get_pagenum_link($number)));
 		}
 		
-		if (is_search()) {
-			$args['add_args'] = array('s' => urlencode(get_query_var('s')));
-		}
+		// No longer needed as the search permalinks are skipped above, due to bug #30831 in WordPress core
+		// if (is_search()) {
+		//	$args['add_args'] = array('s' => urlencode(get_query_var('s')));
+		// }
 		
 		$pagination = paginate_links(array_merge($args, $options));
 
-		// remove first paged=1 from the first link
-		$pagination = preg_replace('/&#038;paged=1(\'|")/', '\\1', trim($pagination));
+		// remove first paged=1 and page/1/ from the first link
+		$pagination = preg_replace(
+			array('/&#038;paged=1(\'|")/', "#{$wp_rewrite->pagination_base}/1/('|\")#"), '\\1', trim($pagination)
+		);
 		
 		// add wrapper?
 		if (!empty($options['wrapper_before'])) {
 			$pagination = $options['wrapper_before'] . $pagination . $options['wrapper_after'];
 		}
-	
+		
 		return $pagination;	
 	}
 	
@@ -354,6 +371,7 @@ class Bunyad_Posts
 		}
 		
 		if ($query->is_paged) {	
+	
 		
 			// manually determine page query offset (offset + current page (minus one) x posts per page)
 			$page_offset = $query->query_vars['offset'] + (($query->query_vars['paged'] - 1) * $query->query_vars['posts_per_page']);

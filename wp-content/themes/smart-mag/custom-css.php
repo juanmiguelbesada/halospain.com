@@ -68,7 +68,7 @@ class Bunyad_Custom_Css
 	{
 		$this->init();
 
-		/**
+		/*
 		 * Rendering of all custom CSS
 		 */
 		foreach ($this->css_options as $key => $value)
@@ -98,40 +98,48 @@ class Bunyad_Custom_Css
 				// skip if same as default
 				if ($element['value'] != $value) 
 				{
-					// system fonts?
-					if (strstr($value, 'system:')) {
-						$attribs .= 'font-family: ' . str_replace('system:', '', $value) . '; '; 
+					// system or custom fonts
+					if (preg_match('/^(system|custom|typekit):/', $value, $match)) {
+					
+						$attribs .= 'font-family: ' . str_replace($match[0], '', $value) . '; '; 
 					}
-					// specific font?
-					else if (strstr($value, ':')) {
-						
-						// font-family value
-						$font = explode(':', $value); // [0] => font, [1] regular/weight
-						$attribs .= 'font-family: "' . esc_attr($font[0])  . '", ' . esc_attr($element['fallback_stack']) . '; ';
-						
-						array_push($this->google_fonts, $value);
-								
-						// italic style - may be in 400italic format
-						if (stristr($font[1], 'italic')) {
-							$attribs .= "font-style: italic; ";
-							$font[1]  = str_replace('italic', '', $font[1]);
-						}
-						
-						if (is_numeric($font[1])) {
-							$attribs .= 'font-weight: ' . intval($font[1]) . '; ';
-						}
-						else if ($font[1] === 'regular') {
-							$attribs .= 'font-weight: normal;';
-						}
-						
-					}
-					// font family
 					else {
-		
-						// load regular, semi-bold (500/600), bold
-						$this->google_fonts = array_merge($this->google_fonts, array($value . ':400', $value . ':600', $value . ':700'));
 						
-						$attribs .= 'font-family: "' . esc_attr($value) . '", ' . esc_attr($element['fallback_stack']) . ';'; 
+						/**
+						 * A Google font or font family
+						 */
+						
+						// a specific font?
+						if (strstr($value, ':')) {
+						
+							// font-family value
+							$font = explode(':', $value); // [0] => font, [1] regular/weight
+							$attribs .= 'font-family: "' . esc_attr($font[0])  . '", ' . esc_attr($element['fallback_stack']) . '; ';
+							
+							array_push($this->google_fonts, $value);
+									
+							// italic style - may be in 400italic format
+							if (stristr($font[1], 'italic')) {
+								$attribs .= "font-style: italic; ";
+								$font[1]  = str_replace('italic', '', $font[1]);
+							}
+							
+							if (is_numeric($font[1])) {
+								$attribs .= 'font-weight: ' . intval($font[1]) . '; ';
+							}
+							else if ($font[1] === 'regular') {
+								$attribs .= 'font-weight: normal;';
+							}
+						
+						}
+						// font family
+						else {
+		
+							// load regular, semi-bold (500/600), bold
+							$this->google_fonts = array_merge($this->google_fonts, array($value . ':400', $value . ':600', $value . ':700'));
+						
+							$attribs .= 'font-family: "' . esc_attr($value) . '", ' . esc_attr($element['fallback_stack']) . ';'; 
+						}
 					}
 					
 				}
@@ -227,11 +235,41 @@ class Bunyad_Custom_Css
 	}
 	
 	/**
-	 * Add google fonts to the top of CSS
+	 * Add google and custom fonts
 	 */
 	public function add_fonts()
 	{	
-		// incude google fonts
+		
+		/*
+		 * Include custom fonts
+		 */
+		$custom_fonts = Bunyad::options()->fonts_custom;
+		
+		if (!empty($custom_fonts['url'])) {
+			
+			$fonts = array();
+			
+			foreach ($custom_fonts['url'] as $key => $url) {
+				
+				// missing name?
+				if (empty($custom_fonts['name'][$key])) {
+					continue;
+				}
+				
+				$name = $custom_fonts['name'][$key];
+				
+				$fonts[] = "@font-face { font-family: \"{$name}\"; src: url('" . esc_url($url) . "') format('woff'); }";
+			}
+			
+			// add to beginning
+			array_unshift($this->css, implode("\n", $fonts));
+		}
+		
+		/*
+		 * Include google fonts
+		 */
+				
+		// url-encode the google fonts
 		$google_fonts = array_map('urlencode', array_unique($this->google_fonts));
 		
 		if ($google_fonts) {

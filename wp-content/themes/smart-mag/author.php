@@ -6,7 +6,14 @@
 
 get_header();
 
-$authordata = get_userdata(get_query_var('author'));
+$authordata    = get_userdata(get_query_var('author'));
+$loop_template = Bunyad::options()->author_loop_template;
+
+// set correct grid options for grid templates
+if (strstr($loop_template, '-3')) {
+	Bunyad::registry()->set('loop_grid', 3);
+	$loop_template = str_replace('-3', '', $loop_template);
+}
 
 ?>
 
@@ -18,9 +25,9 @@ $authordata = get_userdata(get_query_var('author'));
 		
 			<h1 class="main-heading author-title"><?php echo sprintf(__('Author %s', 'bunyad'), '<strong>' . get_the_author() . '</strong>'); ?></h1>
 
-			<?php get_template_part('partial-author'); ?>
+			<?php get_template_part('partials/author'); ?>
 	
-			<?php get_template_part(Bunyad::options()->author_loop_template); ?>
+			<?php get_template_part($loop_template); ?>
 
 		</div>
 		

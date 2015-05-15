@@ -38,7 +38,7 @@
 
 <body <?php body_class(); ?>>
 
-<?php 
+	<?php 
 	
 	/**
 	 * Get the partial template for top bar
@@ -51,50 +51,35 @@
 		
 		<div class="wrap">
 		
-			<header>
-				<div class="title">
-				
-				<a href="<?php echo esc_url(home_url('/')); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home">
-				<?php if (Bunyad::options()->image_logo): // custom logo ?>
+		
+			<?php 
 					
-					<img src="<?php echo esc_attr(Bunyad::options()->image_logo); ?>" class="logo-image" alt="<?php 
-						 echo esc_attr(get_bloginfo('name', 'display')); ?>" <?php 
-						 echo (Bunyad::options()->image_logo_retina ? 'data-at2x="'. Bunyad::options()->image_logo_retina .'"' : ''); 
-					?> />
-						 
-				<?php else: ?>
-					<?php echo do_shortcode(Bunyad::options()->text_logo); ?>
-				<?php endif; ?>
-				</a>
+				/**
+				 * Get the header based on settings
+				 */
+				$header = Bunyad::options()->header_style ? Bunyad::options()->header_style : 'default';
 				
-				</div>
+				get_template_part('partials/header/' . $header); 
+
 				
-				<div class="right">
-					<?php 
-						dynamic_sidebar('header-right');
-					?>
-				</div>
-			</header>
-			
-			<?php
 				/**
 				 * Setup data variables to enable or disable sticky nav functionality
 				 */
-				$nav_data = array();
+				$attribs = array('class' => array('navigation cf', Bunyad::options()->nav_align));
 				
 				if (Bunyad::options()->sticky_nav) {
 					
-					$nav_data[] = 'data-sticky-nav="1"';
+					$attribs['data-sticky-nav'] = 1;
 								
 					// sticky navigation logo?
 					if (Bunyad::options()->sticky_nav_logo) {
-						$nav_data[] = 'data-sticky-logo="1"';
+						$attribs['data-sticky-logo'] = 1;
 					}
 				}
 
 			?>
 			
-			<nav class="navigation cf" <?php echo implode(' ', $nav_data); ?>>
+			<nav <?php Bunyad::markup()->attribs('navigation', $attribs); ?>>
 			
 				<div class="mobile" data-type="<?php echo Bunyad::options()->mobile_menu_type; ?>" data-search="<?php echo Bunyad::options()->mobile_nav_search; ?>">
 					<a href="#" class="selected">
@@ -109,7 +94,7 @@
 		
 	</div>
 
-<div class="main-wrap">	
+<div class="main-wrap">
 	
 <?php if (!Bunyad::options()->disable_breadcrumbs): ?>
 	<div class="wrap">

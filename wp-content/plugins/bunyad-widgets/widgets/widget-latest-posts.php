@@ -165,6 +165,7 @@ class Bunyad_LatestPosts_Widget extends WP_Widget
 		<select id="<?php echo $this->get_field_id('type'); ?>" name="<?php echo $this->get_field_name('type'); ?>" class="widefat">
 			<option value="list" <?php selected($type, 'list'); ?>><?php _e('List', 'bunyad-widgets'); ?></option>
 			<option value="blocks" <?php selected($type, 'blocks'); ?>><?php _e('Image Blocks', 'bunyad-widgets'); ?></option>
+			<option value="numbered" <?php selected($type, 'numbered'); ?>><?php _e('Numbered List (No Thumbnails)', 'bunyad-widgets'); ?></option>
 		</select>
 		
 		</p>

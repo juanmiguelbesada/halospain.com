@@ -50,12 +50,12 @@ $limit_tag = Bunyad::options()->featured_right_tag;
 if (!empty($limit_cat)) {
 	
 	$args['posts_per_page'] = $main_limit;
-	$grid_query = new WP_Query(apply_filters('bunyad_block_query_args', array('cat' => $limit_cat, 'posts_per_page' => 3), 'slider_grid'));
+	$grid_query = array('cat' => $limit_cat, 'posts_per_page' => 3);
 }
 else if (!empty($limit_tag)) {
 	
 	$args['posts_per_page'] = $main_limit;
-	$grid_query = new WP_Query(apply_filters('bunyad_block_query_args', array('tag' => $limit_tag, 'posts_per_page' => 3), 'slider_grid'));
+	$grid_query = array('tag' => $limit_tag, 'posts_per_page' => 3);
 }
 
 /**
@@ -163,9 +163,18 @@ $i = $z = 0; // loop counters
 		
 			<div class="blocks col-4">
 			
-			<?php if (!empty($grid_query) && $grid_query->have_posts()): ?>
+			<?php
+			 
+			// init the grid query
+			if (is_array($grid_query)) {
+				$grid_query = new WP_Query(apply_filters('bunyad_block_query_args', $grid_query, 'slider_grid'));
+			}
 			
-				<?php while ($grid_query->have_posts()): $grid_query->the_post(); $z++; 
+			if (!empty($grid_query) && $grid_query->have_posts()): 
+			?>
+			
+				<?php 
+				while ($grid_query->have_posts()): $grid_query->the_post(); $z++; 
 				
 						if (!has_post_thumbnail()) {
 							continue;
@@ -196,8 +205,8 @@ $i = $z = 0; // loop counters
 				
 				<?php endwhile; ?>
 				
-			<?php endif; // end post count check ?>				
-			</div>
+		<?php endif; // end grid query check ?>				
+		</div>
 			
 		</div> <!-- .row -->
 

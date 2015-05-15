@@ -246,6 +246,8 @@
 		margin-bottom: 14px;
 	}
 	
+	.trending-ticker a { max-width: 100%; }
+	
 	.top-bar .trending-ticket li { 
 		max-width: 100%;
 		text-overflow: ellipsis;
@@ -286,7 +288,7 @@
 		display: inline-block;
 		max-width: 100%;
 	}
-		
+
 	.main-head .right  { margin-left: 0; }
 
 	.main .sidebar { margin-top: 35px; /* + 7px added above */ }
@@ -298,12 +300,16 @@
 	 */
 	.navigation { border-bottom: 0; }
 	
+	.nav-center { text-align: left; }
+	
 	.navigation.sticky {
 		position: static;
 	}
 	
 	.navigation .menu { display: none; }	
 	.navigation .mobile-menu.active { display: block; }
+	
+	.navigation .mobile, .navigation .off-canvas { display: block; }
 	
 	.navigation ul li {
 		float: none;
@@ -332,7 +338,6 @@
 		padding: 0 15px;
 		line-height: 44px;
 		margin-bottom: -1px;
-		overflow: hidden;
 	}
 	
 	.navigation .menu .sticky-logo { display: none; }
@@ -350,7 +355,7 @@
 		vertical-align: bottom;
 	}
 	
-	.navigation .mobile .fa {
+	.navigation .mobile .hamburger, .navigation .mobile .fa-search {
 		font-size: 21px;
 		float: right;
 		width: 50px;
@@ -436,6 +441,8 @@
 		float: none;	
 	}
 	
+	.navigation .menu .shopping-cart .counter { right: 5px; }
+	
 	.navigation .menu .user-login, .navigation .menu .shopping-cart { float: none; }
 	.navigation .user-login .text, .navigation .menu .shopping-cart .text { display: inline; }
 	.navigation .menu .user-login .fa, .navigation .shopping-cart .fa {
@@ -476,11 +483,14 @@
 		background: inherit;
 
 		-webkit-transition: all 0.4s ease-in-out;
-		transition: transform 0.4s ease-in-out;
+		transition: all 0.4s ease-in-out;
+		transition-property: width, opacity, transform;
 		
 		width: 65%;
 		min-width: 200px;
 	}
+	
+	.boxed .navigation .off-canvas { left: -25px; }
 	
 	.off-canvas-active .navigation .off-canvas { 
 		box-shadow: 1px 1px 20px 0 rgba(0, 0, 0, 0.5); 
@@ -499,7 +509,7 @@
 	
 	.off-canvas-active .main-wrap {
 	
-		-webkit-transform: translate3d(65%, 0, 0);
+		-webkit-transform: translate3d(65%, 0, 0) !important;
 		-ms-transform: translate3d(65%, 0, 0);
 		transform: translate3d(65%, 0, 0);
 	}
@@ -571,7 +581,8 @@
 
 	.mobile .search { 
 		float: right; 
-		margin-right: 10px; 
+		margin-right: 10px;
+		position: relative; 
 	}
 
 	.mobile .search.active { 
@@ -579,13 +590,18 @@
 		width: 100%;
 		margin-right: -75px; 
 	}
-	.mobile .search .query {  
-		display: none; 
-		width: 100%;
-		margin-right: -61px;
-	}
+	
+	.mobile .search .query { display: none;	}
 
-	.mobile .search.active .query { display: block; } 
+	.mobile .search.active .query { 
+		display: block;
+		width: 100%;
+		margin-right: -60px;
+		
+		/* for calc supported browsers */
+		width: calc(100% - 75px);
+		margin-right: calc(14px);
+	} 
 
 	.mobile .search .query, .mobile .searchform input, .mobile .searchform #s {
 		padding: 9px 8px;
@@ -607,12 +623,45 @@
 	}
 	
 	.mobile .search-button .fa { 
-		background: transparent; color: #efefef; 
+		background: transparent;
+		color: #efefef; 
 		font-size: 15px
 	}
 	
+	.mobile .search .live-search-results {
+		top: 100%;
+		left: 0;
+		right: auto;
+	}
+	
+	.mobile .search .posts-list .content > a { text-transform: none; }
+	.mobile .search .view-all a { color: #999; }
+	
 	/* disabled above in large tablet/1024 breakpoint */
 	.post-share .text { display: inline-block; }
+	
+	/* post cover style changes */
+	.post-cover .overlay {
+		max-height: 100%;
+	}
+		
+	.post-cover .overlay h1 {
+		font-size: 26px;
+		max-height: 7.8em;
+		overflow: hidden;
+		padding-right: 0;
+		padding-bottom: 21px;
+	} 
+	
+	.post-cover .flex-direction-nav a {
+		right: 10px;
+		top: 40px;
+	}
+	
+	.post-cover .flex-direction-nav .flex-prev {
+		left: auto;
+		right: 55px;
+	}
 	
 	/* sidebar */
 	.sidebar .gallery-block .slides img { width: 100%; }
@@ -744,7 +793,6 @@
 		padding-top: 14px;
 	} 
 	
-	
 	.related-posts .highlights-box.three-col .column { margin-bottom: 28px; }
 	
 	.comments-list .children, .comment .comment-respond { margin-left: 15px; }
@@ -754,6 +802,47 @@
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
+	}
+	
+	
+	.post-cover .featured { padding-bottom: 65%; }
+	.post-cover .featured .hidden { display: none; }
+	
+	.post-cover .caption {
+		top: 0;
+		bottom: auto;
+		right: auto;
+		left: 0;
+		padding: 7px 14px;
+		max-width: 65%;
+		line-height: 1.3;
+		background: rgba(0, 0, 0, 0.8);
+	}
+	
+	.post-cover .gallery-slider {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+	
+	.post-cover .flexslider, .post-cover .slides, .post-cover .slides li { height: 100%; }
+	
+	.post-cover .overlay h1 { 
+		font-size: 22px;
+		max-width: 100%;
+		max-height: 80%;
+		overflow: hidden;
+	}
+	
+	.post-layout-cover .post-content .alignright, .modern-quote.alignright { 
+		margin-left: 0;
+		display: block;
+		max-width: 100%;
+		float: none;
+	}
+	
+	.post-layout-cover .post-content .alignright, .post-layout-cover .post-content > p img.alignright { 
+		margin: 28px auto; 
 	}
 	
 	/*
@@ -774,6 +863,8 @@
 		margin-left: 0;
 		margin-top: 0;
 	}
+	
+	.listing.grid-overlay h2 a { font-size: 15px; }
 	
 	
 	/*
@@ -825,6 +916,15 @@
 	}
 }
 
+/* Only target larger phones landscape */
+@media (min-width: 550px) and (max-width: 767px) {
+	
+	/* change 3-col grid listing to half width */
+	.listing.grid-3 .column { width: 50%; }
+	
+	.listing.grid-3 > .column:nth-child(3n+1) { clear: none; }
+}
+
 /* Smaller Phones - Some androids have upto 400px portrait */
 @media only screen and (max-width: 400px) {
 	
@@ -836,9 +936,11 @@
 	.off-canvas-active .navigation .off-canvas { width: 85%; }
 	
 	.off-canvas-active .main-wrap {
-		-webkit-transform: translate3d(85%, 0, 0);
+		-webkit-transform: translate3d(85%, 0, 0) !important;
 		transform: translate3d(85%, 0, 0);
 	}
+	
+	.boxed .navigation .off-canvas { left: 0; }
 	
 	.breadcrumbs { display: none; }
 	
@@ -899,6 +1001,24 @@
 	}
 	
 	.post-pagination-next .info { margin-bottom: 7px; }
+	
+	/* post cover */
+	
+	.post-cover .featured { padding-bottom: 85%; }
+	
+	.post-cover .comments { display: none; }
+	
+	.post-cover .overlay h1 { font-size: 20px; }
+	
+	.post-cover .overlay {
+		padding: 21px;
+		padding-top: 10%;
+	}
+	
+	.post-cover .overlay .cat-title {
+		font-size: 10px;
+		line-height: 23px;
+	}
 	
 	/* comments list narrower */
 	.comments-list .comment-meta { margin-left: 20%; }

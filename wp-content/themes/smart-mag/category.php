@@ -19,26 +19,41 @@ if (!$cat_meta OR !$cat_meta['template']) {
 	$cat_meta['template'] = Bunyad::options()->default_cat_template;
 }
 
-// grid template? defaults to loop if not specified
-if (in_array($cat_meta['template'], array('alt', 'classic'))) {
-	$bunyad_loop_template = 'loop-' . $cat_meta['template'];
-}
+/**
+ * Select the listing template to use
+ */
+
 // timeline template
-else if ($cat_meta['template'] == 'timeline') {
+if ($cat_meta['template'] == 'timeline') {
 	
 	$bunyad_loop_template = 'loop-timeline';
 	
 	$category = get_category(get_query_var('cat'), false);
 	$cat_meta = Bunyad::options()->get('cat_meta_' . $category->term_id);
 	
-	if (!$cat_meta['per_page']) {
+	if (empty($cat_meta['per_page'])) {
 		query_posts(array('cat' => $category->term_id, 'posts_per_page' => -1));
 	}
 	
 }
 // default modern template
 else {
-	$bunyad_loop_template = 'loop';
+	
+	if (in_array($cat_meta['template'], array('alt', 'classic', 'grid-overlay', 'grid-overlay-3'))) {
+		$bunyad_loop_template = 'loop-' . str_replace('-3', '', $cat_meta['template']);
+	}
+	else {
+		$bunyad_loop_template = 'loop';
+	}
+	
+	// set loop grid type
+	$loop_grid = '';
+	
+	if (in_array($cat_meta['template'], array('modern-3', 'grid-overlay-3'))) {
+		$loop_grid = 3;
+	}
+
+	Bunyad::registry()->set('loop_grid', $loop_grid);
 }
 
 // have a sidebar preference?

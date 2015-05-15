@@ -146,6 +146,7 @@ class UniteUpdateClassRev {
 			update_option('revslider-update-check-short', $last_check);
 		}
 		
+		
 		// Check for updates
 		if(time() - $last_check > 172800 || $force_check == true){
 			

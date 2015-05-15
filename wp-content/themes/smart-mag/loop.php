@@ -7,7 +7,6 @@
 
 ?>
 
-
 	<?php
 	
 	global $bunyad_loop;
@@ -18,18 +17,33 @@
 	
 	if ($bunyad_loop->have_posts()):
 	
-		$attribs = array('class' => 'row listing');
+		$attribs = array('class' => array('row listing'));
 		
+		// infinite load?
 		if (Bunyad::options()->pagination_type == 'infinite') {
 			$attribs['data-infinite'] = Bunyad::markup()->unique_id('listing-'); 
 		}
+		
+		// set larger image when full-width, for 2-col grid
+		$image = Bunyad::core()->get_sidebar() == 'none' ?  'main-slider' : 'main-block';
+		
+		// grid type
+		$loop_grid = Bunyad::registry()->loop_grid;
+		
+		if ($loop_grid) {
+			$attribs['class'][] = 'grid-' . $loop_grid;
+			
+			// change image to smaller
+			$image = Bunyad::core()->get_sidebar() == 'none' ?  'main-block' : 'gallery-block';
+		}
+		
 	?>
 	
 	<div <?php Bunyad::markup()->attribs('loop', $attribs); ?>>
 		
 		<?php while ($bunyad_loop->have_posts()): $bunyad_loop->the_post(); ?>
 			
-		<div class="column half">
+		<div class="column <?php echo ($loop_grid == 3 ? 'one-third' : 'half'); ?>">
 		
 			<article <?php post_class('highlights'); ?> itemscope itemtype="http://schema.org/Article">
 				
@@ -53,7 +67,7 @@
 					
 				
 				<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" class="image-link">
-					<?php the_post_thumbnail('main-block', array('class' => 'image', 'title' => strip_tags(get_the_title()), 'itemprop' => 'image')); ?>
+					<?php the_post_thumbnail($image, array('class' => 'image', 'title' => strip_tags(get_the_title()), 'itemprop' => 'image')); ?>
 					
 					<?php if (get_post_format()): ?>
 						<span class="post-format-icon <?php echo esc_attr(get_post_format()); ?>"><?php

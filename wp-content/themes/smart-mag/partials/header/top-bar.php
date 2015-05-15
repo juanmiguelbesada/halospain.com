@@ -9,7 +9,7 @@
 	<div class="top-bar">
 
 		<div class="wrap">
-			<section class="top-bar-content">
+			<section class="top-bar-content cf">
 			
 				<?php if (!Bunyad::options()->disable_topbar_ticker): ?>
 				<div class="trending-ticker">
@@ -29,7 +29,11 @@
 				</div>
 				<?php endif; ?>
 
-				<?php get_template_part('partials/header/search'); ?>
+				<?php if (Bunyad::options()->topbar_search): ?>
+					
+					<?php get_template_part('partials/header/search'); ?>
+					
+				<?php endif; ?>
 
 				<?php dynamic_sidebar('top-bar'); ?>
 				

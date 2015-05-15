@@ -81,6 +81,10 @@ class Bunyad_Admin_OptionRenderer
 				$output = include locate_template($element['render']);
 				break;
 				
+			case 'multiple':
+				$output = $this->render_multiple($element);
+				break;
+				
 			default:
 				break;
 		}
@@ -145,7 +149,7 @@ class Bunyad_Admin_OptionRenderer
 				$value = isset($element['value'][$key]) ? $element['value'][$key] : '';
 				
 				$sub_element = array_merge($element, array(
-					'name' => $element['name'] . '[' . $key . ']',
+					'name'  => $element['name'] . '[' . $key . ']',
 					'label' => $option,
 					'value' => $value,
 				));
@@ -308,6 +312,97 @@ class Bunyad_Admin_OptionRenderer
 	}
 	
 	/**
+	 * Render multiple repeating fields - where multiple of the same can be dynamically added
+	 */
+	public function render_multiple($element)
+	{
+		$element = array_merge(
+			array(
+				'html'  => '',
+				'value' => ''
+			),
+			$element
+		);
+		
+
+		/**
+		 * Print existing field groups while editing
+		 */
+		$fields = '';
+		if (!empty($element['value'])) {
+			
+			$iterator = $element['value'];
+			$first    = current($iterator);
+			
+			// possibly multi-dimensional array - created by multiple fields in a group
+			if (is_array($first)) {
+				$iterator = $first;
+			}
+			
+			foreach ($iterator as $key => $value) {
+				$fields .= $this->_render_multiple_fields($element, $key);
+			}
+
+		}
+		else {
+			// add an empty field group
+			$fields = $this->_render_multiple_fields($element);	
+		}
+		
+		$output = '<div class="element-multiple">' . $fields . '<a href="#">' . __('Add More', 'bunyad')  . '</a></div>';
+		
+		return $output;
+	}
+	
+	/**
+	 * Helper for render_multiple() to add a field
+	 * 
+	 * @param string   $element  the main element to render sub-elements from
+	 * @param integer  $key      position to get the value from saved values, if any
+	 */
+	public function _render_multiple_fields($element, $key = null)
+	{
+		// no sub fields for this element?
+		if (empty($element['sub_fields'])) {
+			return '';
+		}
+		
+		$fields = '';
+		
+		foreach ($element['sub_fields'] as $field) {
+
+			// defaults
+			$field = array_merge(array('label' => '', 'no_wrap' => 1), $field);
+			
+			/**
+			 * If name is omitted, there's likely only one field. The field will become available in an array of type:
+			 * 
+			 * main_field[]  instead of  main_field['sub_field'][]
+			 */
+
+			if (!isset($field['name'])) {
+				$field = array_merge($field, array(
+					'value' => ($key !== null ? $element['value'][$key] : ''),
+					'name'  => $element['name'] . '[]',
+				));
+			}
+			else {
+				$field = array_merge($field, array(
+					'value' => ($key !== null ? $element['value'][ $field['name'] ][$key] : ''),
+					'name'  => $element['name'] . '[' . $field['name'] . '][]'
+				));
+			}
+			
+			$label   = ($field['label'] ? '<label>' . $field['label'] . '</label>' : '');
+			$fields .= '<div class="field">' . $label . $this->render($field) . '</div>';
+			
+		}
+		
+		return '<div class="fields'. ($key == null ? ' default' : '') .'">' . $fields . '<a href="#" class="remove">' . __('Remove', 'bunyad') . '</a></div>';
+		
+	}
+	
+	/**
 	 * Google web fonts - uses api to get fonts list
 	 */
 	public function render_typography($element)
@@ -357,7 +452,36 @@ class Bunyad_Admin_OptionRenderer
 		}
 		
 		$options[__('Google Fonts', 'bunyad')] = $google;
-		$options[__('System Fonts', 'bunyad')] = $stacks; 
+		$options[__('System Fonts', 'bunyad')] = $stacks;
+
+		// add Typekit Fonts if available
+		if (Bunyad::options()->fonts_typekit) {
+			
+			$values = array_values(Bunyad::options()->fonts_typekit);
+			$keys   = array();
+			 
+			foreach ($values as $key => $font) {
+				$keys[$key] = 'custom: ' . $font;
+			}
+			
+			// use font name as both display and value
+			$options[__('Typekit Fonts', 'bunyad')] = array_combine($keys, $values);
+		}
+		
+		// add Custom Fonts if available 
+		if (Bunyad::options()->fonts_custom) {
+
+			$values = array_values(Bunyad::options()->fonts_custom['name']);
+			$keys   = array();
+			 
+			foreach ($values as $key => $font) {
+				$keys[$key] = 'custom: ' . $font;
+			}
+			
+			// use font name as both display and value
+			$options[__('Custom Fonts', 'bunyad')] = array_combine($keys, $values);
+		}
+
 		
 		$select = $this->render_select(array_merge(
 			$element, array('options' => $options, 'class' => 'font-picker chosen-select')
