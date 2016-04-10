@@ -1,35 +1,14 @@
 <?php
 /**
 *
-* This program is the full and free Spanish (of Spain) phpBB 3.0 Translation.
-* Copyright (c) 2007 Huan Manwe for phpbb-es.com
+* This file is part of the phpBB Forum Software package.
 *
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @license GNU General Public License, version 2 (GPL-2.0)
 *
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
+* For full copyright and license information, please see
+* the docs/CREDITS.txt file.
 *
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*
-**/
-
-/**
-*
-* acp_prune.php [Spanish [Es]]
-*
-* @package language
-* @version $Id: $
-* @copyright (c) 2007 phpBB Group. Modified by Huan Manwe for phpbb-es.com in 2007
-* @author 2007-11-26 - Traducido por Huan Manwe junto con phpbb-es.com (http://www.phpbb-es.com) basado en la version argentina hecha por larveando.com.ar ).
-* @author - ImagePack made by Xoom (webmaster of http://www.muchografico.com and colaborator of http://www.phpbb-es.com)
-* @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License
 */
 
 /**
@@ -56,11 +35,12 @@ if (empty($lang) || !is_array($lang))
 // You do not need this where single placeholders are used, e.g. 'Message %d' is fine
 // equally where a string contains only two placeholders which are used to wrap text
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
-//
 
 // User pruning
 $lang = array_merge($lang, array(
-	'ACP_PRUNE_USERS_EXPLAIN'	=> 'Esta opción le permite borrar o desactivar usuarios del Sitio. Esto se puede hacer de varias formas: por cantidad de mensajes, última actividad, etc. Los criterios pueden combinarse para ajustar qué cuentas serán afectadas, p.ej. puede purgar usuarios con menos de 10 mensajes e inactivos desde 2002-01-01. Como alternativa puede crear una lista de usuarios directamente en la caja de texto (cada uno en una línea distinta), y se ignorará cualquier criterio. ¡Tenga cuidado! Una vez que el usuario es borrado no hay forma de deshacer la acción.',
+	'ACP_PRUNE_USERS_EXPLAIN'	=> 'Esta opción le permite borrar o desactivar usuarios del sitio. Esto se puede hacer de varias formas: por cantidad de mensajes, última actividad, etc. Los criterios pueden combinarse para ajustar qué cuentas serán afectadas, por ejemplo: puede purgar usuarios con menos de 10 mensajes e inactivos desde 2002-01-01.Use * como un comodín para los campos de texto. Como alternativa puede crear una lista de usuarios directamente en la caja de texto (cada uno en una línea distinta), y se ignorará cualquier criterio. ¡Tenga cuidado! Una vez que el usuario es borrado no hay forma de deshacer la acción.',
+
+	'CRITERIA'				=> 'Criterio',
 
 	'DEACTIVATE_DELETE'		=> 'Desactivar o borrar',
 	'DEACTIVATE_DELETE_EXPLAIN'	=> 'Determina si desactivar o borrar completamente al usuario, ¡tenga en cuenta que los usuarios borrados no pueden ser recuperados!',
@@ -68,13 +48,16 @@ $lang = array_merge($lang, array(
 	'DELETE_USER_POSTS'		=> 'Borrar mensajes de usuarios purgados',
 	'DELETE_USER_POSTS_EXPLAIN'	=> 'Elimina mensajes hechos por usuarios borrados, no tiene efecto sobre usuarios desactivados.',
 
-	'JOINED_EXPLAIN'		=> 'Introduzca una fecha en el formato <kbd>aaaa-mm-dd</kbd>.',
+	'JOINED_EXPLAIN'			=> 'Introduzca una fecha en el formato <kbd>AAAA-MM-DD</kbd>. Puede utilizar los dos campos para especificar un intervalo, o deje un espacio en blanco para un rango de fechas abiertas.',
 
-	'LAST_ACTIVE_EXPLAIN'		=> 'Introduzca una fecha con el formato <kbd>YYYY-MM-DD</kbd>. Introduzca <kbd>0000-00-00</kbd> para eliminar usuarios que nunca se hayan identificado, las condiciones <em>Antes de</em> y <em>Después de</em> serán ignoradas.',
+	'LAST_ACTIVE_EXPLAIN'		=> 'Introduzca una fecha con el formato <kbd>AAAA-MM-DD</kbd>. Introduzca <kbd>0000-00-00</kbd> para eliminar usuarios que nunca se hayan identificado, las condiciones <em>Antes de</em> y <em>Después de</em> serán ignoradas.',
 
-	'PRUNE_USERS_LIST'		=> 'Usuarios para purgar',
-	'PRUNE_USERS_LIST_DELETE'	=> 'Con el criterio seleccionado, las siguientes cuentas serán eliminadas.',
-	'PRUNE_USERS_LIST_DEACTIVATE'	=> 'Con el criterio seleccionado, las siguientes cuentas serán desactivadas.',
+	'POSTS_ON_QUEUE'			=> 'Mensajes Esperando aprobación',
+	'PRUNE_USERS_GROUP_EXPLAIN'	=> 'Limitar a los usuarios dentro del grupo seleccionado.',
+	'PRUNE_USERS_GROUP_NONE'	=> 'Todos los grupos',
+	'PRUNE_USERS_LIST'				=> 'Usuarios para purgar',
+	'PRUNE_USERS_LIST_DELETE'		=> 'Con el criterio seleccionado, las siguientes cuentas serán eliminadas. Puede eliminar usuarios individuales de la lista de desactivación desmarcando la casilla que aparece junto a su nombre de usuario.',
+	'PRUNE_USERS_LIST_DEACTIVATE'	=> 'Con el criterio seleccionado, las siguientes cuentas serán desactivadas. Puede eliminar usuarios individuales de la lista de desactivación desmarcando la casilla que aparece junto a su nombre de usuario.',
 
 	'SELECT_USERS_EXPLAIN'		=> 'Introduzca aquí solo usuarios específicos; serán usados con preferencia sobre los criterios anteriores. Los Fundadores no pueden ser borrados.',
 
@@ -105,10 +88,8 @@ $lang = array_merge($lang, array(
 	'PRUNE_NOT_VIEWED'		=> 'Días desde la última visita',
 	'PRUNE_OLD_POLLS'		=> 'Purgar encuestas antiguas',
 	'PRUNE_OLD_POLLS_EXPLAIN'	=> 'Elimina temas con encuestas no votadas hace mucho.',
-	'PRUNE_STICKY'			=> 'Purgar anuncios fijos',
+	'PRUNE_STICKY'			=> 'Purgar notas',
 	'PRUNE_SUCCESS'			=> 'Foros purgados correctamente.',
 
 	'TOPICS_PRUNED'			=> 'Temas purgados',
 ));
-
-?>

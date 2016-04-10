@@ -1,34 +1,13 @@
 <?php
 /**
 *
-* This program is the full and free Spanish (of Spain) phpBB 3.0 Translation.
-* Copyright (c) 2007 Huan Manwe for phpbb-es.com
+* This file is part of the phpBB Forum Software package.
 *
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @license GNU General Public License, version 2 (GPL-2.0)
 *
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*
-**/
-
-/**
-*
-* viewforum.php [Spanish [Es]]
-*
-* @package language
-* @copyright (c) 2007 phpBB Group. Modified by Huan Manwe for phpbb-es.com in 2007
-* @author 2007-11-26 - Traducido por Huan Manwe junto con phpbb-es.com (http://www.phpbb-es.com) basado en la version argentina hecha por larveando.com.ar ).
-* @author - ImagePack made by Xoom (webmaster of http://www.muchografico.com and colaborator of http://www.phpbb-es.com)
-* @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License
+* For full copyright and license information, please see
+* the docs/CREDITS.txt file.
 *
 */
 
@@ -66,9 +45,9 @@ $lang = array_merge($lang, array(
 	'FORUM_PERMISSIONS'		=> 'Permisos del foro',
 
 	'ICON_ANNOUNCEMENT'		=> 'Anuncio',
-	'ICON_STICKY'			=> 'Fijo',
+	'ICON_STICKY'			=> 'Nota',
 
-	'LOGIN_NOTIFY_FORUM'	=> 'Ha sido notificado sobre este foro, por favor identifíquese para verlo.',
+	'LOGIN_NOTIFY_FORUM'	=> 'Ha sido notificado sobre este foro, por favor, identifíquese para verlo.',
 
 	'MARK_TOPICS_READ'		=> 'Marcar temas como leídos',
 
@@ -88,8 +67,8 @@ $lang = array_merge($lang, array(
 	'UNREAD_POSTS_LOCKED'   => 'Mensajes sin leer [ Cerrado ]',
 
 	'VIEW_FORUM'			=> 'Ver foro',
-	'VIEW_FORUM_TOPIC'		=> '1 tema',
-	'VIEW_FORUM_TOPICS'		=> '%d temas',
+	'VIEW_FORUM_TOPICS'		=> array(
+		1	=> '%d tema',
+		2	=> '%d temas',
+	),
 ));
-
-?>

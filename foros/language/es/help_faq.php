@@ -1,38 +1,34 @@
 <?php
 /**
 *
-* This program is the full and free Spanish (of Spain) phpBB 3.0 Translation.
-* Copyright (c) 2007 Huan Manwe for phpbb-es.com
+* This file is part of the phpBB Forum Software package.
 *
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @license GNU General Public License, version 2 (GPL-2.0)
 *
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*
-**/
-
-/**
-*
-* help_faq.php [Spanish [Es]]
-*
-* Built with the FAQ Manager addon by EXreaction
-* http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=31&t=464
+* For full copyright and license information, please see
+* the docs/CREDITS.txt file.
 *
 */
 
+/**
+*/
 if (!defined('IN_PHPBB'))
 {
 	exit;
 }
+
+// DEVELOPERS PLEASE NOTE
+//
+// All language files should use UTF-8 as their encoding and the files must not contain a BOM.
+//
+// Placeholders can now contain order information, e.g. instead of
+// 'Page %s of %s' you can (and should) write 'Page %1$s of %2$s', this allows
+// translators to re-order the output of data while ensuring it remains correct
+//
+// You do not need this where single placeholders are used, e.g. 'Message %d' is fine
+// equally where a string contains only two placeholders which are used to wrap text
+// in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $help = array(
 	array(
@@ -40,32 +36,8 @@ $help = array(
 		1 => 'Problemas acerca de la identificación y el registro'
 	),
 	array(
-		0 => '¿Por qué no puedo identificarme?',
-		1 => 'Existen varias razones por lo cuál esto puede suceder. Primero, asegúrese de que su nombre de usuario y contraseña se encuentren escritos correctamente. Si lo están, comuníquese con La Administración para asegurarse de que no ha sido excluido. También es posible que el foro esté mal configurado por su dueño y/o tenga fallos en la programación, por lo que necesitaría ser reparado.'
-	),
-	array(
 		0 => '¿Por qué me tengo que registrar?',
-		1 => 'No está obligado a hacerlo, la decisión la toman los administradores y moderadores. En algunos casos necesitará registrarse para publicar temas y respuestas. Sin embargo, estar registrado le dará acceso a contenidos adicionales y/o ventajas que como usuario invitado no disfrutaría, como tener su imagen personalizada (avatar), mensajes privados, suscripción a grupos de usuarios, etc. Tan solo le tomará unos segundos. Es muy recomendable.'
-	),
-	array(
-		0 => '¿Por qué mi sesión de usuario expira automáticamente?',
-		1 => 'Si no activa la casilla <em>Entrar automáticamente</em> cuando ingresa al foro, sus datos se guardan en una cookie segura, que se elimina al salir de la página o al cabo de cierto tiempo. Esto previene que su cuenta pueda ser usada por otra persona. Para que el sistema le reconozca automáticamente solo marque la casilla al ingresar. No es recomendable si accede al foro desde un PC compartido, e.j. biblioteca, cyber-cafés, PC\'s de universidades, etc. Si no ve la casilla, significa que la administración del foro ha deshabilitado la opción.'
-	),
-	array(
-		0 => '¿Cómo evito que mi nombre de usuario aparezca en las listas de usuarios identificados?',
-		1 => 'Dentro del Panel de Control de Usuario, en "Preferencias de Foros", encontrará la opción <em>Ocultar mi estado de conexión</em>. Habilite la opción con <em>SI</em> y solamente será visto por administradores, moderadores y usted mismo. Será contabilizado como usuario oculto.'
-	),
-	array(
-		0 => '¡Perdí mi contraseña!',
-		1 => 'No se asuste, ¡calma! Si su contraseña no puede ser recuperada puede desactivarla o cambiarla. Visite la página de ingreso (login) y haga clic en <em>Olvidé mi contraseña</em>. Siga las instrucciones y estará identificado nuevamente en muy poco tiempo.'
-	),
-	array(
-		0 => 'Me he registrado ¡y no me puedo identificar!',
-		1 => 'Primero, verifique su nombre de usuario y contraseña. Si todo está correcto, hay dos posibles razones. Si el Sistema de Protección Infantil (APPCO) está activado y cuando se registró eligió la opción <em>Soy menor de 13 años</em> entonces tendrá que seguir algunas instrucciones que se le darán para activar la cuenta. Algunos foros disponen que las cuentas deben ser activadas, ya sea por usted mismo o por La Administración, antes de que pueda identificarse; esta información se le brindará al finalizar el proceso de registro. Si se le envió un e-mail, siga las instrucciones. Si no recibió ningún e-mail, seguramente la dirección de correo electrónico que proporcionó no es correcta o tal vez haya sido capturada por un filtro anti-spam. Si está seguro de que la dirección de e-mail que proporcionó es correcta, envíe un mensaje a La Administración.'
-	),
-	array(
-		0 => 'Hace un tiempo me registré, ¡pero ahora no puedo conectarme!',
-		1 => 'Es posible que la administración haya desactivado o borrado su cuenta por alguna razón. También, algunos foros periódicamente remueven sus usuarios que no publicaron mensajes por cierto periodo de tiempo para reducir el peso de la base de datos. Si es así, registrese de nuevo y participe de las discuciones.',
+		1 => 'No está obligado a hacerlo, la decisión la toman los Administradores y Moderadores. En algunos casos necesitará registrarse para publicar temas y respuestas. Sin embargo, estar registrado le dará acceso a contenidos adicionales y/o ventajas que como usuario invitado no disfrutaría, como tener su imagen personalizada (avatar), mensajes privados, suscripción a grupos de usuarios, etc. Tan solo le tomará unos segundos. Es muy recomendable.'
 	),
 	array(
 		0 => '¿Qué es COPPA? (APPCO)',
@@ -76,8 +48,28 @@ $help = array(
 		1 => 'Es posible que La Administración del sitio haya baneado su dirección IP o que el nombre de usuario con el que está intentando registrarse, esté deshabilitado. También puede estar deshabilitado el registro de nuevos usuarios. Póngase en contacto con La Administración del sitio.'
 	),
 	array(
+		0 => 'Me he registrado ¡y no me puedo identificar!',
+		1 => 'Primero, verifique su nombre de usuario y contraseña. Si todo está correcto, hay dos posibles razones. Si el Sistema de Protección Infantil (APPCO) está activado y cuando se registró eligió la opción <em>Soy menor de 13 años</em> entonces tendrá que seguir algunas instrucciones que se le darán para activar la cuenta. Algunos foros disponen que las cuentas deben ser activadas, ya sea por usted mismo o por La Administración, antes de que pueda identificarse; esta información se le brindará al finalizar el proceso de registro. Si se le envió un e-mail, siga las instrucciones. Si no recibió ningún e-mail, seguramente la dirección de correo electrónico que proporcionó no es correcta o tal vez haya sido capturada por un filtro anti-spam. Si está seguro de que la dirección de e-mail que proporcionó es correcta, envíe un mensaje a La Administración.'
+	),
+	array(
+		0 => '¿Por qué no puedo identificarme?',
+		1 => 'Existen varias razones por lo cuál esto puede suceder. Primero, asegúrese de que su nombre de usuario y contraseña se encuentren escritos correctamente. Si lo están, comuníquese con La Administración para asegurarse de que no ha sido excluido. También es posible que el foro esté mal configurado por su dueño y/o tenga fallos en la programación, por lo que necesitaría ser reparado.'
+	),
+	array(
+		0 => 'Hace un tiempo me registré, ¡pero ahora no puedo conectarme!',
+		1 => 'Es posible que la administración haya desactivado o borrado su cuenta por alguna razón. También, algunos foros periódicamente remueven sus usuarios que no publicaron mensajes por cierto periodo de tiempo para reducir el peso de la base de datos. Si es así, registrese de nuevo y participe de las discuciones.',
+	),
+	array(
+		0 => '¡Perdí mi contraseña!',
+		1 => 'No se asuste, ¡calma! Si su contraseña no puede ser recuperada puede desactivarla o cambiarla. Visite la página de ingreso (login) y haga clic en <em>Olvidé mi contraseña</em>. Siga las instrucciones y estará identificado nuevamente en muy poco tiempo.'
+	),
+	array(
+		0 => '¿Por qué mi sesión de usuario expira automáticamente?',
+		1 => 'Si no activa la casilla <em>Recordar</em> cuando ingresa al foro, sus datos se guardan en una cookie segura, que se elimina al salir de la página o al cabo de cierto tiempo. Esto previene que su cuenta pueda ser usada por otra persona. Para que el sistema le reconozca automáticamente solo marque la casilla al ingresar. No es recomendable si accede al foro desde un PC compartido, e.j. biblioteca, cyber-cafés, PC\'s de universidades, etc. Si no ve la casilla, significa que la administración del foro ha deshabilitado la opción.'
+	),
+	array(
 		0 => '¿Cuál es la función de "Borrar todas las cookies del Sitio"?',
-		1 => '"Borrar todas las cookies del Sitio" borra las cookies creadas por phpBB, las cuales le mantienen autorizado para acceder a determinados recursos del foro y estar identificado al mismo. También proveen funciones como leer el seguimiento de la navegación del foro por el usuario si la administración ha habilitado la opción. Si está teniendo problemas con el ingreso o salida del foro, borrar las cookies seguramente ayudará.'
+		1 => '"Borrar todas las cookies del Sitio" borra las cookies creadas por phpBB, las cuales le mantienen autorizado para acceder a determinados recursos del foro y estar identificado al mismo. Las cookies proveen funciones como leer el seguimiento de la navegación del foro por el usuario si la administración ha habilitado la opción. Si está teniendo problemas con el ingreso o salida del foro, borrar las cookies seguramente ayudará.'
 	),
 	array(
 		0 => '--',
@@ -85,7 +77,11 @@ $help = array(
 	),
 	array(
 		0 => '¿Cómo se puede cambiar mi configuración?',
-		1 => 'Si es un usuario registrado, todos sus datos y configuraciones están archivados en nuestra base de datos. Para modificarlos, visite el Panel de Control de Usuario; el enlace se encuentra en la parte superior de las páginas del foro. Este sistema le permitirá cambiar sus datos y preferencias.'
+		1 => 'Si es un usuario registrado, todos sus datos y configuraciones están archivados en nuestra base de datos. Para modificarlos, visite el Panel de Control de Usuario; haciendo clic en su nombre de usuario que se encuentra en la parte superior de las páginas del foro. Este sistema le permitirá cambiar sus datos y preferencias.',
+	),
+	array(
+		0 => '¿Cómo evito que mi nombre de usuario aparezca en las listas de usuarios conectados?',
+		1 => 'Desde su Panel de Control de Usuario, en "Preferencias de Foros", encontrará la opción <em>Ocultar mi estado de conexións</em>. Habilite esta opción y solamente será visto por Administradores, Moderadores y usted mismo. Se le contará como usuario oculto.'
 	),
 	array(
 		0 => '¡La hora en los foros no es correcta!',
@@ -93,15 +89,19 @@ $help = array(
 	),
 	array(
 		0 => 'Cambié la zona horaria en mi perfil, ¡pero la hora sigue siendo incorrecto!',
-		1 => 'Si está seguro de que de la zona horaria es correcta al igual que el horario de verano establecido, y la hora sigue siendo incorrecta, entonces la hora almacenada en el servidor es errónea. Por favor comuníquese con La Administración para corregir el problema.'
+		1 => 'Si está seguro de que de la zona horaria es correcta y la hora sigue siendo incorrecta, entonces la hora almacenada en el servidor es errónea. Por favor comuníquese con La Administración para corregir el problema.'
 	),
 	array(
 		0 => '¡Mi idioma no está en la lista!',
-		1 => 'Esto se puede deber a que la administración no ha instalado el paquete de su idioma para el foro o nadie ha creado una traducción. Pregúntele al administrador si puede instalar el paquete del idioma que necesita. Si el paquete no existe, siéntase libre de hacer una traducción. Puede encontrar más información en el sitio de phpBB (ver el enlace al final de la página).'
+		1 => 'Esto se puede deber a que la administración no ha instalado el paquete de su idioma para el foro o nadie ha creado una traducción. Pregúntele a un Administrador si puede instalar el paquete del idioma que necesita. Si el paquete no existe, siéntase libre de hacer una traducción. Puede encontrar más información en el sitio web de <a href="https://www.phpbb.com/">phpBB</a>&reg;',
 	),
 	array(
-		0 => '¿Cómo se puede poner una imagen debajo de mi nombre de usuario?',
-		1 => 'Hay dos imágenes que pueden aparecer debajo de su nombre de usuario cuando esté viendo los mensajes. Dependiendo de la plantilla que utilice el foro, la primera imagen está asociada a la posición (rank) del usuario, generalmente en forma de estrellas, bloques o puntos, indicando la cantidad de mensajes publicados por usted o su estatus dentro del foro. La segunda, usualmente una imagen más grande, es conocida como avatar y generalmente es única o personal para cada usuario. Es la administración quien decide si se pueden usar o no y en que tamaño y peso pueden ser publicadas. En caso de que no este disponible la opción de avatar, comuníquese con La Administración para que sea activada.'
+		0 => '¿Qué es la imagen al lado de mi nombre de usuario?',
+		1 => 'Hay dos imágenes que pueden aparecer debajo de su nombre de usuario cuando esté viendo los mensajes. Dependiendo de la plantilla que utilice el foro, la primera imagen está asociada a la posición (rank) del usuario, generalmente en forma de estrellas, bloques o puntos, indicando la cantidad de mensajes publicados por usted o su estatus dentro del foro. La segunda, usualmente una imagen más grande, es conocida como avatar y generalmente es única o personal para cada usuario.',
+	),
+	array(
+		0 => '¿Cómo puedo mostrar un avatar?',
+		1 => 'Desde su Panel de Control de Usuario, haga clic en  “Perfil” puede añadir un avatar utilizando uno de los siguientes cuatro métodos: Gravatar, Galería, Remoto o Subida. Es la administración quien decide si se pueden usar o no y en que tamaño y peso pueden ser publicadas. En caso de que no este disponible la opción de avatar, comuníquese con La Administración para que sea activada.',
 	),
 	array(
 		0 => '¿Cómo se puede cambiar mi rango?',
@@ -116,8 +116,8 @@ $help = array(
 		1 => 'Publicación de mensajes'
 	),
 	array(
-		0 => '¿Cómo se puede publicar un mensaje en el foro?',
-		1 => 'Para publicar un nuevo tema en el foro regístrate como miembro, haciendo clic en el enlace de registro, generalmente arriba de cada página. Seguramente necesite registrarse antes de poder publicar y responder. Abajo de cada foro encontrará una lista de acciones permitidas. Ejemplo: Puede publicar nuevos temas, Puede votar en las encuestas, etc.'
+		0 => '¿Cómo puedo crear un nuevo tema o enviar una respuesta?',
+		1 => 'Para publicar un nuevo tema, haga clic en "Nuevo tema". Para publicar una respuesta a un tema, haga clic en "Enviar respuesta". Seguramente necesite registrarse antes de poder publicar y responder. Abajo de cada foro encontrará una lista de acciones permitidas. Ejemplo: Puede publicar nuevos temas, Puede votar en las encuestas, etc.'
 	),
 	array(
 		0 => '¿Cómo se puede editar o borrar un mensaje?',
@@ -125,7 +125,7 @@ $help = array(
 	),
 	array(
 		0 => '¿Cómo se puede añadir una firma a mi mensaje?',
-		1 => 'Para añadir una firma a sus mensajes debe crearla en el Panel de Control de Usuario. Una vez creada, active la opción <em>Añadir firma</em> cuando publique un mensaje. Puede asignar una firma por defecto a todos sus mensajes activando la casilla correcta en su perfil. Para dejar de añadirla en los mensajes, debe desactivar la opción <em>Añadir firma</em> dentro del perfil.'
+		1 => 'Para añadir una firma a sus mensajes debe crearla en el Panel de Control de Usuario. Una vez creada, active la opción <em>Añadir firma</em> cuando publique un mensaje. Puede asignar una firma por defecto a todos sus mensajes activando la casilla correcta en su Panel de Control de Usuario. Para dejar de añadirla en los mensajes, debe desactivar la opción <em>Añadir firma</em> dentro del perfil.'
 	),
 	array(
 		0 => '¿Cómo creo una encuesta?',
@@ -149,7 +149,7 @@ $help = array(
 	),
 	array(
 		0 => '¿Por qué recibí una advertencia?',
-		1 => 'Los administradores de cada foro tienen su propio conjunto de reglas para su sitio. Si ha quebrantado alguna regla puede recibir una advertencia. Por favor recuerde que esta es una decisión de La Administración del foro, y el phpBB Group no tiene nada que ver con las advertencias dadas en este sitio. Comuníquese con La Administración del foro si no está seguro de porqué fue advertido.'
+		1 => 'Los administradores de cada foro tienen su propio conjunto de reglas para su sitio. Si ha quebrantado alguna regla puede recibir una advertencia. Por favor recuerde que esta es una decisión de La Administración del foro, y phpBB Limited no tiene nada que ver con las advertencias dadas en este sitio. Comuníquese con La Administración del foro si no está seguro de porqué fue advertido.'
 	),
 	array(
 		0 => '¿Cómo se puede reportar un mensaje a un moderador?',
@@ -173,7 +173,7 @@ $help = array(
 	),
 	array(
 		0 => '¿Qué es el código BBCode?',
-		1 => 'BBcode es una implementación especial de HTML, ofrece un gran control de formato de los objetos particulares de las publicaciones. El uso de BBCode debe ser habilitado por la administración, pero también puede ser deshabilitado del formulario de publicación de mensajes. BBCode asimismo es similar en estilo al HTML, pero las etiquetas se encuentran encerrados entre corchetes [ y ] en lugar de < y >. Para más información, lea el manual de BBCode. El enlace aparece cada vez que va a publicar un mensaje.'
+		1 => 'BBcode es una implementación especial de HTML, ofrece un gran control de formato de los objetos particulares de las publicaciones. El uso de BBCode debe ser habilitado por la administración, pero también puede ser deshabilitado del formulario de publicación de mensajes. BBCode asimismo es similar en estilo al HTML, pero las etiquetas se encuentran encerrados entre corchetes [ y ] en lugar de &lt; y &gt;. Para más información, lea el manual de BBCode. El enlace aparece cada vez que va a publicar un mensaje.'
 	),
 	array(
 		0 => '¿Puedo usar HTML?',
@@ -258,7 +258,7 @@ $help = array(
 	),
 	array(
 		0 => '¡Recibo mensajes privados no deseados!',
-		1 => 'Si está recibiendo mensajes maliciosos u ofensivos de un usuario en particular, puede bloquearlo para que no le pueda enviar mensajes, dentro de las opciones del Panel de Control de Usuario o comunicarlo a La Administración.'
+		1 => 'Si está recibiendo mensajes maliciosos u ofensivos de un usuario en particular, puede bloquearlo para que no le pueda enviar mensajes dentro de las opciones del Panel de Control de Usuario, puede usar el botón para informar o reportar dichos mensajes a los Moderadores, o comunicarlo a La Administración.'
 	),
 	array(
 		0 => '¡Recibí spam o correos maliciosos de alguien en este foro!',
@@ -286,7 +286,7 @@ $help = array(
 	),
 	array(
 		0 => '¿Por qué mi búsqueda me devuelve ningún resultado?',
-		1 => 'Probablemente su búsqueda fue muy general e incluye muchos términos comunes que no son indexados por phpBB3. Sea más específico y utilice las opciones disponibles en la búsqueda avanzada.'
+		1 => 'Probablemente su búsqueda fue muy general e incluye muchos términos comunes que no son indexados por phpBB. Sea más específico y utilice las opciones disponibles en la búsqueda avanzada.'
 	),
 	array(
 		0 => '¿Por qué mi búsqueda me devuelve una página en blanco?',
@@ -298,19 +298,23 @@ $help = array(
 	),
 	array(
 		0 => '¿Como se puede encontrar mis propios mensajes y temas?',
-		1 => 'Puede encontrar sus mensajes haciendo clic en  "Mostrar sus mensajes" en el Panel de Control de Usuario o a través de su propio perfil. Para buscar sus temas, utilice la página de búsqueda avanzada y complete las opciones apropiadas.'
+		1 => 'Puede encontrar sus mensajes haciendo clic en  "Mostrar sus mensajes" en el Panel de Control de Usuario o haciendo clic en el enlace "Mostrar sus mensajes" a través de su propio página de perfil, o haciendo clic en el menú "Enlaces rápidos" en la parte superior del foro. Para buscar sus temas, utilice la página de búsqueda avanzada y complete las opciones apropiadas.',
 	),
 	array(
 		0 => '--',
-		1 => 'Suscripción y Añadido de temas a Favoritos'
+		1 => 'Suscripciones y Favoritos',
 	),
 	array(
 		0 => '¿Cuál es la diferencia entre añadir como Favorito y suscribirme a un tema?',
-		1 => 'Añadir un tema como Favorito en phpBB3 es como Añadir un sitio como Favorito en su navegador. No se le avisa cuando hay una actualización o respuesta, pero puede seguir visitando el tema para ver las modificaciones más tarde. Al suscribirse, a diferencia de añadir a Favoritos, se le avisará cuando haya actualizaciones en los temas y foros que haya seleccionado.'
+		1 => 'En phpBB 3.0, los temas Favoritos trabajaron mucho como marcadores para el navegador web. Usted no era alertado cuando había una actualización. A partir de phpBB 3.1, los Favoritos son más como suscribirse a un tema. Usted puede ser notificado cuando un tema Favorito se actualiza. Al suscribirte, sin embargo, se le avisará de que hay una actualización de un tema, o foro en el propio foro. Las opciones de notificación para los Favoritos y las suscripciones se pueden configurar en el Panel de Control de Usuario, en "Preferencias de Foros".',
 	),
 	array(
-		0 => '¿Cómo me suscribo a un foro o tema específico?',
-		1 => 'Para suscribirse a un foro en especial, debe hacer clic en el enlace "Suscribir Foro". Para suscribirse a un tema, debe activar la casilla "Suscribir" cuando envía una respuesta al mismo, o hacer clic en el enlace "Suscribir tema".'
+		0 => '¿Cómo marcar Favoritos o suscribirse a temas específicos?',
+		1 => 'Puede marcar o suscribirse a un tema específico haciendo clic en el enlace correspondiente en el menú "Herramientas de Tema", ubicado cerca de la parte superior e inferior de un tema de discusión.<br />Respondiendo a un tema con la opción marcada de "Notificarme cuando se publique una respuesta" también le suscribe a dicho tema.',
+	),
+	array(
+		0 => '¿Cómo me suscribo a un foro específico?',
+		1 => 'Para suscribirse a un foro en especial, debe hacer clic en el enlace "Suscribir Foro".',
 	),
 	array(
 		0 => '¿Cómo borro mis suscripciones?',
@@ -330,20 +334,22 @@ $help = array(
 	),
 	array(
 		0 => '--',
-		1 => 'Acerca de phpBB3'
+		1 => 'Acerca de phpBB'
 	),
 	array(
 		0 => '¿Quién programó este foro?',
-		1 => 'Esta aplicación (en su forma original) es desarrollada, publicada y contiene derechos de autor pertenecientes a <a href="https://www.phpbb.com/">phpBB Group</a>. Está hecho bajo la GNU (Licencia Pública General) y es de libre distribución. Visite el enlace para más detalles.'
+		1 => 'Esta aplicación (en su forma original) es desarrollada, publicada y contiene derechos de autor pertenecientes a <a href="https://www.phpbb.com/">phpBB Limited</a>. Está hecho bajo la GNU (Licencia Pública General) versión 2 (GPL-2.0) y es de libre distribución. Vea <a href="https://www.phpbb.com/about/">About phpBB</a> para más detalles.',
 	),
 	array(
 		0 => '¿Por qué este foro no tiene tal cosa?',
- 		1 => 'Este foro fue escrito y licenciado a través de phpBB Group. Si usted cree que se debe añadir alguna característica por favor visite <a href="https://www.phpbb.com/ideas/">Centro de phpBB Ideas</a> (en Inglés), donde se puede votar en ideas existentes o sugerir nuevas características.'
+ 		1 => 'Este foro fue escrito y licenciado a través de phpBB Limited. Si usted cree que se debe añadir alguna característica por favor visite <a href="https://www.phpbb.com/ideas/">Centro de phpBB Ideas</a> (en Inglés), donde se puede votar en ideas existentes o sugerir nuevas características.'
 	),
 	array(
 		0 => '¿Con quién se puede contactar acerca de abusos o usos ilegales relacionados con este foro?',
-		1 => 'Cada uno de los administradores que figuran en la lista del grupo donde dice "El Equipo" es un contacto apropiado para enviar sus quejas. Si así no obtiene respuesta debería tratar de contactar con el dueño del dominio (efectúe una <a href="http://www.google.com/search?q=whois">búsqueda whois</a>) o, si este foro tiene correo sobre un dominio gratuito (Yahoo!, gmail.com, hotmail.com, etc.), al departamento o administración de abusos de ese servicio. Por favor, tenga en cuenta que el Grupo phpBB <strong>carece de cualquier tipo de control</strong> y no puede ser de ninguna manera responsable sobre cómo, dónde o por quién es usado este sistema de foros. No tiene ningún sentido contactar con el Grupo phpBB en relación a asuntos legales (difamación, responsabilidad, deformación de comentarios, etc.) que no sean con respecto al sitio phpbb.com o la discreción misma del software phpBB. Si envia un correo al Grupo phpBB <strong>respecto del uso de terceras partes</strong> de este software esté dispuesto a recibir una respuesta cortante o directamente no recibir respuesta.'
-	)
+		1 => 'Cada uno de los administradores que figuran en la lista del grupo donde dice "El Equipo" es un contacto apropiado para enviar sus quejas. Si así no obtiene respuesta debería tratar de contactar con el dueño del dominio (efectúe una <a href="http://www.google.com/search?q=whois">búsqueda whois</a>) o, si este foro tiene correo sobre un dominio gratuito (Yahoo!, gmail.com, hotmail.com, etc.), al departamento o administración de abusos de ese servicio. Por favor, tenga en cuenta que phpBB Limited <strong>carece de cualquier tipo de control</strong> y no puede ser de ninguna manera responsable sobre cómo, dónde o por quién es usado este sistema de foros. No tiene ningún sentido contactar con phpBB Limited en relación a asuntos legales (difamación, responsabilidad, deformación de comentarios, etc.) que no sean con respecto al sitio phpbb.com o la discreción misma del software phpBB. Si envia un correo a phpBB Limited <strong>respecto del uso de terceras partes</strong> de este software esté dispuesto a recibir una respuesta cortante o directamente no recibir respuesta.'
+	),
+	array(
+		0 => '¿Cómo puedo ponerme en contacto con un Administrador?',
+		1 => 'Todos los usuarios del foro pueden usar el formulario “Contáctenos”, si está opción ha sido habilitada por el Administrador del foro.<br />Los miembros del foro también pueden usar el enlace "El equipo".',
+	),
 );
-
-?>

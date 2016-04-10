@@ -4,12 +4,11 @@ Si este mensaje es spam, contiene comentarios abusivos o que considere ofensivos
 
 {CONTACT_EMAIL}
 
-Adjunte este email completo (particularmente las cabeceras [headers]). 
+Adjunte este email completo (particularmente las cabeceras [headers]).
 
 Este es el mensaje enviado:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 {MESSAGE}
-
 
 {EMAIL_SIG}

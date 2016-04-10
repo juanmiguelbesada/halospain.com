@@ -1,268 +1,122 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}" lang="{S_USER_LANG}" xml:lang="{S_USER_LANG}">
+<html dir="{S_CONTENT_DIRECTION}" lang="{S_USER_LANG}">
 <head>
-
-<meta http-equiv="content-type" content="text/html; charset={S_CONTENT_ENCODING}" />
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 {META}
-<title>{SITENAME} - <!-- IF S_IN_MCP -->{L_MCP} - <!-- ELSEIF S_IN_UCP -->{L_UCP} - <!-- ENDIF -->{PAGE_TITLE}</title>
+<title><!-- IF UNREAD_NOTIFICATIONS_COUNT -->({UNREAD_NOTIFICATIONS_COUNT}) <!-- ENDIF --><!-- IF not S_VIEWTOPIC and not S_VIEWFORUM -->{SITENAME} - <!-- ENDIF --><!-- IF S_IN_MCP -->{L_MCP} - <!-- ELSEIF S_IN_UCP -->{L_UCP} - <!-- ENDIF -->{PAGE_TITLE}<!-- IF S_VIEWTOPIC or S_VIEWFORUM --> - {SITENAME}<!-- ENDIF --></title>
 
 <!-- IF S_ENABLE_FEEDS -->
-	<!-- IF S_ENABLE_FEEDS_OVERALL --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {SITENAME}" href="{U_FEED}" /><!-- ENDIF -->
-	<!-- IF S_ENABLE_FEEDS_NEWS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_NEWS}" href="{U_FEED}?mode=news" /><!-- ENDIF -->
-	<!-- IF S_ENABLE_FEEDS_FORUMS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_ALL_FORUMS}" href="{U_FEED}?mode=forums" /><!-- ENDIF -->
-	<!-- IF S_ENABLE_FEEDS_TOPICS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_TOPICS_NEW}" href="{U_FEED}?mode=topics" /><!-- ENDIF -->
-	<!-- IF S_ENABLE_FEEDS_TOPICS_ACTIVE --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_TOPICS_ACTIVE}" href="{U_FEED}?mode=topics_active" /><!-- ENDIF -->
-	<!-- IF S_ENABLE_FEEDS_FORUM and S_FORUM_ID --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FORUM} - {FORUM_NAME}" href="{U_FEED}?f={S_FORUM_ID}" /><!-- ENDIF -->
-	<!-- IF S_ENABLE_FEEDS_TOPIC and S_TOPIC_ID --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_TOPIC} - {TOPIC_TITLE}" href="{U_FEED}?f={S_FORUM_ID}&amp;t={S_TOPIC_ID}" /><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_OVERALL --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {SITENAME}" href="{U_FEED}"><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_NEWS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_NEWS}" href="{U_FEED}?mode=news"><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_FORUMS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_ALL_FORUMS}" href="{U_FEED}?mode=forums"><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_TOPICS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_TOPICS_NEW}" href="{U_FEED}?mode=topics"><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_TOPICS_ACTIVE --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_TOPICS_ACTIVE}" href="{U_FEED}?mode=topics_active"><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_FORUM and S_FORUM_ID --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FORUM} - {FORUM_NAME}" href="{U_FEED}?f={S_FORUM_ID}"><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_TOPIC and S_TOPIC_ID --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_TOPIC} - {TOPIC_TITLE}" href="{U_FEED}?f={S_FORUM_ID}&amp;t={S_TOPIC_ID}"><!-- ENDIF -->
+	<!-- EVENT overall_header_feeds -->
+<!-- ENDIF -->
+
+<!-- IF U_CANONICAL -->
+	<link rel="canonical" href="{U_CANONICAL}">
 <!-- ENDIF -->
 
 <!--
-	phpBB style name:	Quarto Asphalt v.1.0.0
-	Based on style:		prosilver (this is the default phpBB3 style)
-	Original author:	Tom Beddard ( http://www.subBlue.com/ )
-	Modified by: 		PixelGoose Studio
+	phpBB style name: Quarto v2.0.2
+	Based on style:   prosilver (this is the default phpBB3 style)
+	Original author:  Tom Beddard ( http://www.subBlue.com/ )
+	Modified by:      PixelGoose Studio ( http://pixelgoose.com/ )
 -->
 
-<script type="text/javascript">
-// <![CDATA[
-	var jump_page = '{LA_JUMP_PAGE}:';
-	var on_page = '{ON_PAGE}';
-	var per_page = '{PER_PAGE}';
-	var base_url = '{A_BASE_URL}';
-	var style_cookie = 'phpBBstyle';
-	var style_cookie_settings = '{A_COOKIE_SETTINGS}';
-	var onload_functions = new Array();
-	var onunload_functions = new Array();
-
-	<!-- IF S_USER_PM_POPUP and S_NEW_PM -->
-		var url = '{UA_POPUP_PM}';
-		window.open(url.replace(/&amp;/g, '&'), '_phpbbprivmsg', 'height=225,resizable=yes,scrollbars=yes, width=400');
-	<!-- ENDIF -->
-
-	/**
-	* Find a member
-	*/
-	function find_username(url)
-	{
-		popup(url, 760, 570, '_usersearch');
-		return false;
-	}
-
-	/**
-	* New function for handling multiple calls to window.onload and window.unload by pentapenguin
-	*/
-	window.onload = function()
-	{
-		for (var i = 0; i < onload_functions.length; i++)
-		{
-			eval(onload_functions[i]);
+<!-- IF S_ALLOW_CDN -->
+<script>
+	WebFontConfig = {
+		google: {
+			families: ['Open+Sans:600:cyrillic-ext,latin,greek-ext,greek,vietnamese,latin-ext,cyrillic']
 		}
 	};
 
-	window.onunload = function()
-	{
-		for (var i = 0; i < onunload_functions.length; i++)
-		{
-			eval(onunload_functions[i]);
-		}
-	};
-
-// ]]>
+	(function(d) {
+		var wf = d.createElement('script'), s = d.scripts[0];
+		wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+		wf.async = true;
+		s.parentNode.insertBefore(wf, s);
+	})(document);
 </script>
-<script type="text/javascript" src="{T_SUPER_TEMPLATE_PATH}/styleswitcher.js"></script>
-<script type="text/javascript" src="{T_SUPER_TEMPLATE_PATH}/forum_fn.js"></script>
-
-
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
-
-<link href="{T_THEME_PATH}/print.css" rel="stylesheet" type="text/css" media="print" title="printonly" />
-<link href="{T_STYLESHEET_LINK}" rel="stylesheet" type="text/css" media="screen, projection" />
-
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="{T_THEME_PATH}/font-awesome.min.css" />
-
-<!-- IM icons font -->
-<link rel="stylesheet" href="{T_THEME_PATH}/im-icons.css" />
-
-<!-- Quarto icons font -->
-<link rel="stylesheet" href="{T_THEME_PATH}/quarto-icons.css" />
-
-<!-- Google Webfonts -->
-<link href='//fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>
+<!-- ENDIF -->
+<link href="{T_STYLESHEET_LINK}" rel="stylesheet">
+<link href="{T_STYLESHEET_LANG_LINK}" rel="stylesheet">
+<link href="{T_THEME_PATH}/responsive.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet" media="all and (max-width: 700px)">
 
 <!-- IF S_CONTENT_DIRECTION eq 'rtl' -->
-	<link href="{T_THEME_PATH}/bidi.css" rel="stylesheet" type="text/css" media="screen, projection" />
+	<link href="{T_THEME_PATH}/bidi.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet">
 <!-- ENDIF -->
-<link rel="shortcut icon" href="{T_IMAGESET_PATH}/favicon.ico" />
-<!-- Google Analytics -->
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-6976864-1', 'halospain.com');
-    ga('require', 'displayfeatures');
-    ga('send', 'pageview');
-</script>
-    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53bd8efe58bb5481"></script>
+<!-- IF S_PLUPLOAD -->
+	<link href="{T_THEME_PATH}/plupload.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet">
+<!-- ENDIF -->
+
+<!--[if lte IE 9]>
+	<link href="{T_THEME_PATH}/tweaks.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet">
+<![endif]-->
+
+<!-- EVENT overall_header_head_append -->
+
+{$STYLESHEETS}
+
+<!-- EVENT overall_header_stylesheets_after -->
+
+<!-- Google Webfonts -->
+<link href='//fonts.googleapis.com/css?family=Noto+Sans:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+
 </head>
+<body id="phpbb" class="nojs notouch section-{SCRIPT_NAME} {S_CONTENT_DIRECTION} {BODY_CLASS}">
 
-<body id="phpbb" class="section-{SCRIPT_NAME} {S_CONTENT_DIRECTION}">
+<!-- EVENT overall_header_body_before -->
 
 <div id="wrap">
-
-	<!-- IF not S_IS_BOT and S_USER_LOGGED_IN -->
-	<ul class="responsive-user-menu clearfix">
-		<!-- IF U_RESTORE_PERMISSIONS -->
-		<li>
-			<a href="{U_RESTORE_PERMISSIONS}" class="link-restore-perm"><i class="fa fa-refresh fa-lg"></i>{L_RESTORE_PERMISSIONS}</a>
-		</li>
-		<!-- ENDIF -->
-		<li>
-			<a href="{U_PROFILE}" title="{L_PROFILE}" accesskey="e"><i class="icon-quarto-gear"></i><span>{L_PROFILE}</span></a>
-		</li>
-		<!-- IF S_DISPLAY_PM -->
-		<li>
-			<a href="{U_PRIVATEMSGS}" class="message-count">
-				<i class="icon-quarto-message"></i>
-				<strong class="message-count-balloon"></strong>
-				<span>{PRIVATE_MESSAGE_INFO}</span></a>
-		</li>
-		<!-- ENDIF -->
-		<!-- IF S_DISPLAY_SEARCH -->
-		<li>
-			<a href="{U_SEARCH_SELF}" title="{L_SEARCH_SELF}"><i class="icon-quarto-flag"></i><span>{L_SEARCH_SELF}</span></a>
-		</li>
-		<!-- ENDIF -->
-		<!-- IF not S_IS_BOT -->
-		<li>
-			<a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" accesskey="x"><i class="icon-quarto-unlocked"></i><span>{L_LOGIN_LOGOUT}</span></a>
-		</li>
-		<!-- ENDIF -->
-	</ul>
-	<!-- ENDIF -->
-	<!-- IF not S_USER_LOGGED_IN and not S_IS_BOT -->
-	<ul class="responsive-user-menu clearfix">
-		<!-- IF not S_USER_LOGGED_IN and S_REGISTER_ENABLED and not (S_SHOW_COPPA or S_REGISTRATION) -->
-		<li>
-			<a href="{U_REGISTER}" title="{L_REGISTER}"><i class="icon-quarto-register"></i>{L_REGISTER}</a>
-		</li>
-		<!-- ENDIF -->
-		<li class="login-link-responsive">
-			<a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" accesskey="x"><i class="icon-quarto-login"></i>{L_LOGIN_LOGOUT}</a>
-		</li>
-	</ul>
-	<!-- ENDIF -->
-
-	<a id="top" accesskey="t"></a>
+	<a id="top" class="anchor" accesskey="t"></a>
 	<div id="page-header">
-		<div class="headerbar clearfix">
+		<div class="headerbar" role="banner">
+			<div class="inner">
 
 			<div id="site-description">
-				<a href="{U_INDEX}" title="{L_INDEX}" id="logo">{SITE_LOGO_IMG}</a>
-				<!-- <h1>{SITENAME}</h1> -->
-				<!-- <p>{SITE_DESCRIPTION}</p> -->
+				<a id="logo" class="logo" href="<!-- IF U_SITE_HOME -->{U_SITE_HOME}<!-- ELSE -->{U_INDEX}<!-- ENDIF -->" title="<!-- IF U_SITE_HOME -->{L_SITE_HOME}<!-- ELSE -->{L_INDEX}<!-- ENDIF -->">{SITE_LOGO_IMG}</a>
+				<!-- <h1>{SITENAME}</h1>
+				<p>{SITE_DESCRIPTION}</p>-->
 				<p class="skiplink"><a href="#start_here">{L_SKIP}</a></p>
 			</div>
 
-            <!-- IF S_DISPLAY_SEARCH and not S_IN_SEARCH -->
-			<div id="search-box">
+			<!-- EVENT overall_header_searchbox_before -->
+			<!-- IF S_DISPLAY_SEARCH and not S_IN_SEARCH -->
+			<div id="search-box" class="search-box search-header" role="search">
 				<form action="{U_SEARCH}" method="get" id="search">
 				<fieldset>
-                	<div class="search-box-inner">
-                		<button type="submit" class="button2"><i class="icon-quarto-search"></i></button>
-                        <input name="keywords" id="keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" />
-                    </div>
-                    <a href="{U_SEARCH}" class="search-adv-link" title="{L_SEARCH_ADV_EXPLAIN}">{L_SEARCH_ADV}</a> {S_SEARCH_HIDDEN_FIELDS}
+					<input name="keywords" id="keywords" type="search" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search tiny" size="20" value="{SEARCH_WORDS}" placeholder="{L_SEARCH_MINI}" />
+					<button class="button icon-button search-icon" type="submit" title="{L_SEARCH}">{L_SEARCH}</button>
+					<a href="{U_SEARCH}" class="button icon-button search-adv-icon" title="{L_SEARCH_ADV}">{L_SEARCH_ADV}</a>
+					{S_SEARCH_HIDDEN_FIELDS}
 				</fieldset>
 				</form>
 			</div>
-            <!-- ENDIF -->	
-
-		</div>
-	</div>
-	
-	<div class="main-content-block">	
-
-	<div class="navbar">
-
-	<div class="navbar-main-nav">
-			<a class="toggleMenuButton" title="Menu" href="javascript:void(0);"></a>
-			<!-- IF not S_IS_BOT and S_USER_LOGGED_IN -->
-			<ul class="linklist rightside">
-				<li>
-					<!-- IF U_RESTORE_PERMISSIONS -->
-					<a href="{U_RESTORE_PERMISSIONS}" class="link-restore-perm"><i class="fa fa-refresh fa-lg"></i>{L_RESTORE_PERMISSIONS}</a>
-					<!-- ENDIF -->
-					<a href="{U_PROFILE}" title="{L_PROFILE}" accesskey="e"><i class="icon-quarto-gear"></i><span>{L_PROFILE}</span></a>
-						<!-- IF S_DISPLAY_PM --><a href="{U_PRIVATEMSGS}" class="message-count"><i class="icon-quarto-message"></i><strong class="message-count-balloon"></strong><span>{PRIVATE_MESSAGE_INFO}</span></a><!-- ENDIF -->
-					<!-- IF S_DISPLAY_SEARCH -->
-					<a href="{U_SEARCH_SELF}" title="{L_SEARCH_SELF}"><i class="icon-quarto-flag"></i><span>{L_SEARCH_SELF}</span></a>
-					<!-- ENDIF -->
-				</li>
-				<!-- IF not S_IS_BOT -->
-					<li><a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" accesskey="x"><i class="icon-quarto-unlocked"></i><span>{L_LOGIN_LOGOUT}</span></a></li>
-				<!-- ENDIF -->
-			</ul>
 			<!-- ENDIF -->
 
-			<!-- IF not S_USER_LOGGED_IN and not S_IS_BOT -->
-			<ul class="linklist rightside not-logged-in">
-				<!-- IF not S_USER_LOGGED_IN and S_REGISTER_ENABLED and not (S_SHOW_COPPA or S_REGISTRATION) -->
-				<li><a class="icon-quarto-register" href="{U_REGISTER}" title="{L_REGISTER}">{L_REGISTER}</a></li>
-				<!-- ENDIF -->
-				<li class="login-link-responsive"><a class="icon-quarto-login" href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" accesskey="x">{L_LOGIN_LOGOUT}</a></li>
-				<li><a href="#login-popup" name="login-popup" class="icon-quarto-login login-window" title="{L_LOGIN_LOGOUT}" accesskey="x">{L_LOGIN_LOGOUT}</a></li>
-			</ul>
-			<!-- ENDIF -->
-
-            <!-- IF S_DISPLAY_SEARCH and not S_IN_SEARCH -->
-				<div class="searchbox-responsive-outer">
-					<form action="{U_SEARCH}" method="get" class="searchbox-responsive">
-						<input name="keywords" id="keywords-responsive" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" onkeyup="buttonUp();" class="searchbox-responsive-input" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" />
-
-						<button type="submit" class="searchbox-responsive-submit"><i class="icon-quarto-search"></i></button>
-						<span class="searchbox-responsive-icon"><i class="icon-quarto-search"></i></span>
-					</form>
-				</div>
-            <!-- ENDIF -->	
-
-
-			<ul class="linklist leftside">
-				<li><a href="/">{L_HOME}</a></li>
-				<li><a href="/categorias/noticias">Noticias</a></li>
-				<li><a href="/categorias/articulos">Articulos</a></li>
-				<li class="active"><a href="{U_INDEX}">{L_FORUMS}</a></li>
-				<li><a href="/streams">Streams</a></li>
-				<li><a href="http://www.youtube.com/halospaintv" target="_blank">Halospain TV</a></li>
-			</ul>
+			</div>
 		</div>
-
-
-		<ul class="linklist navlinks">
-			<li id="breadcrumbs"><i class="fa fa-home grey"></i><a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --><i class="fa fa-caret-right grey"></i><a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks --></li>
-
-			<!-- IF U_EMAIL_TOPIC --><li class="rightside"><a href="{U_EMAIL_TOPIC}" title="{L_EMAIL_TOPIC}"><i class="fa fa-envelope-o fa-lg"></i></a></li><!-- ENDIF -->
-			<!-- IF U_EMAIL_PM --><li class="rightside"><a href="{U_EMAIL_PM}" title="{L_EMAIL_PM}"><i class="fa fa-envelope-o fa-lg"></i></a></li><!-- ENDIF -->
-			<!-- IF U_PRINT_TOPIC --><li class="rightside"><a href="{U_PRINT_TOPIC}" title="{L_PRINT_TOPIC}" accesskey="p"><i class="fa fa-print fa-lg"></i></a></li><!-- ENDIF -->
-			<!-- IF U_PRINT_PM --><li class="rightside"><a href="{U_PRINT_PM}" title="{L_PRINT_PM}" accesskey="p"><i class="fa fa-print fa-lg"></i></a></li><!-- ENDIF -->
-		</ul>
-
+		<!-- EVENT overall_header_navbar_before -->
+		<!-- INCLUDE navbar_header.html -->
 	</div>
 
-	<a id="start_here"></a>
-	<div id="page-body">
+	<!-- EVENT overall_header_page_body_before -->
+
+	<a id="start_here" class="anchor"></a>
+	<div id="page-body" role="main">
 		<!-- IF S_BOARD_DISABLED and S_USER_LOGGED_IN and (U_MCP or U_ACP) -->
 		<div id="information" class="rules">
 			<div class="inner">
-				<strong>{L_INFORMATION}:</strong> {L_BOARD_DISABLED}
+				<strong>{L_INFORMATION}{L_COLON}</strong> {L_BOARD_DISABLED}
 			</div>
 		</div>
 		<!-- ENDIF -->
+
+		<!-- EVENT overall_header_content_before -->

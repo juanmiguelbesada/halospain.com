@@ -4,38 +4,38 @@ Subject: Bienvenido a "{SITENAME}"
 
 De conformidad con COPPA, tu cuenta permanece inactiva.
 
-Por favor imprime este mensaje y que tu padre/madre o tutor legal lo firme y ponga la fecha. DespuÈs envÌalo por fax a:
+Por favor imprime este mensaje y que tu padre/madre o tutor legal lo firme y ponga la fecha. Despu√©s env√≠alo por fax a:
 
 {FAX_INFO}
 
-O m·ndalo por correo a:
+O m√°ndalo por correo a:
 
 {MAIL_INFO}
 
------------------------------- CORTE POR AQUÕ ------------------------------
+------------------------------ CORTE POR AQU√ç ------------------------------
 Permiso para participar en "{SITENAME}" - {U_BOARD}
 
 Nombre de usuario: {USERNAME}
 E-mail: {EMAIL_ADDRESS}
 
-HE COMPROBADO LA INFORMACI”N PROVISTA POR MI HIJO/A Y CONCEDO PERMISO A "{SITENAME}" PARA QUE GUARDE ESTA INFORMACI”N. 
-ENTIENDO QUE ESTA INFORMACI”N PUEDE SER MODIFICADA EN CUALQUIER MOMENTO CON SOLO INTRODUCIR UNA CONTRASE—A. 
-ENTIENDO QUE PUEDO SOLICITAR QUE ESTA INFORMACI”N SEA ELIMINADA DE "{SITENAME}" EN CUALQUIER MOMENTO.
+HE COMPROBADO LA INFORMACI√ìN PROVISTA POR MI HIJO/A Y CONCEDO PERMISO A "{SITENAME}" PARA QUE GUARDE ESTA INFORMACI√ìN.
+ENTIENDO QUE ESTA INFORMACI√ìN PUEDE SER MODIFICADA EN CUALQUIER MOMENTO CON SOLO INTRODUCIR UNA CONTRASE√ëA.
+ENTIENDO QUE PUEDO SOLICITAR QUE ESTA INFORMACI√ìN SEA ELIMINADA DE "{SITENAME}" EN CUALQUIER MOMENTO.
 
 
 Padre, madre o tutor(a) legal 
-(escriba su nombre aquÌ): _____________________
+(escriba su nombre aqu√≠): _____________________
 
-(Firme aquÌ): __________________ 
+(Firme aqu√≠): __________________ 
 
 Fecha: _______________
 
------------------------------- CORTE POR AQUÕ ------------------------------
+------------------------------ CORTE POR AQU√ç ------------------------------
 
 
-Una vez que el/la administrador(a) haya recibido el formulario de arriba vÌa fax o correo tradicional tu cuenta ser· activada.
+Una vez que el/la administrador(a) haya recibido el formulario de arriba v√≠a fax o correo tradicional tu cuenta ser√° activada.
 
-Tu contraseÒa ha sido guardada de forma segura en nuestra base de datos y no puede ser recuperada. En caso de que sea olvidada, podr·s restaurarla usando la direcciÛn de email asociada a tu cuenta.
+Tu contrase√±a ha sido guardada de forma segura en nuestra base de datos y no puede ser recuperada. En caso de que sea olvidada, podr√°s restaurarla usando la direcci√≥n de email asociada a tu cuenta.
 
 Gracias por registrarte.
 

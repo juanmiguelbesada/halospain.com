@@ -1,34 +1,14 @@
 <?php
 /**
 *
-* This program is the full and free Spanish (of Spain) phpBB 3.0 Translation.
-* Copyright (c) 2007 Huan Manwe for phpbb-es.com
+* This file is part of the phpBB Forum Software package.
 *
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @license GNU General Public License, version 2 (GPL-2.0)
 *
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
+* For full copyright and license information, please see
+* the docs/CREDITS.txt file.
 *
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*
-**/
-
-/**
-* acp_permissions_phpbb.php [Spanish [Es]]
-*
-* @package language
-* @version $Id: $
-* @copyright (c) 2007 phpBB Group. Modified by Huan Manwe for phpbb-es.com in 2007
-* @author 2007-11-26 - Traducido por Huan Manwe junto con phpbb-es.com (http://www.phpbb-es.com) basado en la version argentina hecha por larveando.com.ar ).
-* @author - ImagePack made by Xoom (webmaster of http://www.muchografico.com and colaborator of http://www.phpbb-es.com)
-* @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License
 */
 
 /**
@@ -57,209 +37,176 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 /**
-*	MODDERS PLEASE NOTE
-*	
-*	You are able to put your permission sets into a separate file too by
-*	prefixing the new file with permissions_ and putting it into the acp
-*	language folder.
+*	EXTENSION-DEVELOPERS PLEASE NOTE
 *
-*	An example of how the file could look like:
-*
-*	<code>
-*
-*	if (empty($lang) || !is_array($lang))
-*	{
-*		$lang = array();
-*	}
-*
-*	// Adding new category
-*	$lang['permission_cat']['bugs'] = 'Bugs';
-*
-*	// Adding new permission set
-*	$lang['permission_type']['bug_'] = 'Bug Permissions';
-*
-*	// Adding the permissions
-*	$lang = array_merge($lang, array(
-*		'acl_bug_view'		=> array('lang' => 'Can view bug reports', 'cat' => 'bugs'),
-*		'acl_bug_post'		=> array('lang' => 'Can post bugs', 'cat' => 'post'), // Using a phpBB category here
-*	));
-*
-*	</code>
+*	You are able to put your permission sets into your extension.
+*	The permissions logic should be added via the 'core.permissions' event.
+*	You can easily add new permission categories, types and permissions, by
+*	simply merging them into the respective arrays.
+*	The respective language strings should be added into a language file, that
+*	start with 'permissions_', so they are automatically loaded within the ACP.
 */
 
-// Define categories and permission types
 $lang = array_merge($lang, array(
-	'permission_cat'	=> array(
-		'actions'	=> 'Acciones',
-		'content'	=> 'Contenido',
-		'forums'	=> 'Foros',
-		'misc'		=> 'Varios',
-		'permissions'	=> 'Permisos',
-		'pm'		=> 'Mensajes privados',
-		'polls'		=> 'Encuestas',
-		'post'		=> 'Mensaje',
-		'post_actions'	=> 'Acciones en mensaje',
-		'posting'	=> 'Envío',
-		'profile'	=> 'Perfil',
-		'settings'	=> 'Configuración',
-		'topic_actions'	=> 'Acciones en temas',
-		'user_group'	=> 'Usuarios &amp; Grupos',
-	),
-
-	// With defining 'global' here we are able to specify what is printed out if the permission is within the global scope.
-	'permission_type'	=> array(
-		'u_'		=> 'Permisos de usuario',
-		'a_'		=> 'Permisos de Admin',
-		'm_'		=> 'Permisos de moderador',
-		'f_'		=> 'Permisos de Foro',
-		'global'	=> array(
-			'm_'	=> 'Permisos moderador global',
-		),
-	),
+	'ACL_CAT_ACTIONS'		=> 'Acciones',
+	'ACL_CAT_CONTENT'		=> 'Contenido',
+	'ACL_CAT_FORUMS'		=> 'Foros',
+	'ACL_CAT_MISC'			=> 'Varios',
+	'ACL_CAT_PERMISSIONS'	=> 'Permisos',
+	'ACL_CAT_PM'			=> 'Mensajes privados',
+	'ACL_CAT_POLLS'			=> 'Encuestas',
+	'ACL_CAT_POST'			=> 'Mensaje',
+	'ACL_CAT_POST_ACTIONS'	=> 'Acciones en mensaje',
+	'ACL_CAT_POSTING'		=> 'Envío',
+	'ACL_CAT_PROFILE'		=> 'Perfil',
+	'ACL_CAT_SETTINGS'		=> 'Ajustes',
+	'ACL_CAT_TOPIC_ACTIONS'	=> 'Acciones en temas',
+	'ACL_CAT_USER_GROUP'	=> 'Usuarios / Grupos',
 ));
 
 // User Permissions
 $lang = array_merge($lang, array(
-	'acl_u_viewprofile'	=> array('lang'	=> 'Puede ver perfiles','cat'	=> 'profile',),
-	'acl_u_chgname'		=> array('lang'	=> 'Puede cambiar nombre de usuario','cat'	=> 'profile',),
-	'acl_u_chgpasswd'	=> array('lang'	=> 'Puede cambiar contraseña','cat'	=> 'profile',),
-	'acl_u_chgemail'	=> array('lang'	=> 'Puede cambiar email','cat'	=> 'profile',),
-	'acl_u_chgavatar'	=> array('lang'	=> 'Puede cambiar avatar','cat'	=> 'profile',),'acl_u_chggrp'	=> array('lang'	=> 'Puede cambiar grupo de usuarios por defecto','cat'	=> 'profile',),
-	'acl_u_chggrp'		=> array('lang' => 'Puede cambiar el grupo de usuarios por defecto', 'cat' => 'profile'),
+	'ACL_U_VIEWPROFILE'	=> 'Puede ver perfiles, lista de usuarios y lista de conectados',
+	'ACL_U_CHGNAME'		=> 'Puede cambiar de nombre de usuario',
+	'ACL_U_CHGPASSWD'	=> 'Puede cambiar de contraseña',
+	'ACL_U_CHGEMAIL'	=> 'Puede cambiar de dirección de correo electrónico',
+	'ACL_U_CHGAVATAR'	=> 'Puede cambiar de avatar',
+	'ACL_U_CHGGRP'		=> 'Puede cambiar el grupo de usuarios por defecto',
+	'ACL_U_CHGPROFILEINFO'	=> 'Puede cambiar la información del campo de perfil',
 
-	'acl_u_attach'		=> array('lang'	=> 'Puede adjuntar archivos','cat'	=> 'post',),
-	'acl_u_download'	=> array('lang'	=> 'Puede descargar archivos','cat'	=> 'post',),
-	'acl_u_savedrafts'	=> array('lang'	=> 'Puede guardar borradores','cat'	=> 'post',),
-	'acl_u_chgcensors'	=> array('lang'	=> 'Puede deshabilitar censura','cat'	=> 'post',),
-	'acl_u_sig'			=> array('lang'	=> 'Puede usar firma','cat'	=> 'post',),
+	'ACL_U_ATTACH'		=> 'Puede adjuntar archivos',
+	'ACL_U_DOWNLOAD'	=> 'Puede descargar archivos',
+	'ACL_U_SAVEDRAFTS'	=> 'Puede guardar borradores',
+	'ACL_U_CHGCENSORS'	=> 'Puede desactivar la censura de palabras',
+	'ACL_U_SIG'			=> 'Puede usar firma',
 
-	'acl_u_sendpm'		=> array('lang'	=> 'Puede enviar mensajes privados','cat'	=> 'pm',),
-	'acl_u_masspm'		=> array('lang'	=> 'Puede enviar mensajes a múltiples usuarios','cat'	=> 'pm',),
-	'acl_u_masspm_group'	=> array('lang' => 'Puede enviar mensajes a grupos', 'cat' => 'pm'),
-	'acl_u_readpm'		=> array('lang'	=> 'Puede leer mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_edit'		=> array('lang'	=> 'Puede editar sus mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_delete'	=> array('lang'	=> 'Puede borrar mensajes privados de su carpeta','cat'	=> 'pm',),
-	'acl_u_pm_forward'	=> array('lang'	=> 'Puede reenviar mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_emailpm'	=> array('lang'	=> 'Puede enviar mp por email','cat'	=> 'pm',),
-	'acl_u_pm_printpm'	=> array('lang'	=> 'Puede imprimir mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_attach'	=> array('lang'	=> 'Puede adjuntar archivos en mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_download'	=> array('lang'	=> 'Puede descargar archivos en mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_bbcode'	=> array('lang'	=> 'Puede usar BBCode en mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_smilies'	=> array('lang'	=> 'Puede usar emoticonos en mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_img'		=> array('lang'	=> 'Puede usar imágenes en mensajes privados','cat'	=> 'pm',),
-	'acl_u_pm_flash'	=> array('lang'	=> 'Puede usar Flash en mensajes privados','cat'	=> 'pm',),
+	'ACL_U_SENDPM'		=> 'Puede enviar mensajes privados',
+	'ACL_U_MASSPM'		=> 'Puede enviar mensaje privados a múltiples usuarios',
+	'ACL_U_MASSPM_GROUP'=> 'Puede enviar mensajes privados a grupos',
+	'ACL_U_READPM'		=> 'Puede leer mensajes privados',
+	'ACL_U_PM_EDIT'		=> 'Puede editar sus mensajes privados',
+	'ACL_U_PM_DELETE'	=> 'Puede borrar mensajes privados de su carpeta',
+	'ACL_U_PM_FORWARD'	=> 'Puede reenviar mensajes privados',
+	'ACL_U_PM_EMAILPM'	=> 'Puede enviar mensaje privado por email',
+	'ACL_U_PM_PRINTPM'	=> 'Puede imprimir mensajes privados',
+	'ACL_U_PM_ATTACH'	=> 'Puede adjuntar archivos en mensajes privados',
+	'ACL_U_PM_DOWNLOAD'	=> 'Puede descargar archivos en mensajes privados',
+	'ACL_U_PM_BBCODE'	=> 'Puede usar BBCode en mensajes privados',
+	'ACL_U_PM_SMILIES'	=> 'Puede usar emoticonos en mensajes privados',
+	'ACL_U_PM_IMG'		=> 'Puede usar la etiqueta BBCode [img] en mensajes privados',
+	'ACL_U_PM_FLASH'	=> 'Puede usar etiqueta BBCode [flash] en mensajes privados',
 
-	'acl_u_sendemail'	=> array('lang'	=> 'Puede enviar emails','cat'	=> 'misc',),
-	'acl_u_sendim'		=> array('lang'	=> 'Puede enviar mensajes instantáneos','cat'	=> 'misc',),
-	'acl_u_ignoreflood'	=> array('lang'	=> 'Puede ignorar límite de saturación','cat'	=> 'misc',),
-	'acl_u_hideonline'	=> array('lang'	=> 'Puede ocultar estado de conexión','cat'	=> 'misc',),
-	'acl_u_viewonline'	=> array('lang'	=> 'Puede ver online','cat'	=> 'misc',),
-	'acl_u_search'		=> array('lang'	=> 'Puede hacer búsquedas','cat'	=> 'misc',),
+	'ACL_U_SENDEMAIL'	=> 'Puede enviar emails',
+	'ACL_U_SENDIM'		=> 'Puede enviar mensajes instantáneos',
+	'ACL_U_IGNOREFLOOD'	=> 'Puede ignorar límite de saturación',
+	'ACL_U_HIDEONLINE'	=> 'Puede ocultar estado de conexión',
+	'ACL_U_VIEWONLINE'	=> 'Puede ver usuarios ocultos conectados',
+	'ACL_U_SEARCH'		=> 'Puede hacer búsquedas',
 ));
 
 // Forum Permissions
 $lang = array_merge($lang, array(
-	'acl_f_list'		=> array('lang'	=> 'Puede ver foros','cat'	=> 'post',),
-	'acl_f_read'		=> array('lang'	=> 'Puede leer foros','cat'	=> 'post',),
-	'acl_f_post'		=> array('lang'	=> 'Puede iniciar nuevos temas','cat'	=> 'post',),
-	'acl_f_reply'		=> array('lang'	=> 'Puede responder temas','cat'	=> 'post',),
-	'acl_f_icons'		=> array('lang'	=> 'Puede usar emoticonos en mensajes','cat'	=> 'post',),
-	'acl_f_announce'	=> array('lang'	=> 'Puede publicar anuncios','cat'	=> 'post',),
-	'acl_f_sticky'		=> array('lang'	=> 'Puede publicar fijos','cat'	=> 'post',),
+	'ACL_F_LIST'		=> 'Puede ver foros',
+	'ACL_F_READ'		=> 'Puede leer foros',
+	'ACL_F_SEARCH'		=> 'Puede buscar en foros',
+	'ACL_F_SUBSCRIBE'	=> 'Puede suscribir a foros',
+	'ACL_F_PRINT'		=> 'Puede imprimir temas',
+	'ACL_F_EMAIL'		=> 'Puede enviar temas por email',
+	'ACL_F_BUMP'		=> 'Puede activar temas',
+	'ACL_F_USER_LOCK'	=> 'Puede cerrar sus temas',
+	'ACL_F_DOWNLOAD'	=> 'Puede descargar archivos',
+	'ACL_F_REPORT'		=> 'Puede reportar mensajes',
 
-	'acl_f_poll'		=> array('lang'	=> 'Puede hacer encuestas','cat'	=> 'polls',),
-	'acl_f_vote'		=> array('lang'	=> 'Puede votar en encuestas','cat'	=> 'polls',),
-	'acl_f_votechg'		=> array('lang'	=> 'Puede cambiar una encuesta existente','cat'	=> 'polls',),
+	'ACL_F_POST'		=> 'Puede iniciar nuevos temas',
+	'ACL_F_STICKY'		=> 'Puede publicar notas',
+	'ACL_F_ANNOUNCE'	=> 'Puede publicar anuncios',
+	'ACL_F_REPLY'		=> 'Puede responder temas',
+	'ACL_F_EDIT'		=> 'Puede editar sus mensajes',
+	'ACL_F_DELETE'		=> 'Puede borrar permanentemente sus propios mensajes',
+	'ACL_F_SOFTDELETE'	=> 'Puede borrar sus mensajes [Soft]<br /><em>Moderadores, que tienen permiso de aprobar mensajes, pueden restaurar mensajes borrados.</em>',
+	'ACL_F_IGNOREFLOOD' => 'Puede ignorar límite de saturación',
+	'ACL_F_POSTCOUNT'	=> 'Incrementar cantidad de mensajes<br /><em>Por favor, obsérvese que este parámetro solo afecta a mensajes nuevos.</em>',
+	'ACL_F_NOAPPROVE'	=> 'Puede publicar sin aprobación',
 
-	'acl_f_attach'		=> array('lang'	=> 'Puede adjuntar archivos','cat'	=> 'content',),
-	'acl_f_download'	=> array('lang'	=> 'Puede descargar archivos','cat'	=> 'content',),
-	'acl_f_sigs'		=> array('lang'	=> 'Puede usar firmas','cat'	=> 'content',),
-	'acl_f_bbcode'		=> array('lang'	=> 'Puede usar BBCode','cat'	=> 'content',),
-	'acl_f_smilies'		=> array('lang'	=> 'Puede usar emoticonos','cat'	=> 'content',),
-	'acl_f_img'		=> array('lang'	=> 'Puede usar la etiqueta BBCode [img]','cat'	=> 'content',),
-	'acl_f_flash'		=> array('lang'	=> 'Puede usar la etiqueta BBCode [flash]','cat'	=> 'content',),
+	'ACL_F_ATTACH'		=> 'Puede adjuntar archivos',
+	'ACL_F_ICONS'		=> 'Puede usar iconos de tema/mensaje',
+	'ACL_F_BBCODE'		=> 'Puede usar BBCode',
+	'ACL_F_FLASH'		=> 'Puede usar BBCode [flash]',
+	'ACL_F_IMG'			=> 'Puede usar BBCode [img]',
+	'ACL_F_SIGS'		=> 'Puede usar firmas',
+	'ACL_F_SMILIES'		=> 'Puede usar emoticonos',
 
-	'acl_f_edit'		=> array('lang'	=> 'Puede editar sus mensajes','cat'	=> 'actions',),
-	'acl_f_delete'		=> array('lang'	=> 'Puede borrar sus mensajes','cat'	=> 'actions',),
-	'acl_f_user_lock'	=> array('lang'	=> 'Puede bloquear sus mensajes','cat'	=> 'actions',),
-	'acl_f_bump'		=> array('lang'	=> 'Puede activar temas','cat'	=> 'actions',),
-	'acl_f_report'		=> array('lang'	=> 'Puede reportar mensajes','cat'	=> 'actions',),
-	'acl_f_subscribe'	=> array('lang'	=> 'Puede suscribir a foros','cat'	=> 'actions',),
-	'acl_f_print'		=> array('lang'	=> 'Puede imprimir temas','cat'	=> 'actions',),
-	'acl_f_email'		=> array('lang'	=> 'Puede enviar temas por email','cat'	=> 'actions',),
-
-	'acl_f_search'		=> array('lang'	=> 'Puede buscar en foros','cat'	=> 'misc',),
-	'acl_f_ignoreflood'	=> array('lang'	=> 'Puede ignorar límite de saturación','cat'	=> 'misc',),
-	'acl_f_postcount'	=> array('lang'	=> 'Incrementar cuenta de mensaje<br /><em>Por favor obsérvese que este parámetro solo afecta a mensajes nuevos.</em>','cat'	=> 'misc',),
-	'acl_f_noapprove'	=> array('lang'	=> 'Puede publicar sin aprobación','cat'	=> 'misc',),
+	'ACL_F_POLL'		=> 'Puede hacer encuestas',
+	'ACL_F_VOTE'		=> 'Puede votar en encuestas',
+	'ACL_F_VOTECHG'		=> 'Puede cambiar una encuesta existente',
 ));
 
 // Moderator Permissions
 $lang = array_merge($lang, array(
-	'acl_m_edit'		=> array('lang'	=> 'Puede editar mensajes','cat'	=> 'post_actions',),
-	'acl_m_delete'		=> array('lang'	=> 'Puede borrar mensajes','cat'	=> 'post_actions',),
-	'acl_m_approve'		=> array('lang'	=> 'Puede aprobar mensajes','cat'	=> 'post_actions',),
-	'acl_m_report'		=> array('lang'	=> 'Puede cerrar y borrar informes','cat'	=> 'post_actions',),
-	'acl_m_chgposter'	=> array('lang'	=> 'Puede cambiar autor en mensajes','cat'	=> 'post_actions',),
+	'ACL_M_EDIT'		=> 'Puede editar mensajes',
+	'ACL_M_DELETE'		=> 'Puede borrar mensajes permanentemente',
+	'ACL_M_SOFTDELETE'	=> 'Puede borrar mensajes [Soft]<br /><em>Moderadores, que tienen permiso de aprobar mensajes, pueden restaurar mensajes borrados.</em>',
+	'ACL_M_APPROVE'		=> 'Puede aprobar y restaurar mensajes',
+	'ACL_M_REPORT'		=> 'Puede cerrar y borrar informes',
+	'ACL_M_CHGPOSTER'	=> 'Puede cambiar autor en mensajes',
 
-	'acl_m_move'		=> array('lang'	=> 'Puede mover temas','cat'	=> 'topic_actions',),
-	'acl_m_lock'		=> array('lang'	=> 'Puede bloquear temas','cat'	=> 'topic_actions',),
-	'acl_m_split'		=> array('lang'	=> 'Puede dividir temas','cat'	=> 'topic_actions',),
-	'acl_m_merge'		=> array('lang'	=> 'Puede unir temas','cat'	=> 'topic_actions',),
+	'ACL_M_MOVE'	=> 'Puede mover temas',
+	'ACL_M_LOCK'	=> 'Puede cerrar temas',
+	'ACL_M_SPLIT'	=> 'Puede dividir temas',
+	'ACL_M_MERGE'	=> 'Puede unir temas',
 
-	'acl_m_info'		=> array('lang'	=> 'Puede ver detalles de mensaje','cat'	=> 'misc',),
-	'acl_m_warn'		=> array('lang'	=> 'Puede hacer advertencia','cat'	=> 'misc',),
-	'acl_m_ban'		=> array('lang'	=> 'Puede administrar exclusiones','cat'	=> 'misc',),
+	'ACL_M_INFO'		=> 'Puede ver detalles de mensaje',
+	'ACL_M_WARN'		=> 'Puede hacer advertencia<br /><em>Este ajuste sólo se asigna a nivel global. No se basa en el foro.</em>', // This moderator setting is only global (and not local)
+	'ACL_M_PM_REPORT'	=> 'Puede cerrar y borrar reportes de mensajes privados<br /><em>Este ajuste sólo se asigna a nivel global. No se basa en el foro.</em>', // This moderator setting is only global (and not local)
+	'ACL_M_BAN'			=> 'Puede administrar exclusiones<br /><em>Este ajuste sólo se asigna a nivel global. No se basa en el foro.</em>', // This moderator setting is only global (and not local)
 ));
 
 // Admin Permissions
 $lang = array_merge($lang, array(
-	'acl_a_board'		=> array('lang'	=> 'Puede modificar configuración de sitio/verificar actualizaciones','cat'	=> 'settings',),
-	'acl_a_server'		=> array('lang'	=> 'Puede modificar configuración de servidor/comunicación','cat'	=> 'settings',),
-	'acl_a_jabber'		=> array('lang'	=> 'Puede modificar parámetros Jabber','cat'	=> 'settings',),
-	'acl_a_phpinfo'		=> array('lang'	=> 'Puede ver configuración de PHP','cat'	=> 'settings',),
+	'ACL_A_BOARD'		=> 'Puede modificar configuración de sitio/verificar actualizaciones',
+	'ACL_A_SERVER'		=> 'Puede modificar configuración de servidor/comunicación',
+	'ACL_A_JABBER'		=> 'Puede modificar parámetros Jabber',
+	'ACL_A_PHPINFO'		=> 'Puede ver configuración de PHP',
 
-	'acl_a_forum'		=> array('lang'	=> 'Puede administrar foros','cat'	=> 'forums',),
-	'acl_a_forumadd'	=> array('lang'	=> 'Puede agregar nuevos foros','cat'	=> 'forums',),
-	'acl_a_forumdel'	=> array('lang'	=> 'Puede borrar foros','cat'	=> 'forums',),
-	'acl_a_prune'		=> array('lang'	=> 'Puede purgar foros','cat'	=> 'forums',),
+	'ACL_A_FORUM'		=> 'Puede administrar foros',
+	'ACL_A_FORUMADD'	=> 'Puede agregar nuevos foros',
+	'ACL_A_FORUMDEL'	=> 'Puede borrar foros',
+	'ACL_A_PRUNE'		=> 'Puede purgar foros',
 
-	'acl_a_icons'		=> array('lang'	=> 'Puede modificar iconos de tema y emoticonos','cat'	=> 'posting',),
-	'acl_a_words'		=> array('lang'	=> 'Puede modificar palabras censuradas','cat'	=> 'posting',),
-	'acl_a_bbcode'		=> array('lang'	=> 'Puede definir código BBCode','cat'	=> 'posting',),
-	'acl_a_attach'		=> array('lang'	=> 'Puede modificar parámetros relativos a adjuntos','cat'	=> 'posting',),
+	'ACL_A_ICONS'		=> 'Puede modificar iconos de tema y emoticonos',
+	'ACL_A_WORDS'		=> 'Puede modificar palabras censuradas',
+	'ACL_A_BBCODE'		=> 'Puede definir código BBCode',
+	'ACL_A_ATTACH'		=> 'Puede modificar parámetros relativos a adjuntos',
 
-	'acl_a_user'		=> array('lang'	=> 'Puede administrar usuarios','cat'	=> 'user_group',),
-	'acl_a_userdel'		=> array('lang'	=> 'Puede borrar/purgar usuarios','cat'	=> 'user_group',),
-	'acl_a_group'		=> array('lang'	=> 'Puede administrar grupos','cat'	=> 'user_group',),
-	'acl_a_groupadd'	=> array('lang'	=> 'Puede agregar nuevos grupos','cat'	=> 'user_group',),
-	'acl_a_groupdel'	=> array('lang'	=> 'Puede borrar grupos','cat'	=> 'user_group',),
-	'acl_a_ranks'		=> array('lang'	=> 'Puede manejar rangos','cat'	=> 'user_group',),
-	'acl_a_profile'		=> array('lang'	=> 'Puede administrar campos de perfil personalizados','cat'	=> 'user_group',),
-	'acl_a_names'		=> array('lang'	=> 'Puede administrar nombres deshabilitados','cat'	=> 'user_group',),
-	'acl_a_ban'		=> array('lang'	=> 'Puede administrar exclusiones','cat'	=> 'user_group',),
+	'ACL_A_USER'		=> 'Puede administrar usuarios<br /><em>Esto también incluye ver el agente navegador del usuario dentro de la lista de usuarios conectados.</em>',
+	'ACL_A_USERDEL'		=> 'Puede borrar/purgar usuarios',
+	'ACL_A_GROUP'		=> 'Puede administrar grupos',
+	'ACL_A_GROUPADD'	=> 'Puede agregar nuevos grupos',
+	'ACL_A_GROUPDEL'	=> 'Puede borrar grupos',
+	'ACL_A_RANKS'		=> 'Puede administrar rangos',
+	'ACL_A_PROFILE'		=> 'Puede administrar campos de perfil personalizados',
+	'ACL_A_NAMES'		=> 'Puede administrar nombres deshabilitados',
+	'ACL_A_BAN'			=> 'Puede administrar exclusiones',
 
-	'acl_a_viewauth'	=> array('lang'	=> 'Puede ver máscaras de permisos','cat'	=> 'permissions',),
-	'acl_a_authgroups'	=> array('lang'	=> 'Puede modificar permisos para grupos individuales','cat'	=> 'permissions',),
-	'acl_a_authusers'	=> array('lang'	=> 'Puede modificar permisos para usuarios individuales','cat'	=> 'permissions',),
-	'acl_a_fauth'		=> array('lang'	=> 'Puede modificar tipos de permisos de foros','cat'	=> 'permissions',),
-	'acl_a_mauth'		=> array('lang'	=> 'Puede modificar tipos de permisos de moderadores','cat'	=> 'permissions',),
-	'acl_a_aauth'		=> array('lang'	=> 'Puede modificar tipos de permisos de Admin','cat'	=> 'permissions',),
-	'acl_a_uauth'		=> array('lang'	=> 'Puede modificar tipos de permisos de usuario','cat'	=> 'permissions',),
-	'acl_a_roles'		=> array('lang'	=> 'Puede administrar roles','cat'	=> 'permissions',),
-	'acl_a_switchperm'	=> array('lang'	=> 'Puede usar otros permisos','cat'	=> 'permissions',),
-	
-	'acl_a_styles'		=> array('lang'	=> 'Puede administrar estilos','cat'	=> 'misc',),
-	'acl_a_viewlogs'	=> array('lang'	=> 'Puede ver registros','cat'	=> 'misc',),
-	'acl_a_clearlogs'	=> array('lang'	=> 'Puede limpiar registros','cat'	=> 'misc',),
-	'acl_a_modules'		=> array('lang'	=> 'Puede administrar módulos','cat'	=> 'misc',),
-	'acl_a_modules'		=> array('lang' => 'Puede administrar modulos', 'cat' => 'misc'),
-	'acl_a_language'	=> array('lang'	=> 'Puede administrar paquetes de idioma','cat'	=> 'misc',),
-	'acl_a_email'		=> array('lang'	=> 'Puede enviar emails masivos','cat'	=> 'misc',),
-	'acl_a_bots'		=> array('lang'	=> 'Puede administrar bots','cat'	=> 'misc',),
-	'acl_a_reasons'		=> array('lang'	=> 'Puede administrar motivos de reporte/negación','cat'	=> 'misc',),
-	'acl_a_backup'		=> array('lang'	=> 'Puede resguardar/restaurar base de datos','cat'	=> 'misc',),
-	'acl_a_search'		=> array('lang'	=> 'Puede administrar motores de búsqueda y parámetros','cat'	=> 'misc',),
+	'ACL_A_VIEWAUTH'	=> 'Puede ver máscaras de permisos',
+	'ACL_A_AUTHGROUPS'	=> 'Puede modificar permisos para grupos individuales',
+	'ACL_A_AUTHUSERS'	=> 'Puede modificar permisos para usuarios individuales',
+	'ACL_A_FAUTH'		=> 'Puede modificar tipos de permisos de foros',
+	'ACL_A_MAUTH'		=> 'Puede modificar tipos de permisos de Moderadores',
+	'ACL_A_AAUTH'		=> 'Puede modificar tipos de permisos de Administradores',
+	'ACL_A_UAUTH'		=> 'Puede modificar tipos de permisos de usuario',
+	'ACL_A_ROLES'		=> 'Puede administrar roles',
+	'ACL_A_SWITCHPERM'	=> 'Puede usar otros permisos',
+
+	'ACL_A_STYLES'		=> 'Puede administrar estilos',
+	'ACL_A_EXTENSIONS'	=> 'Puede administrar extensiones',
+	'ACL_A_VIEWLOGS'	=> 'Puede ver registros',
+	'ACL_A_CLEARLOGS'	=> 'Puede limpiar registros',
+	'ACL_A_MODULES'		=> 'Puede administrar módulos',
+	'ACL_A_LANGUAGE'	=> 'Puede administrar paquetes de idioma',
+	'ACL_A_EMAIL'		=> 'Puede enviar emails masivos',
+	'ACL_A_BOTS'		=> 'Puede administrar bots',
+	'ACL_A_REASONS'		=> 'Puede administrar motivos de reporte/negación',
+	'ACL_A_BACKUP'		=> 'Puede resguardar/restaurar base de datos',
+	'ACL_A_SEARCH'		=> 'Puede administrar motores de búsqueda y parámetros',
 ));
-
-?>

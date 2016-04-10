@@ -1,10 +1,13 @@
 <?php
 /**
 *
-* @package ucp
-* @version $Id$
-* @copyright (c) 2005 phpBB Group
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+* This file is part of the phpBB Forum Software package.
+*
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @license GNU General Public License, version 2 (GPL-2.0)
+*
+* For full copyright and license information, please see
+* the docs/CREDITS.txt file.
 *
 */
 
@@ -14,11 +17,6 @@
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-
-if (isset($_REQUEST['mode']) && ($_REQUEST['mode'] == 'login' || $_REQUEST['mode'] == 'logout' || $_REQUEST['mode'] == 'register')) {
-	define('USING_WP', true);
-}
-
 require($phpbb_root_path . 'common.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
@@ -27,7 +25,7 @@ require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
 $id 	= request_var('i', '');
 $mode	= request_var('mode', '');
 
-if (in_array($mode, array('login', 'logout', 'confirm', 'sendpassword', 'activate')))
+if (in_array($mode, array('login', 'login_link', 'logout', 'confirm', 'sendpassword', 'activate')))
 {
 	define('IN_LOGIN', true);
 }
@@ -83,54 +81,33 @@ switch ($mode)
 			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
 		}
 
-		global $table_prefix;
-		define('WP_INSTALLING', $phpbb_root_path);
-		require_once($config['wp_abspath'] . 'wp-load.php');
-		$phpbb_root_path = WP_INSTALLING;
-		$table_prefix = PHPBB_PREFIX;
-
-		if(!request_var('bridgedd', '')) {
-			global $current_user;
-			if (is_user_logged_in() && !validate_phpbb_username($current_user->user_login) && !validate_email($current_user->user_email)) {
-				header('Location: ' . $config['wp_url'] . 'index.php?bridgedd=true');
-				exit;
-			}
-		}
-
 		login_box(request_var('redirect', "index.$phpEx"));
 	break;
 
+	case 'login_link':
+		if ($user->data['is_registered'])
+		{
+			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		}
+
+		$module->load('ucp', 'login_link');
+		$module->display($user->lang['UCP_LOGIN_LINK']);
+	break;
+
 	case 'logout':
-		if ($user->data['user_id'] != ANONYMOUS && isset($_GET['sid']) && !is_array($_GET['sid']) && $_GET['sid'] === $user->session_id)
+		if ($user->data['user_id'] != ANONYMOUS && $request->is_set('sid') && $request->variable('sid', '') === $user->session_id)
 		{
-			if (!empty($user->data['wp_id'])) {
-				global $dbwp, $table_prefix;
-				define('WP_INSTALLING', $phpbb_root_path);
-				require_once($config['wp_abspath'] . 'wp-load.php');
-				$phpbb_root_path = WP_INSTALLING;
-				$table_prefix = PHPBB_PREFIX;
-				$sql = "DELETE FROM {$config['wp_prefix']}usermeta WHERE user_id = {$user->data['wp_id']} AND meta_key = 'session_tokens'";
-				$dbwp->sql_query($sql);
-				wp_clear_auth_cookie();
-				$user->set_cookie('wpid', 'x', time() - (365*24*3600));
-			}
-
 			$user->session_kill();
-			$redirect = request_var('redirect', "{$phpbb_root_path}index.$phpEx");
-			header("Location: $redirect");
-			exit;
-			$user->session_begin();
-			$message = $user->lang['LOGOUT_REDIRECT'];
 		}
-		else
+		else if ($user->data['user_id'] != ANONYMOUS)
 		{
-			$message = ($user->data['user_id'] == ANONYMOUS) ? $user->lang['LOGOUT_REDIRECT'] : $user->lang['LOGOUT_FAILED'];
+			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+
+			$message = $user->lang['LOGOUT_FAILED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a> ');
+			trigger_error($message);
 		}
-		meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
 
-		$message = $message . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a> ');
-		trigger_error($message);
-
+		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
 	break;
 
 	case 'terms':
@@ -154,7 +131,7 @@ switch ($mode)
 		);
 
 		// Disable online list
-		page_header($user->lang[$title], false);
+		page_header($user->lang[$title]);
 
 		$template->assign_vars(array(
 			'S_AGREEMENT'			=> true,
@@ -175,8 +152,10 @@ switch ($mode)
 		{
 			$set_time = time() - 31536000;
 
-			foreach ($_COOKIE as $cookie_name => $cookie_data)
+			foreach ($request->variable_names(\phpbb\request\request_interface::COOKIE) as $cookie_name)
 			{
+				$cookie_data = $request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE);
+
 				// Only delete board cookies, no other ones...
 				if (strpos($cookie_name, $config['cookie_name'] . '_') !== 0)
 				{
@@ -184,6 +163,22 @@ switch ($mode)
 				}
 
 				$cookie_name = str_replace($config['cookie_name'] . '_', '', $cookie_name);
+
+				/**
+				* Event to save custom cookies from deletion
+				*
+				* @event core.ucp_delete_cookies
+				* @var	string	cookie_name		Cookie name to checking
+				* @var	bool	retain_cookie	Do we retain our cookie or not, true if retain
+				* @since 3.1.3-RC1
+				*/
+				$retain_cookie = false;
+				$vars = array('cookie_name', 'retain_cookie');
+				extract($phpbb_dispatcher->trigger_event('core.ucp_delete_cookies', compact($vars)));
+				if ($retain_cookie)
+				{
+					continue;
+				}
 
 				// Polls are stored as {cookie_name}_poll_{topic_id}, cookie_name_ got removed, therefore checking for poll_
 				if (strpos($cookie_name, 'poll_') !== 0)
@@ -306,19 +301,19 @@ if ($module->is_active('zebra', 'friends'))
 	// Output listing of friends online
 	$update_time = $config['load_online_time'] * 60;
 
-	$sql = $db->sql_build_query('SELECT_DISTINCT', array(
+	$sql_ary = array(
 		'SELECT'	=> 'u.user_id, u.username, u.username_clean, u.user_colour, MAX(s.session_time) as online_time, MIN(s.session_viewonline) AS viewonline',
 
 		'FROM'		=> array(
 			USERS_TABLE		=> 'u',
-			ZEBRA_TABLE		=> 'z'
+			ZEBRA_TABLE		=> 'z',
 		),
 
 		'LEFT_JOIN'	=> array(
 			array(
 				'FROM'	=> array(SESSIONS_TABLE => 's'),
-				'ON'	=> 's.session_user_id = z.zebra_id'
-			)
+				'ON'	=> 's.session_user_id = z.zebra_id',
+			),
 		),
 
 		'WHERE'		=> 'z.user_id = ' . $user->data['user_id'] . '
@@ -328,8 +323,9 @@ if ($module->is_active('zebra', 'friends'))
 		'GROUP_BY'	=> 'z.zebra_id, u.user_id, u.username_clean, u.user_colour, u.username',
 
 		'ORDER_BY'	=> 'u.username_clean ASC',
-	));
+	);
 
+	$sql = $db->sql_build_query('SELECT_DISTINCT', $sql_ary);
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
@@ -354,6 +350,18 @@ if (!$config['allow_topic_notify'] && !$config['allow_forum_notify'])
 	$module->set_display('main', 'subscribed', false);
 }
 
+/**
+* Use this event to enable and disable additional UCP modules
+*
+* @event core.ucp_display_module_before
+* @var	p_master	module	Object holding all modules and their status
+* @var	mixed		id		Active module category (can be the int or string)
+* @var	string		mode	Active module
+* @since 3.1.0-a1
+*/
+$vars = array('module', 'id', 'mode');
+extract($phpbb_dispatcher->trigger_event('core.ucp_display_module_before', compact($vars)));
+
 // Select the active module
 $module->set_active($id, $mode);
 
@@ -364,26 +372,4 @@ $module->load_active();
 $module->assign_tpl_vars(append_sid("{$phpbb_root_path}ucp.$phpEx"));
 
 // Generate the page, do not display/query online list
-$module->display($module->get_page_title(), false);
-
-/**
-* Function for assigning a template var if the zebra module got included
-*/
-function _module_zebra($mode, &$module_row)
-{
-	global $template;
-
-	$template->assign_var('S_ZEBRA_ENABLED', true);
-
-	if ($mode == 'friends')
-	{
-		$template->assign_var('S_ZEBRA_FRIENDS_ENABLED', true);
-	}
-
-	if ($mode == 'foes')
-	{
-		$template->assign_var('S_ZEBRA_FOES_ENABLED', true);
-	}
-}
-
-?>
+$module->display($module->get_page_title());

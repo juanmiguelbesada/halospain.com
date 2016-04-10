@@ -1,37 +1,16 @@
 <?php
 /**
 *
-* This program is the full and free Spanish (of Spain) phpBB 3.0 Translation.
-* Copyright (c) 2007 Huan Manwe for phpbb-es.com
+* This file is part of the phpBB Forum Software package.
 *
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @license GNU General Public License, version 2 (GPL-2.0)
 *
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*
-**/
-
-/**
-*
-* search_ignore_words [Spanish [Es]]
-*
-* @package language
-* @version $Id: groups.php,v 1.0 2007/03/18 16:22:56 merlin Exp $
-* @copyright (c) 2007 phpBB Group. Modified by Huan Manwe for phpbb-es.com in 2007
-* @author 2007-11-26 - Traducido por Huan Manwe junto con phpbb-es.com (http://www.phpbb-es.com) basado en la version argentina hecha por larveando.com.ar ).
-* @author - ImagePack made by Xoom (webmaster of http://www.muchografico.com and colaborator of http://www.phpbb-es.com)
-* @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License
+* For full copyright and license information, please see
+* the docs/CREDITS.txt file.
 *
 */
+
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -45,6 +24,7 @@ $words = array(
 	'todo',
 	'casi',
 	'largo',
+	'corto',
 	'montón',
 	'también',
 	'soy',
@@ -260,5 +240,3 @@ $words = array(
 	'ROTFLMAO',
 	'YMMV',
 );
-
-?>

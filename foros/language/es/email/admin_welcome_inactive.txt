@@ -1,4 +1,4 @@
-Subject: Bienvenido a "{SITENAME}" - {U_BOARD}
+Subject: Bienvenido a "{SITENAME}"
 
 {WELCOME_MSG}
 
@@ -6,6 +6,7 @@ Por favor guarde este email para futuras referencias. La información de su cuen
 
 ----------------------------
 Nombre de usuario: {USERNAME}
+
 URL del Sitio: {U_BOARD}
 ----------------------------
 

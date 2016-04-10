@@ -1,13 +1,13 @@
 <?php
 /**
 *
-* recaptcha [Spanish [Es]]
+* This file is part of the phpBB Forum Software package.
 *
-* @package language
-* @author 2009-11-23 - Traducido por Huan Manwe junto con phpbb-es.com (http://www.phpbb-es.com).
-* @version $Id: captcha_recaptcha.php 9933 2009-08-06 09:12:21Z marshalrusty $
-* @copyright (c) 2009 phpBB Group. Modified by Huan Manwe for phpbb-es.com in 2009 
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* @license GNU General Public License, version 2 (GPL-2.0)
+*
+* For full copyright and license information, please see
+* the docs/CREDITS.txt file.
 *
 */
 
@@ -42,12 +42,11 @@ $lang = array_merge($lang, array(
 	'CAPTCHA_RECAPTCHA'				=> 'reCaptcha',
 	'RECAPTCHA_INCORRECT'			=> 'El código de confirmación visual que insertó era incorrecto',
 
-	'RECAPTCHA_PUBLIC'				=> 'Clave Pública reCaptcha',
-	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'Su Clave Pública reCaptcha. Se pueden obtener las claves en <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
+	'RECAPTCHA_PUBLIC'				=> 'Clave pública reCaptcha',
+	'RECAPTCHA_PUBLIC_EXPLAIN'		=> 'Su clave pública reCaptcha. Se pueden obtener las claves en <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
 	'RECAPTCHA_PRIVATE'				=> 'Clave Privada reCaptcha',
-	'RECAPTCHA_PRIVATE_EXPLAIN'		=> 'Su Clave Privada reCaptcha. Se pueden obtener las claves en <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
+	'RECAPTCHA_PRIVATE_EXPLAIN'		=> 'Su clave privada reCaptcha. Se pueden obtener las claves en <a href="http://www.google.com/recaptcha">www.google.com/recaptcha</a>.',
 
 	'RECAPTCHA_EXPLAIN'				=> 'En un esfuerzo por prevenir insersiones automáticas requerimos que introduzca las dos palabras mostradas dentro del campo de texto.',
+	'RECAPTCHA_SOCKET_ERROR'		=> 'Hubo un problema al conectar con el servicio RECAPTCHA: No se pudo abrir el socket. Inténtelo de nuevo más tarde.',
 ));
-
-?>

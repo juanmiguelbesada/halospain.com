@@ -15,7 +15,15 @@
 
 <!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE posting_preview.html --><!-- ENDIF -->
 
-<h2>{L_TITLE}</h2>
+<h2 class="posting-title">{L_TITLE}</h2>
+
+<div class="panel" id="pmheader-postingbox">
+	<div class="inner">
+	<!-- EVENT posting_pm_layout_include_pm_header_before -->
+	<!-- INCLUDE posting_pm_header.html -->
+	<!-- EVENT posting_pm_layout_include_pm_header_after -->
+	</div>
+</div>
 
 <div class="panel" id="postingbox">
 	<div class="inner">
