@@ -332,8 +332,9 @@ class session
 		// if session id is set
 		if (!empty($this->session_id))
 		{
-			$sql = 'SELECT u.*, s.*
+			$sql = 'SELECT xu.wp_id, u.*, s.*
 				FROM ' . SESSIONS_TABLE . ' s, ' . USERS_TABLE . " u
+				LEFT JOIN bridgedd_xuser xu ON (xu.phpbb_id = u.user_id)
 				WHERE s.session_id = '" . $db->sql_escape($this->session_id) . "'
 					AND u.user_id = s.session_user_id";
 			$result = $db->sql_query($sql);
@@ -574,8 +575,9 @@ class session
 		// Else if we've been passed a user_id we'll grab data based on that
 		if (isset($this->cookie_data['k']) && $this->cookie_data['k'] && $this->cookie_data['u'] && !sizeof($this->data))
 		{
-			$sql = 'SELECT u.*
+			$sql = 'SELECT xu.wp_id, u.*
 				FROM ' . USERS_TABLE . ' u, ' . SESSIONS_KEYS_TABLE . ' k
+				LEFT JOIN bridgedd_xuser xu ON (xu.phpbb_id = k.user_id)
 				WHERE u.user_id = ' . (int) $this->cookie_data['u'] . '
 					AND u.user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ")
 					AND k.user_id = u.user_id
@@ -597,8 +599,9 @@ class session
 			$this->cookie_data['k'] = '';
 			$this->cookie_data['u'] = $user_id;
 
-			$sql = 'SELECT *
-				FROM ' . USERS_TABLE . '
+			$sql = 'SELECT xu.wp_id, u.*
+				FROM ' . USERS_TABLE . ' u
+				LEFT JOIN bridgedd_xuser xu ON (xu.phpbb_id = u.user_id)
 				WHERE user_id = ' . (int) $this->cookie_data['u'] . '
 					AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')';
 			$result = $db->sql_query($sql);

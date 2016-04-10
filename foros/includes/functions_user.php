@@ -339,14 +339,24 @@ function user_add($user_row, $cp_data = false)
 function user_delete($mode, $user_id, $post_username = false)
 {
 	global $cache, $config, $db, $user;
-	global $phpbb_root_path, $phpEx;
+	global $phpbb_root_path, $phpEx, $dbwp;
 
-	$sql = 'SELECT *
-		FROM ' . USERS_TABLE . '
+	$sql = 'SELECT u.*, xu.wp_id
+		FROM ' . USERS_TABLE . ' u
+		LEFT JOIN bridgedd_xuser xu ON (xu.phpbb_id = u.user_id)
 		WHERE user_id = ' . $user_id;
 	$result = $db->sql_query($sql);
 	$user_row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
+
+	if (!empty($user_row['wp_id'])) {
+		$sql = "DELETE FROM bridgedd_xuser WHERE wp_id = {$user_row['wp_id']}";
+		$db->sql_query($sql);
+		$sql = "UPDATE {$config['wp_user_table']} SET user_email = '', user_pass = '' WHERE ID = {$user_row['wp_id']}";
+		$dbwp->sql_query($sql);
+		$sql = "DELETE FROM {$config['wp_prefix']}usermeta WHERE user_id = {$user_row['wp_id']}";
+		$dbwp->sql_query($sql);
+	}
 
 	if (!$user_row)
 	{
@@ -586,9 +596,12 @@ function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 		return;
 	}
 
-	$sql = 'SELECT user_id, group_id, user_type, user_inactive_reason
-		FROM ' . USERS_TABLE . '
-		WHERE ' . $db->sql_in_set('user_id', $user_id_ary);
+	global $dbwp;
+	$wp_sql_ary = array();
+	$sql = 'SELECT xu.wp_id, u.user_email, u.user_id, u.group_id, u.user_type, u.user_inactive_reason
+		FROM ' . USERS_TABLE . ' u
+		LEFT JOIN bridgedd_xuser xu ON (xu.phpbb_id = u.user_id)
+		WHERE ' . $db->sql_in_set('u.user_id', $user_id_ary);
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
@@ -605,10 +618,16 @@ function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 		if ($row['user_type'] == USER_INACTIVE)
 		{
 			$activated++;
+			if (!empty($row['wp_id'])) {
+				$wp_sql_ary[] = "UPDATE {$config['wp_user_table']} SET user_pass = user_email, user_email = '{$row['user_email']}' WHERE ID = {$row['wp_id']}";
+			}
 		}
 		else
 		{
 			$deactivated++;
+			if (!empty($row['wp_id'])) {
+				$wp_sql_ary[] = "UPDATE {$config['wp_user_table']} SET user_email = user_pass, user_pass = '' WHERE ID = {$row['wp_id']}";
+			}
 
 			// Remove the users session key...
 			$user->reset_login_keys($row['user_id']);
@@ -623,6 +642,12 @@ function user_active_flip($mode, $user_id_ary, $reason = INACTIVE_MANUAL)
 		$sql_statements[$row['user_id']] = $sql_ary;
 	}
 	$db->sql_freeresult($result);
+
+	if (!empty($wp_sql_ary)) {
+		foreach ($wp_sql_ary as $sql) {
+			$dbwp->sql_query($sql);
+		}
+	}
 
 	if (sizeof($sql_statements))
 	{
@@ -1419,7 +1444,13 @@ function validate_language_iso_name($lang_iso)
 *
 * @return	mixed	Either false if validation succeeded or a string which will be used as the error message (with the variable name appended)
 */
-function validate_username($username, $allowed_username = false)
+if (!defined('WPINC') && !defined('USING_WP')) {
+	function validate_username($username, $allowed_username = false) {
+		return validate_phpbb_username($username, $allowed_username);
+	}
+}
+
+function validate_phpbb_username($username, $allowed_username = false)
 {
 	global $config, $db, $user, $cache;
 

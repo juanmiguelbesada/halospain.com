@@ -14,6 +14,11 @@
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
+
+if (isset($_REQUEST['mode']) && ($_REQUEST['mode'] == 'login' || $_REQUEST['mode'] == 'logout' || $_REQUEST['mode'] == 'register')) {
+	define('USING_WP', true);
+}
+
 require($phpbb_root_path . 'common.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
@@ -78,13 +83,42 @@ switch ($mode)
 			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
 		}
 
+		global $table_prefix;
+		define('WP_INSTALLING', $phpbb_root_path);
+		require_once($config['wp_abspath'] . 'wp-load.php');
+		$phpbb_root_path = WP_INSTALLING;
+		$table_prefix = PHPBB_PREFIX;
+
+		if(!request_var('bridgedd', '')) {
+			global $current_user;
+			if (is_user_logged_in() && !validate_phpbb_username($current_user->user_login) && !validate_email($current_user->user_email)) {
+				header('Location: ' . $config['wp_url'] . 'index.php?bridgedd=true');
+				exit;
+			}
+		}
+
 		login_box(request_var('redirect', "index.$phpEx"));
 	break;
 
 	case 'logout':
 		if ($user->data['user_id'] != ANONYMOUS && isset($_GET['sid']) && !is_array($_GET['sid']) && $_GET['sid'] === $user->session_id)
 		{
+			if (!empty($user->data['wp_id'])) {
+				global $dbwp, $table_prefix;
+				define('WP_INSTALLING', $phpbb_root_path);
+				require_once($config['wp_abspath'] . 'wp-load.php');
+				$phpbb_root_path = WP_INSTALLING;
+				$table_prefix = PHPBB_PREFIX;
+				$sql = "DELETE FROM {$config['wp_prefix']}usermeta WHERE user_id = {$user->data['wp_id']} AND meta_key = 'session_tokens'";
+				$dbwp->sql_query($sql);
+				wp_clear_auth_cookie();
+				$user->set_cookie('wpid', 'x', time() - (365*24*3600));
+			}
+
 			$user->session_kill();
+			$redirect = request_var('redirect', "{$phpbb_root_path}index.$phpEx");
+			header("Location: $redirect");
+			exit;
 			$user->session_begin();
 			$message = $user->lang['LOGOUT_REDIRECT'];
 		}

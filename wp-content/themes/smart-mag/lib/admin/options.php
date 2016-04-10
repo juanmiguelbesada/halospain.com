@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Theme Options handler on admin side
+ */
 class Bunyad_Admin_Options
 {
 	public $option_key;
@@ -8,11 +11,19 @@ class Bunyad_Admin_Options
 	public function __construct()
 	{
 		$this->option_key = Bunyad::options()->get_config('theme_prefix') .'_theme_options';
+
+		// setup menu on init
 		add_action('admin_menu', array($this, 'init'));
+		
+		// check theme version info
+		add_action('admin_init', array($this, 'check_version'));
+		
+		// allow fonts upload for woff
+		add_filter('upload_mimes', array($this, 'allow_fonts_upload'));
 	}
 	
 	/**
-	 * Register a single option using Setting API and use sanitization hook 
+	 * Register a single option using Setting API and use sanitization hook
 	 */
 	public function init()
 	{
@@ -27,6 +38,43 @@ class Bunyad_Admin_Options
 		//add_object_page($title, $title, 'edit_theme_options', 'bunyad-options', array($this, 'render_page'));
 		
 		add_action('admin_print_styles-' . $page, array($this, 'add_assets'));
+	}
+	
+	/**
+	 * Check current theme version and run an update hook if necessary
+	 */
+	public function check_version()
+	{
+		$stored_version = Bunyad::options()->theme_version;
+		
+		// update version if necessary
+		if ($stored_version != Bunyad::options()->get_config('theme_version')) {
+			
+			// fire up the hook
+			do_action('bunyad_theme_version_change');
+			
+			// update the theme version
+			Bunyad::options()->set('theme_version', Bunyad::options()->get_config('theme_version'));
+				
+			if ($stored_version) {
+				Bunyad::options()->set('theme_version_previous', $stored_version);
+			}
+			
+			// updated changes in database
+			Bunyad::options()->update();
+		}
+	}
+	
+	/**
+	 * Filter callback: Add woff to existing mime types
+	 * 
+	 * @param array $mimes
+	 */
+	public function allow_fonts_upload($mimes)
+	{
+		$mimes['woff'] = 'application/font-woff';
+		
+		return $mimes;
 	}
 	
 	/**
@@ -83,6 +131,9 @@ class Bunyad_Admin_Options
 		);
 	}
 	
+	/**
+	 * Enqueue required assets
+	 */
 	public function add_assets()
 	{
 		wp_enqueue_style('jquery-options', get_template_directory_uri() . '/admin/css/chosen.jquery.css');
@@ -335,7 +386,11 @@ class Bunyad_Admin_Options
 						$element['options'] = array(0 => '', 1 => '');
 						
 						if (is_array($value)) {
-							$options[$key] = array_filter($value);
+							
+							//$options[$key] = array_filter($value);
+							// keep 0 values for all keys too - to check for defaults - DON'T remove empty
+							$options[$key] = $value; 
+
 							break; 
 						}
 						
@@ -361,10 +416,47 @@ class Bunyad_Admin_Options
 					else if ($element['strip'] == 'all_html') {
 						$options[$key] = strip_tags($value);
 					}
+					
+					break;
+					
+				case 'multiple':
+					
+					$options[$key] = array_filter($value);
+					
+					/** 
+					 * If filtering the array recursively returns in an empty array, unset value.
+					 * 
+					 * Note: DON'T filter the main array as key => value associations will be affected.
+					 */
+					if (!$this->array_filter_recursive($value)) {
+						$options[$key] = '';
+					}
+					
+					break;
 			}
 			
 		}
 		
 		return compact('errors', 'options');
-	}	
+	}
+	
+	
+	/**
+	 * Helper function to filter empty entries from array recursively
+	 * 
+	 * @todo move to utilities
+	 * @see array_filter
+	 */
+	public function array_filter_recursive($input) 
+	{ 
+		foreach ($input as &$value) 
+		{ 
+			if (is_array($value)) { 
+				$value = $this->array_filter_recursive($value); 
+			} 
+		}
+		
+		return array_filter($input);
+	}
+	
 }

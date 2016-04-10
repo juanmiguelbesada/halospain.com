@@ -25,6 +25,9 @@ $render = Bunyad::factory('admin/option-renderer'); /* @var $render Bunyad_Admin
 				'options' => array(
 					0 => __('Default Style (In Theme Settings)', 'bunyad'),
 					'modern' => __('Modern Style - 2 Column', 'bunyad'),
+					'modern-3' => __('Modern Style - 3 Column', 'bunyad'),
+					'grid-overlay' => __('Grid Overlay - 2 Column', 'bunyad'),
+					'grid-overlay-3' => __('Grid Overlay - 3 Column', 'bunyad'),
 					'alt' => __('Blog Style', 'bunyad'),
 					'classic'  => __('Classic - Large Blog Style', 'bunyad'),
 					'timeline' => __('Timeline Style', 'bunyad'),
@@ -32,7 +35,7 @@ $render = Bunyad::factory('admin/option-renderer'); /* @var $render Bunyad_Admin
 				'value' => $meta['template'],
 			));
 		?>
-		<p class="description custom-meta"><?php _e('Select a template to use for this category', 'bunyad'); ?></p>
+		<p class="description custom-meta"><?php _e('Select a template to use for this category. It is not recommended to use 3 columns with a sidebar.', 'bunyad'); ?></p>
 	</td>
 </tr>
 

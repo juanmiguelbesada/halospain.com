@@ -66,7 +66,7 @@ get_header();
 						
 						$authordata = $author;
 	        			
-						get_template_part('partial-author');
+						get_template_part('partials/author');
 	        			
 						echo '<hr class="separator" />';
 					}

@@ -121,6 +121,7 @@ var Bunyad_Options = (function($) {
 				
 			});
 			
+			// handle checkbox
 			$('.checkbox-toggle').click(function(e) {
 				var checkbox = $(this).prev('input[type=checkbox]');
 				
@@ -137,6 +138,43 @@ var Bunyad_Options = (function($) {
 				$(this).find('span').html(text);
 				
 				$(this).toggleClass('checked');
+				
+				return false;
+			});
+			
+			// handle multiple fields groups
+			$('.element-multiple > a').on('click', function() {
+				
+				var fields = $(this).parent().find('.fields').last(),
+				    html   = $(fields.prop('outerHTML'));
+				
+				// empty values on clone, remove default class and show
+				html.find('input').val('');
+				html.removeClass('default');
+				html.show();
+				
+				// add before the current link
+				$(this).before(html);
+				
+				return false;
+			});
+			
+			// removal in multiple field groups
+			$('.element-multiple').on('click', '.remove', function() {
+				
+				var fields = $(this).parent();
+				
+				fields.slideUp('medium', function() {
+					
+					// if not the last child, remove it
+					if ($(this).closest('.element-multiple').find('.fields').length > 1) {
+						$(this).remove();
+					}
+					else {
+						fields.find('input').val('');
+					}
+				});
+				
 				
 				return false;
 			});
@@ -361,7 +399,9 @@ var Bunyad_Options = (function($) {
 			
 		},
 
-
+		/**
+		 * Import demo content using an AJAX request
+		 */
 		demo_import: function(e) {
 
 			if (!confirm($(this).data('confirm'))) {

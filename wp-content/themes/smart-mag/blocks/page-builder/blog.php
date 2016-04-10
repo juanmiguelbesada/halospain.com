@@ -66,6 +66,9 @@ class Bunyad_PageBuilder_Blog extends Bunyad_PageBuilder_WidgetBase
 		<select class="widefat" name="<?php echo esc_attr($this->get_field_name('type')); ?>">
 			<option value=""><?php _e('Default Style (In Theme Settings)', 'bunyad'); ?></option>
 			<option value="modern"><?php _e('Modern Style - 2 Column', 'bunyad'); ?></option>
+			<option value="modern-3"><?php _e('Modern Style - 3 Column', 'bunyad'); ?></option>
+			<option value="grid-overlay"><?php _e('Grid Overlay - 2 Column', 'bunyad'); ?></option>
+			<option value="grid-overlay-3"><?php _e('Grid Overlay - 3 Column', 'bunyad'); ?></option>
 			<option value="alt"><?php _e('Blog Style', 'bunyad'); ?></option>
 			<option value="classic"><?php _e('Classic - Large Blog Style', 'bunyad'); ?></option>
 			<option value="timeline"><?php _e('Timeline Style', 'bunyad'); ?></option>

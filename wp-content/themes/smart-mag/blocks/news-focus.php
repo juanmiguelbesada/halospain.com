@@ -88,7 +88,7 @@ else if (!empty($sub_tags)) {
 		array_push($sub_cats, get_term_by('slug', $_tag, 'post_tag'));
 	}
 }
-else if (property_exists($taxonomy, 'cat_ID')) {
+else if (!empty($taxonomy) && property_exists($taxonomy, 'cat_ID')) {
 	  
 	// empty, default to child sub categories
 	$sub_cats = get_categories(array('child_of' => $taxonomy->cat_ID, 'number' => 3, 'hierarchical' => false));

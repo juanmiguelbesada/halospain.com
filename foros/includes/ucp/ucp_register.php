@@ -184,7 +184,7 @@ class ucp_register
 			$error = validate_data($data, array(
 				'username'			=> array(
 					array('string', false, $config['min_name_chars'], $config['max_name_chars']),
-					array('username', '')),
+					array('phpbb_username', '')),
 				'new_password'		=> array(
 					array('string', false, $config['min_pass_chars'], $config['max_pass_chars']),
 					array('password')),
@@ -230,6 +230,24 @@ class ucp_register
 
 			// validate custom profile fields
 			$cp->submit_cp_field('register', $user->get_iso_lang_id(), $cp_data, $error);
+
+			if (!sizeof($error)) {
+				global $table_prefix;
+				define('WP_INSTALLING', $phpbb_root_path);
+				require_once($config['wp_abspath'] . 'wp-load.php');
+				$phpbb_root_path = WP_INSTALLING;
+				$table_prefix = PHPBB_PREFIX;
+
+				if (!sanitize_title($data['username'])) {
+					$error[] = $user->lang['INVALID_CHARS'];
+				}
+				else if (username_exists($data['username'])) {
+					$error[] = $user->lang['USERNAME_TAKEN'];
+				}
+				if (email_exists($data['email'])) {
+					$error[] = $user->lang['EMAIL_TAKEN_EMAIL'];
+				}
+			}
 
 			if (!sizeof($error))
 			{
@@ -318,6 +336,23 @@ class ucp_register
 				{
 					$captcha->reset();
 				}
+
+				add_filter('sanitize_user', 'bridgedd_approve_username', 999, 2);
+				$userdata = array(
+					'user_login'			=> $data['username'],
+					'user_pass'				=> '',
+					'user_email'			=> '',
+				);
+				$wp_id = wp_insert_user($userdata);
+				$wp_password = ($user_actkey) ? '' : phpbb_hash($data['new_password']);
+				$wp_email = ($user_actkey) ? phpbb_hash($data['new_password']) : $data['email'];
+
+				global $dbwp;
+				$sql = "UPDATE {$config['wp_user_table']} SET user_pass = '{$wp_password}', user_email = '{$wp_email}' WHERE ID = $wp_id";
+				$dbwp->sql_query($sql);
+
+				$sql = "INSERT INTO bridgedd_xuser VALUES ({$wp_id},{$user_id})";
+				$db->sql_query($sql);
 
 				if ($coppa && $config['email_enable'])
 				{

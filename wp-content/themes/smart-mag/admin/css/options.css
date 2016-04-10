@@ -1,3 +1,7 @@
+/**
+ * Theme Settings & Options Panel
+ */
+ 
 .cf:before, .cf:after { content: " "; display: table; }
 .cf:after { clear: both; }
 .cf { *zoom: 1; } /* ie7 only */
@@ -219,6 +223,45 @@
 	
 	/* multi checkboxes */
 	.form-sections div.checkbox { line-height: 20px; }
+	
+	
+	/* multiple grouped element */
+	
+	.element-multiple .fields {
+		margin-bottom: 10px;
+		padding-bottom: 10px;
+		position: relative;
+	}
+	
+	.element-multiple .fields:last-child {
+		margin-bottom: 0;
+	}
+	
+	.element-multiple .field {
+		margin-bottom: 10px;
+	}
+	
+	.element-multiple .field:last-of-type {
+		margin-bottom: 0;
+	}
+	
+	.element-multiple label {
+		margin-right: 15px; 
+		width: 100px;
+		display: inline-block;
+	}
+	
+	.form-sections .element-multiple .input {
+		max-width: 45%;
+	}
+	
+	.element-multiple .remove {
+		color: #a00;
+		position: absolute;
+		right: 10%;
+		top: 50%;
+		margin-top: -15px;
+	}
 
 	
 /* Other elements */

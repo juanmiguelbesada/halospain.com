@@ -1,3 +1,10 @@
+<?php 
+/**
+ * Template to output comment form - called via single.php
+ * 
+ * @see comments_template()
+ */
+?>
 
 	<?php if (post_password_required()): ?>
 		<p class="nocomments"><?php _e('This post is password protected. Enter the password to view comments.', 'bunyad'); ?></p>
@@ -29,7 +36,13 @@
 	<?php endif; ?>
 	
 	
-	<?php 
+	<?php
+	
+	/**
+	 * Output the comment form
+	 */
+	
+	$commenter = wp_get_current_commenter();
 	
 	comment_form(array(
 		'title_reply' => '<span class="section-head">' . __('Leave A Reply', 'bunyad') . '</span>',
@@ -51,25 +64,28 @@
 		'cancel_reply_link' => __('Cancel Reply', 'bunyad'),
 	
 
-		'fields' => array(
+		'fields' => apply_filters('comment_form_default_fields', array(
 			'author' => '
 				<p>
-					<input name="author" id="author" type="text" value="" size="30" aria-required="true" placeholder="'. esc_attr__('Your Name', 'bunyad') .'" />
+					<input name="author" id="author" type="text" size="30" aria-required="true" placeholder="'. esc_attr__('Your Name', 'bunyad') .'" value="' 
+					. esc_attr($commenter['comment_author']) . '" />
 				</p>',
 	
 			'email' => '
 				<p>
-					<input name="email" id="email" type="text" value="" size="30" aria-required="true" placeholder="'. esc_attr__('Your Email', 'bunyad') .'" />
+					<input name="email" id="email" type="text" size="30" aria-required="true" placeholder="'. esc_attr__('Your Email', 'bunyad') .'" value="' 
+					. esc_attr($commenter['comment_author_email']) . '" />
 				</p>
 			',
 	
 			'url' => '
 				<p>
-					<input name="url" id="url" type="text" value="" size="30" placeholder="'. esc_attr__('Your Website', 'bunyad') .'" />
+					<input name="url" id="url" type="text" size="30" placeholder="'. esc_attr__('Your Website', 'bunyad') .'" value="' 
+					. esc_attr($commenter['comment_author_url']) . '" />
 				</p>
 			'
-		),
+		)),
 		
 	)); ?>
 
-</div><!-- #comments -->
+	</div><!-- #comments -->

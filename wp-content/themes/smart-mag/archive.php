@@ -8,6 +8,14 @@
  * Bunyad framework recommends this template to be used as generic template wherever any sort of listing 
  * needs to be done.
  * 
+ * Types of archives handled:
+ * 
+ *  - Categories
+ *  - Tags
+ *  - Taxonomies
+ *  - Date Archives
+ *  - Custom Post Types
+ * 
  * @link http://codex.wordpress.org/images/1/18/Template_Hierarchy.png
  */
 

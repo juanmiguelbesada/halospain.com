@@ -123,6 +123,15 @@ class ucp_profile
 						if ($auth->acl_get('u_chgpasswd') && $data['new_password'] && !phpbb_check_hash($data['new_password'], $user->data['user_password']))
 						{
 							$user->reset_login_keys();
+							$sql = 'SELECT wp_id FROM bridgedd_xuser WHERE phpbb_id = ' . $user->data['user_id'];
+							$result = $db->sql_query($sql);
+							$wp_id = (int) $db->sql_fetchfield('wp_id');
+							$db->sql_freeresult($result);
+							if ($wp_id) {
+								global $dbwp;
+								$sql = 'UPDATE ' . $config['wp_user_table'] . " SET user_pass = '" . $sql_ary['user_password'] . "' WHERE ID = " . $wp_id;
+								$dbwp->sql_query($sql);
+							}
 							add_log('user', $user->data['user_id'], 'LOG_USER_NEW_PASSWORD', $data['username']);
 						}
 
