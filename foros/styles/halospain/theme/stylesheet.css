@@ -1,0 +1,50 @@
+/*  phpBB3 Style Sheet
+    --------------------------------------------------------------
+	Style name:			Halospain
+	Based on style:		Quarto for phpBB 3.1 by PixelGoose Studio
+	Original author:	PixelGoose ( https://pixelgoose.com/ )
+	Modified by:		SoutlinK ( https://www.halospain.com/ )
+    --------------------------------------------------------------
+*/
+
+/* Parent Styles
+---------------------------------------- */
+@import url("../../quarto_asphalt/theme/stylesheet.css");
+
+/* Body background
+---------------------------------------- */
+body {
+    background: url("./images/bg-images/halo5.jpg") center top fixed no-repeat;
+}
+
+/* Site logo
+---------------------------------------- */
+.imageset.site_logo {
+    background-image: url("./images/site_logo.png");
+    padding-left: 300px;
+    padding-top: 59px;
+}
+
+/* Colours and backgrounds for buttons.css
+---------------------------------------- */
+.post-icon, .newpm-icon, .reply-all,
+.reply-icon,
+.pmreply-icon, .forwardpm-icon {
+    background-color: #F01F4B;
+    border-color: #F01F4B;
+}
+.post-icon:hover, .newpm-icon:hover, .reply-all:hover,
+.reply-icon:hover,
+.pmreply-icon:hover, .forwardpm-icon:hover {
+    border-color: #F01F4B;
+    color: #F01F4B;
+}
+
+/* Footer links
+---------------------------------------- */
+#page-footer-links {
+    background-color: #243D54;
+}
+#page-footer-links ul.linklist {
+    padding: 20px;
+}
