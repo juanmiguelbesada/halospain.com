@@ -1,0 +1,22 @@
+/*
+Theme Name: Halospain
+Theme URI: http://www.halospain.com
+Description: Halospain theme
+Author: SoutlinK
+Author URI: http://www.soutlink.com
+Template: smart-mag
+Version: 1.0.0
+*/
+
+body.boxed {
+    background-position: top center !important;
+}
+
+body .main-wrap:first-of-type {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.navigation {
+    margin: 0 -25px;
+}
