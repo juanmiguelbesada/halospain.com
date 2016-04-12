@@ -225,7 +225,7 @@ class Bunyad_Theme_SmartMag_WooCommerce
 
 		<?php 
 			echo woocommerce_get_product_thumbnail(); 
-			woocommerce_get_template('loop/add-to-cart.php'); 
+			wc_get_template('loop/add-to-cart.php'); 
 		?>
 
 		</div>
@@ -374,7 +374,7 @@ class Bunyad_Theme_SmartMag_WooCommerce
 			.woocommerce-page .woocommerce-message, .woocommerce-page .woocommerce-error, .woocommerce-page .woocommerce-info,
 			.woocommerce .related h2, .woocommerce-page .related h2, .woocommerce .checkout h3, .woocommerce-account .post-content h2, 
 			.woocommerce-checkout .post-content h2, .woocommerce-account form > h3, .woocommerce ul.products li.product h3:before, 
-			.woocommerce-page ul.products li.product h3:before, .cross-sells h2'
+			.woocommerce-page ul.products li.product h3:before, .cross-sells h2, .upsells h2'
 				=> 'border-left-color: %s',
 				
 			'.woocommerce .widget_price_filter .ui-slider .ui-slider-handle' => 'border-color: %s',

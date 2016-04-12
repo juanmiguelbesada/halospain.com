@@ -34,17 +34,11 @@
 					<?php the_post_thumbnail('main-block', array('class' => 'image', 'title' => strip_tags(get_the_title()))); ?>
 				</a>
 				
-				<div class="meta">
-					<time datetime="<?php echo get_the_date(__('Y-m-d\TH:i:sP', 'bunyad')); ?>"><?php echo get_the_date(); ?> </time>
-					
-					<?php echo apply_filters('bunyad_review_main_snippet', ''); ?>					
-					
-					<span class="comments"><a href="<?php echo esc_attr(get_comments_link()); ?>"><i class="fa fa-comments-o"></i>
-							<?php echo get_comments_number(); ?></a></span>
-					
-				</div>
+				<?php echo Bunyad::blocks()->meta('above'); ?>
 				
 				<h2><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h2>
+				
+				<?php echo Bunyad::blocks()->meta('below'); ?>
 				
 			</article>
 			
@@ -82,13 +76,11 @@
 				
 				<div class="content">
 				
-					<time datetime="<?php echo get_the_date('Y-m-d\TH:i:sP'); ?>"><?php echo get_the_date(); ?> </time>
-				
-					<span class="comments"><a href="<?php echo esc_attr(get_comments_link()); ?>"><i class="fa fa-comments-o"></i>
-						<?php echo get_comments_number(); ?></a></span>
-				
-					<a href="<?php the_permalink(); ?>" title="<?php echo esc_attr(get_the_title() ? get_the_title() : get_the_ID()); ?>">
-						<?php if (get_the_title()) the_title(); else the_ID(); ?></a>
+					<?php echo Bunyad::blocks()->meta('above', 'mega-menu', array('type' => 'widget')); ?>
+									
+					<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+					
+					<?php echo Bunyad::blocks()->meta('below', 'mega-menu', array('type' => 'widget')); ?>
 																
 				</div>
 			</div>

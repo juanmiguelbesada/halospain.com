@@ -50,7 +50,7 @@ var Bunyad_Options = (function($) {
 			}
 			
 			
-			/*
+			/**
 			 * Events are used to mainly conditionally show or hide elements
 			 */
 			if (this.events) {
@@ -59,34 +59,171 @@ var Bunyad_Options = (function($) {
 					
 					// change event
 					if (v.change) {
-						
-						// checkbox checked
-						if (v.change.value == 'checked' && v.change.actions.show) {
 
-							// register handler for the field							
-							var fields = $('#bunyad-options [name='+ field +']');
+						// register handler for the field							
+						var fields = $('#bunyad-options [name='+ field +']');
+						
+						$.each(v.change.actions, function(action, elements) {
+							
+							// elements to act on
+							if (typeof elements === 'string') {
+								var elements = $('#bunyad-options .ele-' + elements.split(',').join(', #bunyad-options .ele-'));
+							}
+							
 							
 							fields.on('change', function() {
-								
-								var elements = $('#bunyad-options .ele-' + v.change.actions.show.split(',').join(', #bunyad-options .ele-'));
-								
-								if ($(this).is(':checked')) {
-									elements.show(200);
+								// checkbox checked
+								if (v.change.value == 'checked' && action == 'show') {
+									
+									fields.on('change', function() {
+										
+										if ($(this).is(':checked')) {
+											elements.show(200);
+										}
+										else {
+											elements.hide(200);
+										}
+									});
 								}
-								else {
-									elements.hide(200);
+								// using .val() for select boxes or for unchecked checkboxes
+								else if (action == 'show' || action == 'hide') {
+	
+										var val = $(this).val();
+										
+										// skip the non-checked radio options
+										if ($(this).is('input') && !$(this).is(':checked')) {
+											val = '@hide@';
+										}
+										
+										// hide action acts opposite of show
+										if (action == 'hide') {
+											val == v.change.value ? elements.hide(200) : elements.show(200);
+											return;
+										}
+										
+										if (val == v.change.value) {
+											elements.show(200);
+										}
+										else {
+											elements.hide(200);
+										}					
 								}
-							});
-							
-							// fire up the events first load
-							$(fields).trigger('change');
-						}
+								else if (action == 'set') {
+									
+									// only execute for the specific value
+									if ($(this).val() != v.change.value) {
+										return;
+									}
+									
+									$.each(elements, function(ele, val) {
+										
+										// get the targetted input field to set
+										ele = $('#bunyad-options [name=' + ele + ']');
+										
+										if (ele.is(':radio')) {
+											ele.val([val]);
+										}
+										else {
+											ele.val(val);
+										}
+									});
+								}
+								
+							}); // fields onchange
+								
+						}); // action loop
+						
+						// fire up the events first load
+						$(fields).trigger('change');
 						
 					} // end change event
 
 				}); // end $.each
 				
 			} // events
+			
+			$('[name=header_style]').change(function() {
+				
+				if ($(this).val() == 'tech') {
+					
+					// set dark top bar
+					$('[name=topbar_style]').val('dark');
+					
+					// set light nav
+					$('[name=nav_style]').val('nav-light');
+
+					// full width nav
+					$('[name=nav_layout]').val('nav-full');
+					
+					// activate modern mobile header
+					$('[name=mobile_header]').val('modern');
+					
+					console.log($('[name=nav_search]').prop('checked', false).parent().find('.checkbox-toggle'));
+					
+					// enable nav search
+					$('[name=nav_search]').prop('checked', false).parent().find('.checkbox-toggle').trigger('click');
+					$('[name=topbar_search]').prop('checked', true).parent().find('.checkbox-toggle').trigger('click');
+				}
+				else {
+					
+					// reset to defaults
+					$('[name=topbar_style]').val('');
+					$('[name=nav_style]').val('');
+					$('[name=topbar_style]').val('');
+					$('[name=nav_layout]').val('');
+					$('[name=mobile_header]').val('');
+					
+					$('[name=nav_search]').prop('checked', true).parent().find('.checkbox-toggle').trigger('click');
+					$('[name=topbar_search]').prop('checked', false).parent().find('.checkbox-toggle').trigger('click');
+										
+				}
+			});
+			
+			
+			// Skin changes
+			$('#bunyad-options [name=predefined_style]').on('focus', function() { 
+
+				// store current value
+				$(this).data('prev', $(this).val());
+				
+			}).on('change', function() {
+
+				// current and previous skin
+				var skin = $(this).val(),
+				    prev = $(this).data('prev'),
+				    message;
+				
+				if (skin == 'tech') {
+					message = 'Changing the skin will adjust several settings to match the skin. Are you sure you want to change it?';
+				}
+				
+				// changing from or to tech skin requires regenerate thumbnails
+				if (prev == 'tech' || skin == 'tech') {
+					message = (message ? message + "\n\n": '') + 'IMPORTANT: You will have to install and run "Regenerate Thumbnails" plugin after saving.';
+				}
+				
+				if (message && !confirm(message)) {
+					$(this).val(prev);
+					return false;
+				}
+				
+				// adjust settings for tech skin
+				if (skin == 'tech') {
+
+					// change font to Roboto
+					$('[name=css_heading_font]').val('Roboto').trigger('chosen:updated');
+					
+					$('[name=header_style][value=tech]').click().trigger('change');
+				}
+				else {
+					
+					if (prev == 'tech') {
+						$('[name=css_heading_font]').val('').trigger('chosen:updated');
+					}
+					
+					$('[name=header_style][value=default]').click().trigger('change');
+				}
+			});
 			
 		},
 		
@@ -128,16 +265,18 @@ var Bunyad_Options = (function($) {
 				if (checkbox.is(':checked')) {
 					checkbox.removeAttr('checked').trigger('change');
 					text = 'No';
+					
+					$(this).removeClass('checked');
 				}
 				else {
 					checkbox.attr('checked', 'checked').trigger('change');
 					text = 'Yes';
+					
+					$(this).addClass('checked');
 				}
 				
 				// change text
 				$(this).find('span').html(text);
-				
-				$(this).toggleClass('checked');
 				
 				return false;
 			});

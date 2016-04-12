@@ -49,7 +49,7 @@
 			
 				<article>
 				
-					<time datetime="<?php echo get_the_date('Y-m-d\TH:i:sP'); ?>"><?php echo get_the_date('M d'); ?> </time>
+					<time datetime="<?php echo get_the_date(DATE_W3C); ?>"><?php echo get_the_date('M d'); ?> </time>
 					
 					<a href="<?php the_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a>			
 				

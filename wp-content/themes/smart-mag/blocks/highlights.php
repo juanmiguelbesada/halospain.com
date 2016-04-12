@@ -23,7 +23,8 @@ if ($columns == 2 OR $columns == 3):
 			posts="<?php echo $posts; ?>"
 			taxonomy="<?php echo $taxonomy; ?>"
 			offset="<?php echo esc_attr($offsets[$key]); ?>" 
-			post_type="<?php echo esc_attr($post_type); ?>" 
+			post_type="<?php echo esc_attr($post_type); ?>"
+			heading_type="<?php echo esc_attr($heading_type); ?>"
 		/]	
 	<?php endforeach; ?>
 	
@@ -109,15 +110,26 @@ endif;
 		
 		$count = 0;
 		$type = '';
-		$heading = 'section-head';
+		$heading = '';
 		
-		if ($column == 'half' OR Bunyad::core()->get_sidebar() == 'none') {
-			$type = 'thumb';
+		if ($heading_type == 'auto') {
 			
-			$heading = '';
+			$heading = 'section-head';
+			
+			if ($column == 'half' OR Bunyad::core()->get_sidebar() == 'none') {
+				$type = 'thumb';
+				
+				$heading = 'overlay';
+			}
+		}
+		else if ($heading_type == 'block') {
+			$heading = 'section-head';
 		}
 		
-		
+		// no heading
+		if ($heading_type == 'none') {
+			$heading = '';
+		}
 		
 		?>
 		
@@ -134,7 +146,7 @@ endif;
 		
 		<?php if ($count === 1): // main post - better highlighted ?>
 		
-			<?php if ($heading != 'section-head'): ?>
+			<?php if ($heading == 'overlay'): ?>
 				<span class="cat-title larger cat-<?php echo $taxonomy->term_id; ?>">
 					<a href="<?php echo esc_url($link); ?>"><?php echo esc_html($title); ?></a></span>
 			<?php endif; ?>
@@ -147,7 +159,7 @@ endif;
 										? 'gallery-block' 
 										: (Bunyad::core()->get_sidebar() == 'none' ?  'main-slider' : 'main-block')
 								), 
-								array('class' => 'image', 'title' => strip_tags(get_the_title()))); ?>
+								array('class' => 'image', 'title' => strip_tags(get_the_title()), 'itemprop' => 'image')); ?>
 					
 					<?php if (get_post_format()): ?>
 						<span class="post-format-icon <?php echo esc_attr(get_post_format()); ?>"><?php
@@ -157,17 +169,11 @@ endif;
 					<?php echo apply_filters('bunyad_review_main_snippet', '', 'stars'); ?>
 				</a>
 				
-				<div class="meta">
-					<time datetime="<?php echo get_the_date(__('Y-m-d\TH:i:sP', 'bunyad')); ?>" itemprop="datePublished"><?php echo get_the_date(); ?> </time>
-					
-					<?php echo apply_filters('bunyad_review_main_snippet', ''); ?>
-					
-					<span class="comments"><a href="<?php echo esc_attr(get_comments_link()); ?>"><i class="fa fa-comments-o"></i>
-						<?php echo get_comments_number(); ?></a></span>
-					
-				</div>
+				<?php echo Bunyad::blocks()->meta('above', 'highlights'); ?>
 				
-				<h2 itemprop="name"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h2>
+				<h2 itemprop="name headline"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h2>
+				
+				<?php echo Bunyad::blocks()->meta('below', 'highlights'); ?>
 				
 				<?php if ($type == 'thumb'): ?>
 				
@@ -196,7 +202,7 @@ endif;
 				
 					<a href="<?php the_permalink() ?>"><?php the_post_thumbnail('post-thumbnail', array('title' => strip_tags(get_the_title()))); ?>
 
-					<?php if (class_exists('Bunyad') && Bunyad::options()->review_show_widgets): ?>
+					<?php if (Bunyad::options()->review_show_widgets): ?>
 						<?php echo apply_filters('bunyad_review_main_snippet', ''); ?>
 					<?php endif; ?>
 					
@@ -204,21 +210,15 @@ endif;
 					
 					<div class="content">
 
-						<?php 
-							/* $category = current(get_the_category());
+						<?php echo Bunyad::blocks()->meta('above', 'block-small'); ?>
 						
-						<span class="cat-title cat-<?php echo $category->cat_ID; ?>"><a href="<?php echo esc_url(get_category_link($category)); ?>"><?php echo esc_html($category->name); ?></a></span>
-						
-						*/ ?>
-
-						<time datetime="<?php echo get_the_date('Y-m-d\TH:i:sP'); ?>"><?php echo get_the_date(); ?> </time>
-
-					
 						<a href="<?php the_permalink(); ?>" title="<?php echo esc_attr(get_the_title() ? get_the_title() : get_the_ID()); ?>">
 							<?php if (get_the_title()) the_title(); else the_ID(); ?></a>
 							
+						<?php echo Bunyad::blocks()->meta('below', 'block-small'); ?>
+							
 						<?php echo apply_filters('bunyad_review_main_snippet', '', 'stars'); ?>
-																	
+						
 					</div>
 				
 			<?php else: ?>

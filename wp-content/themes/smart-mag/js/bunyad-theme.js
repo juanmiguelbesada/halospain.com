@@ -6,7 +6,8 @@ var Bunyad_Theme = (function($) {
 	"use strict";
 	
 	var hasTouch = false,
-	    responsive_menu = false;
+	    responsive_menu = false,
+	    mobile_head_init = false;
 	
 	// module
 	return {
@@ -28,7 +29,7 @@ var Bunyad_Theme = (function($) {
 				var raw = $(this).find('span:not(.progress)').html(),
 					progress = parseFloat(raw);
 				
-				$(this).find('.progress').css('width', (raw.search('%') === -1 ? (Math.round(progress / 10 * 100)) + '%' : progress)) 	;
+				$(this).find('.progress').css('width', (raw.search('%') === -1 ? (Math.round(progress / 10 * 100)) + '%' : progress));
 			});
 						
 			// social icons widget
@@ -36,14 +37,14 @@ var Bunyad_Theme = (function($) {
 			$('.social-icons a').tooltip({placement: 'bottom'});
 			
 			// news focus block
-			$('.news-focus .subcats a').click(function() {
+			$('.section-head .subcats a').click(function() {
 				
 				if ($(this).hasClass('active')) {
 					return false;
 				}
 				
 				var active = $(this).parents('.subcats').find('a.active'),
-					parent = $(this).parents('.news-focus');
+					parent = $(this).closest('section');
 
 				// show the news and hide the other block
 				parent.find('.news-' + active.data('id')).hide();
@@ -101,7 +102,8 @@ var Bunyad_Theme = (function($) {
 			// handle shortcodes
 			this.shortcodes();
 			
-			// setup mobile navigation
+			// setup mobile header and navigation
+			this.mobile_header();
 			this.responsive_nav();
 			this.touch_nav();
 			
@@ -141,6 +143,37 @@ var Bunyad_Theme = (function($) {
 				bar.addClass('appear').css('width', bar.data('width'));
 			});
 			
+			/**
+			 * Nav Search
+			 */
+			$('.search-overlay .search-icon').on('click', function() {
+				
+				$(this).parent().toggleClass('active');
+				return false;
+				
+			});
+			
+			$(document).on('click', function(e) {
+				if (!$(e.target).is('.search-overlay') && !$(e.target).parents('.search-overlay').length) {
+					$('.search-overlay').removeClass('active');
+				}
+			});
+			
+			// nav icons class if missing
+			$('.navigation i.only-icon').each(function() {
+				
+				var el = $(this).closest('li');
+				if (!el.hasClass('only-icon')) {
+					el.addClass('only-icon');
+					
+					// reflow bug fix for webkit
+					var nav = $('.navigation .menu ul').css('-webkit-box-sizing', 'border-box');
+					requestAnimationFrame(function() {
+						nav.css('-webkit-box-sizing', '');
+					});
+				}
+
+			});
 			
 			/**
 			 * IE fixes
@@ -254,9 +287,43 @@ var Bunyad_Theme = (function($) {
 				}, 8000);
 			});
 		},
+		
+		/**
+		 * Configure mobile header
+		 */
+		mobile_header: function() {
+			
+			// register resize event
+			var that = this;
+			
+			// place in separate method to prevent mem leaks
+			$(window).on('resize orientationchange', (function() {
+				that.init_mobile_header();
+			})());
+		},
+		
+		init_mobile_header: function() {
+			
+			if (mobile_head_init || $(window).width() > 799 || !$('body').hasClass('has-mobile-head')) {
+				return;
+			}
+			
+			// copy search form
+			var search = $('.top-bar .search');
+			search = (search.length ? search : $('.nav-search .search'));
 
-		responsive_nav: function()
-		{
+			if (search.length) {
+				$('.mobile-head .search-overlay').append(search.clone());
+			}
+			
+			mobile_head_init = true;
+		},
+		
+		/**
+		 * Setup the responsive nav events and markup
+		 */
+		responsive_nav: function() {
+			
 			// detect touch capability dynamically
 			$(window).on('touchstart', function() {
 				hasTouch = true;
@@ -270,10 +337,7 @@ var Bunyad_Theme = (function($) {
 				that.init_responsive_nav();
 			});		
 		},
-		
-		/**
-		 * Setup the responsive nav events and markup
-		 */
+
 		init_responsive_nav: function() {
 			
 			if ($(window).width() > 799 || responsive_menu) {
@@ -283,21 +347,43 @@ var Bunyad_Theme = (function($) {
 			// set responsive initialized
 			responsive_menu = true;
 			
-			// clone navigation for mobile
-			var clone = $('.navigation > div[class$="-container"]').clone().addClass('mobile-menu-container'),
-				mobile_search = false,
-				off_canvas = ($('.navigation .mobile').data('type') == 'off-canvas');
+			var off_canvas = ($('.navigation .mobile').data('type') == 'off-canvas'),
+			    mobile_search = false,
+			    menu;
+			
+			/**
+			 * Create the mobile menu from desktop menu
+			 */
+			if (!$('.navigation .mobile-menu').length) {
+				
+				// clone navigation for mobile
+				var menu = $('.navigation div[class$="-container"]').clone().addClass('mobile-menu-container');
+				
+				// add category mega menu links
+				menu.find('div.mega-menu .sub-cats').each(function() {
+					var container = $(this).closest('.menu-item');
+					
+					container.append($(this).find('.sub-nav'));
+					container.find('.sub-nav').replaceWith(function() {
+						return $('<ul />', {html: $(this).html()});
+					});
+				});
+				
+				menu.find('.menu').addClass('mobile-menu');
+				
+				// append inside wrap for full width menu
+				menu.appendTo(($('.navigation > .wrap').length ? '.navigation > .wrap' : '.navigation'));
+			}
+			else {
+				menu = $('.navigation .mobile-menu-container');
+			}
 			
 			// off-canvas setup?
 			if (off_canvas) {
-				clone.addClass('off-canvas');
-				clone.find('.menu').prepend($('<li class="close"><a href="#"><span>' + $('.navigation .selected .text').text()  + '</span> <i class="fa fa-times"></i></a></li>'));
+				menu.addClass('off-canvas');
+				menu.find('.menu').prepend($('<li class="close"><a href="#"><span>' + $('.navigation .selected .text').text()  + '</span> <i class="fa fa-times"></i></a></li>'));
 				$('body').addClass('nav-off-canvas');
 			}
-			
-			clone.find('.menu').addClass('mobile-menu');
-			clone.appendTo('.navigation');
-			
 			
 			// mobile search?
 			if ($('.navigation .mobile').data('search')) {
@@ -322,6 +408,29 @@ var Bunyad_Theme = (function($) {
 				}
 			});
 			
+			$('.mobile-head .menu-icon a').on('click', function() {
+             	$('body').toggleClass('off-canvas-active');
+			});
+			
+			
+			// have custom retina mobile logo? set dimensions
+			var logo_mobile = $('.logo-mobile');
+			if ($('.logo-mobile').length) {
+				
+				// order maters - attach event first
+				$('<img />').on('load', function() {
+					logo_mobile.prop('width', $(this)[0].naturalWidth / 2).prop('height', $(this)[0].naturalHeight / 2);
+				}).attr('src', logo_mobile.attr('src'));
+			}
+			
+			// Fix: Retina.js 2x logo on tablets orientation change
+			$(window).on('resize orientationchange', function() {
+				var logo = $('.logo-image');
+				if (logo.prop('width') == 0) {
+					logo.prop('width', logo[0].naturalWidth / 2).prop('height', logo[0].naturalHeight / 2);
+				}
+			});
+			
 			// off-canvas close
 			$('.off-canvas .close').click(function() {
 				$('body').toggleClass('off-canvas-active');
@@ -329,18 +438,25 @@ var Bunyad_Theme = (function($) {
 			
 			
 			// add mobile search
-			if (mobile_search && $('.top-bar .search').length) {
+			if (mobile_search) {
 				
-				$('.navigation .mobile .selected').append($('.top-bar .search')[0].outerHTML);
-				$('.mobile .search .search-button').click(function() {
-	
-					if (!$('.mobile .search .query').is(':visible')) {
-							$('.navigation .mobile .selected .current, .navigation .mobile .selected .text').toggle();              
-							$('.mobile .search').toggleClass('active');
-	
-							return false;
-					}
-				});
+				var search = $('.top-bar .search');
+				search = (search.length ? search : $('.nav-search .search'));
+				
+				// copy from top bar or nav search
+				if (search.length) {
+				
+					$('.navigation .mobile .selected').append(search[0].outerHTML);
+					$('.mobile .search .search-button').click(function() {
+		
+						if (!$('.mobile .search .query').is(':visible')) {
+								$('.navigation .mobile .selected .current, .navigation .mobile .selected .text').toggle();              
+								$('.mobile .search').toggleClass('active');
+		
+								return false;
+						}
+					});
+				}
 			}
 			
 			// setup mobile menu click handlers
@@ -372,6 +488,9 @@ var Bunyad_Theme = (function($) {
 			}
 		},
 		
+		/**
+		 * Setup touch navigation for larger touch devices
+		 */
 		touch_nav: function() {
 			
 			var targets = $('.menu:not(.mobile-menu) a'),
@@ -411,10 +530,17 @@ var Bunyad_Theme = (function($) {
 			});
 		},
 		
+		/**
+		 * Setup sticky navigation if enabled
+		 */
 		sticky_nav: function()
 		{
-			var nav = $('.navigation'),
-				nav_top = nav.offset().top;
+			var nav = $('.navigation-wrap'),
+			    nav_top  = nav.offset().top,
+			    smart = (nav.data('sticky-type') == 'smart'),
+			    is_sticky = false,
+			    prev_scroll = 0,
+			    cur_scroll;
 			
 			// not enabled?
 			if (!nav.data('sticky-nav')) {
@@ -425,25 +551,47 @@ var Bunyad_Theme = (function($) {
 				nav.addClass('has-logo');
 			}
 			
+			// disable the sticky nav
+			var remove_sticky = function() {
+				
+				// check before dom modification 
+				if (is_sticky) {
+					nav.removeClass('sticky-nav'); 
+				}
+			}
+			
+			// make the nav sticky
 			var sticky = function() {
 
 				if (!nav.data('sticky-nav') || $(window).width() < 800) {
 					return;
 				}
 				
+				cur_scroll = $(window).scrollTop();
+				is_sticky  = nav.hasClass('sticky-nav');
+				
 				// make it sticky when viewport is scrolled beyond the navigation
 				if ($(window).scrollTop() > nav_top) {
 					
-					if (!nav.hasClass('sticky')) {
-						nav.addClass('sticky no-transition');
-					
-						setTimeout(function() { 
-							nav.removeClass('no-transition'); 
-						}, 100);
+					// for smart sticky, test for scroll change
+					if (smart && (!prev_scroll || cur_scroll > prev_scroll)) {
+						remove_sticky();
+					}
+					else {
+						
+						if (!nav.hasClass('sticky-nav')) {
+							nav.addClass('sticky-nav no-transition');
+						
+							setTimeout(function() { 
+								nav.removeClass('no-transition'); 
+							}, 100);
+						}
 					}
 					
+					prev_scroll = cur_scroll;
+					
 				} else {
-					nav.removeClass('sticky'); 
+					remove_sticky();
 				}
 			};
 
@@ -954,16 +1102,8 @@ var Bunyad_Theme = (function($) {
 
 // load when ready
 jQuery(function($) {
-	
+		
 	Bunyad_Theme.init();
-	
-	// requestAnimationFrame pollyfill
-	var requestAnimationFrame = (
-			window.requestAnimationFrame
-			|| window.webkitRequestAnimationFrame
-			|| window.mozRequestAnimationFrame
-			|| function(callback) { return setTimeout(callback, 1000 / 60); }
-	);
 });
 
 /**
@@ -1005,7 +1145,7 @@ var Bunyad_Live_Search = (function($) {
 					return;
 				}
 				
-				// debounce to prevent excessive ajax queris
+				// debounce to prevent excessive ajax queries
 				timer = setTimeout(function() {
 					self.process(query);
 				}, 250);
@@ -1124,3 +1264,6 @@ jQuery(function() {
 
 /*! http://mths.be/placeholder v2.0.7 by @mathias */
 (function(q,f,d){function r(b){var a={},c=/^jQuery\d+$/;d.each(b.attributes,function(b,d){d.specified&&!c.test(d.name)&&(a[d.name]=d.value)});return a}function g(b,a){var c=d(this);if(this.value==c.attr("placeholder")&&c.hasClass("placeholder"))if(c.data("placeholder-password")){c=c.hide().next().show().attr("id",c.removeAttr("id").data("placeholder-id"));if(!0===b)return c[0].value=a;c.focus()}else this.value="",c.removeClass("placeholder"),this==m()&&this.select()}function k(){var b,a=d(this),c=this.id;if(""==this.value){if("password"==this.type){if(!a.data("placeholder-textinput")){try{b=a.clone().attr({type:"text"})}catch(e){b=d("<input>").attr(d.extend(r(this),{type:"text"}))}b.removeAttr("name").data({"placeholder-password":a,"placeholder-id":c}).bind("focus.placeholder",g);a.data({"placeholder-textinput":b,"placeholder-id":c}).before(b)}a=a.removeAttr("id").hide().prev().attr("id",c).show()}a.addClass("placeholder");a[0].value=a.attr("placeholder")}else a.removeClass("placeholder")}function m(){try{return f.activeElement}catch(b){}}var h="placeholder"in f.createElement("input"),l="placeholder"in f.createElement("textarea"),e=d.fn,n=d.valHooks,p=d.propHooks;h&&l?(e=e.placeholder=function(){return this},e.input=e.textarea=!0):(e=e.placeholder=function(){this.filter((h?"textarea":":input")+"[placeholder]").not(".placeholder").bind({"focus.placeholder":g,"blur.placeholder":k}).data("placeholder-enabled",!0).trigger("blur.placeholder");return this},e.input=h,e.textarea=l,e={get:function(b){var a=d(b),c=a.data("placeholder-password");return c?c[0].value:a.data("placeholder-enabled")&&a.hasClass("placeholder")?"":b.value},set:function(b,a){var c=d(b),e=c.data("placeholder-password");if(e)return e[0].value=a;if(!c.data("placeholder-enabled"))return b.value=a;""==a?(b.value=a,b!=m()&&k.call(b)):c.hasClass("placeholder")?g.call(b,!0,a)||(b.value=a):b.value=a;return c}},h||(n.input=e,p.value=e),l||(n.textarea=e,p.value=e),d(function(){d(f).delegate("form","submit.placeholder",function(){var b=d(".placeholder",this).each(g);setTimeout(function(){b.each(k)},10)})}),d(q).bind("beforeunload.placeholder",function(){d(".placeholder").each(function(){this.value=""})}))})(this,document,jQuery);
+
+// requestAnimationFrame pollyfill by paulirish - MIT
+(function(){for(var e=0,b=["ms","moz","webkit","o"],a=0;a<b.length&&!window.requestAnimationFrame;++a)window.requestAnimationFrame=window[b[a]+"RequestAnimationFrame"],window.cancelAnimationFrame=window[b[a]+"CancelAnimationFrame"]||window[b[a]+"CancelRequestAnimationFrame"];window.requestAnimationFrame||(window.requestAnimationFrame=function(a,b){var c=(new Date).getTime(),d=Math.max(0,16-(c-e)),f=window.setTimeout(function(){a(c+d)},d);e=c+d;return f});window.cancelAnimationFrame||(window.cancelAnimationFrame=function(a){clearTimeout(a)})})();

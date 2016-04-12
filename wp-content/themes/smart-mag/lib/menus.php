@@ -15,7 +15,6 @@ class Bunyad_Menus
 	
 	public function init()
 	{
-		
 		$this->fields = apply_filters('bunyad_custom_menu_fields', array());
 
 		// have custom fields?

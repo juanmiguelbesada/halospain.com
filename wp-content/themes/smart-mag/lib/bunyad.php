@@ -10,7 +10,7 @@
  * @package Bunyad
  */
 
-class Bunyad {
+class Bunyad_Base {
 	
 	protected static $_cache = array();
 	protected static $_registered = array();

@@ -14,27 +14,46 @@
 		$bunyad_loop = $wp_query;
 	}
 	
+	// Define the current loop type
+	$loop_type = empty($loop_type) ? 'grid-overlay' : $loop_type;
+	
+	// Grid type
+	$loop_grid = Bunyad::registry()->loop_grid;
+	
+	if (!isset($loop_grid_class)) {
+		$loop_grid_class = $loop_grid ? 'grid-' . $loop_grid : '';
+	}
+
 	if ($bunyad_loop->have_posts()):
 	
-		$attribs = array('class' => array('row listing grid-overlay'));
+		$attribs = array('class' => array('row listing', 'grid-overlay', $loop_type, $loop_grid_class));
 		
 		// infinite load?
 		if (Bunyad::options()->pagination_type == 'infinite') {
 			$attribs['data-infinite'] = Bunyad::markup()->unique_id('listing-'); 
 		}
 		
-		// set larger image when full-width, for 2-col grid
-		$image = Bunyad::core()->get_sidebar() == 'none' ?  'main-slider' : 'grid-overlay';
-		
-		// grid type
-		$loop_grid = Bunyad::registry()->loop_grid;
-		
-		if ($loop_grid) {
-			$attribs['class'][] = 'grid-' . $loop_grid;
+		/**
+		 * Select the image to use 
+		 */
+		if (!isset($loop_image)) {
 			
-			// change image to smaller
-			// $image = Bunyad::core()->get_sidebar() == 'none' ?  'grid-overlay' : 'gallery-block';
-			$image = 'grid-overlay';
+			// set larger image when full-width, for 2-col grid
+			$image = Bunyad::core()->get_sidebar() == 'none' ?  'main-slider' : 'grid-overlay';
+					
+			if ($loop_grid) {
+				
+				// change image to smaller
+				$image = 'grid-overlay';
+			}
+		}
+		else {
+			$image = $loop_image;
+		}
+		
+		// Loop grid column class
+		if (!isset($loop_column)) {
+			$loop_column = ($loop_grid == 3 ? 'one-third' : 'half'); 
 		}
 		
 	?>
@@ -43,28 +62,11 @@
 		
 		<?php while ($bunyad_loop->have_posts()): $bunyad_loop->the_post(); ?>
 			
-		<div class="column <?php echo ($loop_grid == 3 ? 'one-third' : 'half'); ?>">
+		<div class="column <?php echo esc_attr($loop_column); ?>">
 		
 			<article <?php post_class('highlights'); ?> itemscope itemtype="http://schema.org/Article">
 				
-			<?php
-				// object has category taxonomy? i.e., is it a post?
-				if (in_array('category', get_object_taxonomies(get_post_type()))):
-				
-					// custom label selected?				
-					if (($cat_label = Bunyad::posts()->meta('cat_label'))) {
-						$category = get_category($cat_label);
-					}
-					else {
-						$category = current(get_the_category());						
-					}
-			?>
-			
-				<span class="cat-title cat-<?php echo $category->cat_ID; ?>"><a href="<?php echo esc_url(get_category_link($category)); 
-					?>"><?php echo esc_html($category->name); ?></a></span>
-					
-			<?php endif; ?>
-					
+				<?php echo Bunyad::blocks()->cat_label(); ?>
 				
 				<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" class="image-link">
 					<?php the_post_thumbnail($image, array('class' => 'image', 'title' => strip_tags(get_the_title()), 'itemprop' => 'image')); ?>
@@ -77,12 +79,14 @@
 					<?php echo apply_filters('bunyad_review_main_snippet', '', 'stars'); ?>
 				</a>
 				
-				<div class="overlay">			
-					<span class="meta">
-						<time datetime="<?php echo get_the_date(DATE_W3C); ?>" itemprop="datePublished"><?php echo get_the_date(); ?> </time>
-					</span>
+				<div class="overlay">
+				
+					<?php echo Bunyad::blocks()->meta('above', 'grid-overlay'); ?>
 					
-					<h2 itemprop="name"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" itemprop="url"><?php the_title(); ?></a></h2>
+					<h2 itemprop="name headline"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" itemprop="url"><?php the_title(); ?></a></h2>
+					
+					<?php echo Bunyad::blocks()->meta('below', 'grid-overlay'); ?>
+					
 				</div>
 			
 			</article>

@@ -124,6 +124,17 @@ class Bunyad_Admin_MetaBoxes
 			return false;
 		}
 		
+		// load meta-box fields
+		if (!empty($_POST['bunyad_meta_box'])) {
+			$file = locate_template('admin/meta/options/' . sanitize_file_name($_POST['bunyad_meta_box']) . '.php');
+			
+			if (!empty($file)) {
+				include $file;
+				
+				$options = $this->_build_meta_map($options);
+			}
+		}
+		
 		// save all meta data with the right prefix
 		foreach ($_POST as $key => $value) {
 			
@@ -133,12 +144,42 @@ class Bunyad_Admin_MetaBoxes
 				
 				// add or update metadata
 				if ($value != '' && $meta != $value) {
-					update_post_meta($post_id, $key, $value);
+					
+					// allowed_html available for this value in options?
+					if (!empty($options[$key]) && array_key_exists('allowed_html', $options[$key])) {
+						$filtered_value = addslashes(
+							wp_kses(stripslashes($value), $options[$key]['allowed_html'])
+						);
+					}
+					else {
+						// default filtered values
+						$filtered_value = (current_user_can('unfiltered_html') ? $value : wp_filter_post_kses($value));
+					}
+					
+					// filtered_value is expected to have slashes
+					update_post_meta($post_id, $key, $filtered_value);
+
 				}
 				else if ($meta && $value == '') {
 					delete_post_meta($post_id, $key, $value);
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Build meta options array using field name as key with the prefix
+	 * 
+	 * @param array $options
+	 */
+	public function _build_meta_map($options)
+	{
+		$map = array();
+		
+		foreach ($options as $option) {
+			$map[ $this->option_prefix . $option['name'] ] = $option;
+		}
+		
+		return $map;
 	}
 }

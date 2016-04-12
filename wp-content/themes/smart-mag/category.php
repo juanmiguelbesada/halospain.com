@@ -39,7 +39,7 @@ if ($cat_meta['template'] == 'timeline') {
 // default modern template
 else {
 	
-	if (in_array($cat_meta['template'], array('alt', 'classic', 'grid-overlay', 'grid-overlay-3'))) {
+	if (in_array($cat_meta['template'], array('alt', 'classic', 'grid-overlay', 'grid-overlay-3', 'tall-overlay'))) {
 		$bunyad_loop_template = 'loop-' . str_replace('-3', '', $cat_meta['template']);
 	}
 	else {
@@ -67,6 +67,7 @@ if (!empty($cat_meta['pagination_type'])) {
 	// normal is default - empty in options
 	Bunyad::options()->set('pagination_type', ($cat_meta['pagination_type'] == 'normal' ? '' : $cat_meta['pagination_type']));
 }
+
 
 get_template_part('archive');
 

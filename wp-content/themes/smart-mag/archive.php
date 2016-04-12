@@ -24,10 +24,20 @@ global $bunyad_loop_template;
 get_header();
 
 // no template set?
-if (empty($bunyad_loop_template)) 
-{
-	if (in_array(Bunyad::options()->archive_loop_template, array('alt', 'timeline', 'classic'))) {
-		$bunyad_loop_template = 'loop-' . Bunyad::options()->archive_loop_template;
+if (empty($bunyad_loop_template)) {
+	
+	$template = Bunyad::options()->archive_loop_template;
+	
+	// modern loop template is loop.php (default)
+	if (!empty($template)) {
+		
+		if (!strstr($template, 'modern')) {
+			$bunyad_loop_template = 'loop-' . str_replace('-3', '', $template);
+		}
+		
+		if (strstr($template, '-3')) {
+			Bunyad::registry()->loop_grid = 3;
+		}
 	}
 }
 
@@ -57,7 +67,7 @@ if (Bunyad::options()->pagination_type == 'infinite') {
 			<h2 class="main-heading"><?php printf(__('Browsing: %s', 'bunyad'), '<strong>' . single_tag_title( '', false ) . '</strong>'); ?></h2>
 			
 			<?php if (tag_description()): ?>
-				<div class="post-content"><?php echo do_shortcode(tag_description()); ?></div>
+				<div class="cat-description post-content"><?php echo do_shortcode(tag_description()); ?></div>
 			<?php endif; ?>
 		
 		<?php elseif (is_category()): // category page ?>
@@ -65,7 +75,7 @@ if (Bunyad::options()->pagination_type == 'infinite') {
 			<h2 class="main-heading"><?php printf(__('Browsing: %s', 'bunyad'), '<strong>' . single_cat_title('', false) . '</strong>'); ?></h2>
 			
 			<?php if (category_description()): ?>
-				<div class="post-content"><?php echo do_shortcode(category_description()); ?></div>
+				<div class="cat-description post-content"><?php echo do_shortcode(category_description()); ?></div>
 			<?php endif; ?>
 			
 		<?php elseif (is_tax()): // custom taxonomies ?>
@@ -73,7 +83,7 @@ if (Bunyad::options()->pagination_type == 'infinite') {
 			<h2 class="main-heading"><?php printf(__('Browsing: %s', 'bunyad'), '<strong>' . single_term_title('', false) . '</strong>'); ?></h2>
 			
 			<?php if (term_description()): ?>
-				<div class="post-content"><?php echo do_shortcode(term_description()); ?></div>
+				<div class="cat-description post-content"><?php echo do_shortcode(term_description()); ?></div>
 			<?php endif; ?>
 			
 		<?php elseif (is_search()): // search page ?>
@@ -94,7 +104,7 @@ if (Bunyad::options()->pagination_type == 'infinite') {
 			?></h2>
 		<?php endif; ?>
 	
-		<?php get_template_part(($bunyad_loop_template ? $bunyad_loop_template : 'loop')); ?>
+		<?php get_template_part(($bunyad_loop_template ? sanitize_file_name($bunyad_loop_template) : 'loop')); ?>
 
 		</div>
 		

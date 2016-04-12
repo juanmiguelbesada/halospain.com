@@ -83,7 +83,7 @@
 						<span class="cat-title cat-<?php echo $category->cat_ID; ?>"><a href="<?php 
 							echo esc_url(get_category_link($category)); ?>"><?php echo esc_html($category->name); ?></a></span>
 						
-						<h1 class="item fn" itemprop="name"><?php the_title(); ?></h1>
+						<h1 class="item fn" itemprop="name headline"><?php the_title(); ?></h1>
 						
 						<div class="post-meta">
 							<span class="posted-by"><?php _ex('By', 'Post Meta', 'bunyad'); ?> 

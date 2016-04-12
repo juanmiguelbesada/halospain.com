@@ -25,7 +25,7 @@ class Bunyad_Markup
 		foreach ($attributes as $key => $value) {
 			
 			if (is_array($value)) {
-				$value = join(' ', array_filter($value));
+				$value = join(' ', array_unique(array_filter($value)));
 			}
 			
 			// html5 supports attributes of type itemscope, checked without value

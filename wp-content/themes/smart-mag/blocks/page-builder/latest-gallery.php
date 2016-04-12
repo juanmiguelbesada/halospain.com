@@ -10,8 +10,8 @@ class Bunyad_PageBuilder_LatestGallery extends Bunyad_PageBuilder_WidgetBase
 	{
 		parent::__construct(
 			'bunyad_pagebuilder_latest_gallery',
-			__('Latest Gallery Carousel', 'bunyad'),
-			array('description' => __('Show latest videos or galleries in a carousel.', 'bunyad'))
+			__('Latest Gallery Carousel', 'bunyad-admin'),
+			array('description' => __('Show latest videos or galleries in a carousel.', 'bunyad-admin'))
 		);
 	}
 	
@@ -42,47 +42,47 @@ class Bunyad_PageBuilder_LatestGallery extends Bunyad_PageBuilder_WidgetBase
 	<input type="hidden" name="<?php echo $this->get_field_name('no_container'); ?>" value="1" />
 	
 	<p>
-		<label><?php _e('Title:', 'bunyad'); ?></label>
+		<label><?php _e('Title:', 'bunyad-admin'); ?></label>
 		<input class="widefat" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
 	</p>
 	
 	<p>
-		<label><?php _e('Number of Media:', 'bunyad'); ?></label>
+		<label><?php _e('Number of Media:', 'bunyad-admin'); ?></label>
 		<input name="<?php echo esc_attr($this->get_field_name('number')); ?>" type="text" value="<?php echo esc_attr($number); ?>" />
 	</p>
-	<p class="description"><?php _e(' Leave empty to use theme default number of posts.', 'bunyad'); ?></p>
+	<p class="description"><?php _e(' Leave empty to use theme default number of posts.', 'bunyad-admin'); ?></p>
 	
 	<div>
-		<label><?php _e('Type of Media:', 'bunyad'); ?></label>
+		<label><?php _e('Type of Media:', 'bunyad-admin'); ?></label>
 	
 		<select class="widefat" name="<?php echo esc_attr($this->get_field_name('format')); ?>">
-			<option value="video"><?php _e('Videos', 'bunyad'); ?></option>
-			<option value="audio"><?php _e('Audio', 'bunyad'); ?></option>
-			<option value="gallery"><?php _e('Gallery', 'bunyad'); ?></option>
-			<option value="all"><?php _e('All Post Formats', 'bunyad'); ?></option>
+			<option value="video"><?php _e('Videos', 'bunyad-admin'); ?></option>
+			<option value="audio"><?php _e('Audio', 'bunyad-admin'); ?></option>
+			<option value="gallery"><?php _e('Gallery', 'bunyad-admin'); ?></option>
+			<option value="all"><?php _e('All Post Formats', 'bunyad-admin'); ?></option>
 		</select>
 		
-		<p class="description"><?php _e('Corresponds to "post format". e.g. videos would use posts marked as video format.', 'bunyad'); ?></p>
+		<p class="description"><?php _e('Corresponds to "post format". e.g. videos would use posts marked as video format.', 'bunyad-admin'); ?></p>
 	</div>
 	
 	<p>
-		<label><?php _e('Limit to Category:', 'bunyad'); ?></label>
+		<label><?php _e('Limit to Category:', 'bunyad-admin'); ?></label>
 		<?php wp_dropdown_categories(array(
-			'hierarchical' => 1, 'show_option_all' => __('Not Limited', 'bunyad'), 'order_by' => 'name', 'class' => 'widefat', 'name' => $this->get_field_name('cat')
+			'hierarchical' => 1, 'show_option_all' => __('Not Limited', 'bunyad-admin'), 'order_by' => 'name', 'class' => 'widefat', 'name' => $this->get_field_name('cat')
 		)); ?>
 	</p>
 	
 	<p>
-		<label><?php _e('or Limit by Tags: (optional) ', 'bunyad'); ?></label>
+		<label><?php _e('or Limit by Tags: (optional) ', 'bunyad-admin'); ?></label>
 		<input type="text" name="<?php echo $this->get_field_name('tax_tag'); ?>" value="" />
 	</p>
-	<p class="description"><?php _e('You can use a single or multiple tags. Separate tags with comma. e.g. cooking,sports', 'bunyad'); ?></p>
+	<p class="description"><?php _e('You can use a single or multiple tags. Separate tags with comma. e.g. cooking,sports', 'bunyad-admin'); ?></p>
 	
 	<p>
-		<label><?php _e('Post Types: (Advanced)', 'bunyad'); ?></label>
+		<label><?php _e('Post Types: (Advanced)', 'bunyad-admin'); ?></label>
 		<input name="<?php echo esc_attr($this->get_field_name('post_type')); ?>" type="text" value="<?php echo esc_attr($post_type); ?>" />
 	</p>
-	<p class="description"><?php _e('Only for advanced users! You can use a custom post type here - multiples supported when separated by comma. Leave empty to use the default format. .', 'bunyad'); ?></p>
+	<p class="description"><?php _e('Only for advanced users! You can use a custom post type here - multiples supported when separated by comma. Leave empty to use the default format.', 'bunyad-admin'); ?></p>
 	
 	<?php
 	}

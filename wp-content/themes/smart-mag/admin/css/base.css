@@ -92,3 +92,7 @@
 	min-width: 50px;
 	max-width: 100px;
 }
+
+.form-table .form-field .input-small {
+	max-width: 250px;
+}

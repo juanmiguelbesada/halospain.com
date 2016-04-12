@@ -8,6 +8,7 @@
 
 class Bunyad_Admin_Importer
 {
+	public $demo_data_path;
 	
 	public function __construct()
 	{	
@@ -40,7 +41,12 @@ class Bunyad_Admin_Importer
 		if (!isset($_POST['import_demo'])) {
 			return;
 		}
+		
+		$this->set_image_defaults();
 
+		// set demo data path according to demo type
+		$this->demo_data_path = trailingslashit(get_template_directory() . '/admin/demo-data/' . sanitize_file_name($_POST['import_demo_type']));
+		
 		// modify page meta to correct category mappings for page builder
 		add_action('import_post_meta', array($this, 'remap_page_meta'), 10, 3);
 
@@ -59,14 +65,18 @@ class Bunyad_Admin_Importer
 		<div class="import-message">
 
 		<?php if (stristr($xml_result, 'All Done')): ?>
-			<h3 class="success"><?php _e('Import Completed!', 'bunyad'); ?></h3>
-			<p><?php echo apply_filters('bunyad_import_successful', __('Your import has been completed successfully. Have fun!', 'bunyad')); ?></p>
+			<h3 class="success"><?php _e('Import Completed!', 'bunyad-admin'); ?></h3>
+			<p><?php echo apply_filters('bunyad_import_successful', __('Your import has been completed successfully. Have fun!', 'bunyad-admin')); ?></p>
+			
+			<?php if (empty($_POST['import_image_gen'])): ?>
+				<p><?php echo __('<strong>REMINDER:</strong> For correct thumbnails, install the plugin "Regenerate Thumbnails" and run it from Tools > Regen. Thumbnails.', 'bunyad-admin'); ?></p>
+			<?php endif; ?>
 
 		<?php else: ?>
 
-			<h3 class="failed"><?php _e('Import Failed!', 'bunyad'); ?></h3>
+			<h3 class="failed"><?php _e('Import Failed!', 'bunyad-admin'); ?></h3>
 			<p><?php echo apply_filters('bunyad_import_failed', 
-				__('Sorry but your import failed. Most likely, it cannot work with your webhost. You will have to ask your webhost to increase your PHP max_execution_time (or any other webserver timeout to at least 300 secs) and memory_limit (to at least 196M) temporarily.', 'bunyad')); ?></p>
+				__('Sorry but your import failed. Most likely, it cannot work with your webhost. You will have to ask your webhost to increase your PHP max_execution_time (or any other webserver timeout to at least 300 secs) and memory_limit (to at least 196M) temporarily.', 'bunyad-admin')); ?></p>
 
 			<p><?php echo $xml_result; ?></p>
 
@@ -96,7 +106,7 @@ class Bunyad_Admin_Importer
 			add_filter('intermediate_image_sizes_advanced', array($this, 'disable_image_sizes'));
 		}
 		
-		$xml_file = get_template_directory() . '/admin/demo-data/sample.xml';
+		$xml_file = $this->demo_data_path . 'sample.xml';
 		
 		if (file_exists($xml_file)) {
 			
@@ -126,7 +136,7 @@ class Bunyad_Admin_Importer
 		}
 
 		// get the widget data and import it
-		$widget_data = get_template_directory() . '/admin/demo-data/widgets.wie';
+		$widget_data = $this->demo_data_path . 'widgets.wie';
 
 		if (file_exists($widget_data)) {
 			
@@ -357,7 +367,7 @@ class Bunyad_Admin_Importer
 	 */
 	public function import_theme_settings()
 	{
-		$data = json_decode(file_get_contents(get_template_directory() . '/admin/demo-data/settings.json'), true);
+		$data = json_decode(file_get_contents($this->demo_data_path . 'settings.json'), true);
 
 		// remove un-necessary data
 		unset($data['shortcodes']);
@@ -390,5 +400,16 @@ class Bunyad_Admin_Importer
 	 */
 	public function disable_image_sizes($sizes) {
     	return array();
+	}
+	
+	/**
+	 * Ensure media image sizes are default pre-import
+	 */
+	public function set_image_defaults() 
+	{
+		update_option('medium_size_w', 300);
+		update_option('medium_size_h', 300);
+		update_option('large_size_w', 1024);
+		update_option('large_size_h', 1024);
 	}
 } 

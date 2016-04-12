@@ -2,6 +2,9 @@
 
 /**
  * Alternate "loop" to display posts in blog style.
+ * 
+ * It's a partial template called by category.php for archives or blocks/blog.php
+ * when used as a page builder block or shortcode.
  */
 
 ?>
@@ -29,23 +32,8 @@
 		
 			<article <?php post_class(); ?> itemscope itemtype="http://schema.org/Article">
 
-			<?php
-				// object has category taxonomy? i.e., is it a post?
-				if (in_array('category', get_object_taxonomies(get_post_type()))):
-				
-					// custom label selected?				
-					if (($cat_label = Bunyad::posts()->meta('cat_label'))) {
-						$category = get_category($cat_label);
-					}
-					else {
-						$category = current(get_the_category());						
-					}
-			?>		
-				<span class="cat-title cat-<?php echo $category->cat_ID; ?>"><a href="<?php echo esc_url(get_category_link($category)); 
-					?>"><?php echo esc_html($category->name); ?></a></span>
+				<?php echo Bunyad::blocks()->cat_label(); ?>
 					
-			<?php endif; ?>
-			
 				<a href="<?php the_permalink() ?>" itemprop="url"><?php the_post_thumbnail('main-block', array('title' => strip_tags(get_the_title()), 'itemprop' => 'image')); ?>
 				
 				<?php echo apply_filters('bunyad_review_main_snippet', ''); ?>
@@ -54,18 +42,19 @@
 				
 				<div class="content">
 				
-					<time datetime="<?php echo get_the_date('Y-m-d\TH:i:sP'); ?>" itemprop="datePublished"><?php echo get_the_date(); ?> </time>
+					<?php echo Bunyad::blocks()->meta('above', 'listing-alt'); ?>
 				
-					<span class="comments"><a href="<?php echo esc_attr(get_comments_link()); ?>"><i class="fa fa-comments-o"></i>
-						<?php echo get_comments_number(); ?></a></span>
-				
-					<a href="<?php the_permalink(); ?>" title="<?php echo esc_attr(get_the_title() ? get_the_title() : get_the_ID()); ?>" itemprop="name url">
+					<a href="<?php the_permalink(); ?>" title="<?php echo esc_attr(get_the_title() ? get_the_title() : get_the_ID()); ?>" itemprop="name headline url">
 						<?php if (get_the_title()) the_title(); else the_ID(); ?></a>
+						
+					<?php echo Bunyad::blocks()->meta('below', 'listing-alt'); ?>
 						
 					<?php echo apply_filters('bunyad_review_main_snippet', '', 'stars'); ?>
 					
 					<div class="excerpt"><?php 
-						echo Bunyad::posts()->excerpt(null, Bunyad::options()->excerpt_length_alt, array('force_more' => Bunyad::options()->read_more_alt)); ?></div>
+							echo Bunyad::posts()->excerpt(null, Bunyad::options()->excerpt_length_alt, array('force_more' => Bunyad::options()->read_more_alt)); 
+						?>
+					</div>
 					
 				</div>
 			

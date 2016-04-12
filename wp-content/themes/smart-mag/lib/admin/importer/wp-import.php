@@ -1,22 +1,35 @@
 <?php
 
 /**
- * Extend the native importer to make the process better
+ * Extend the native WordPress importer to make the process better
  */
 
 class Bunyad_Admin_Importer_WpImport extends WP_Import {
 
 	public $the_images = array();
+	public $current_url = '';
+	public $attachments_original = array();
 
 	public function __construct() 
 	{
+		// called via lib/importer.php when the import process begins
 		@set_time_limit(0);
 		@ini_set('memory_limit', '512M');
 
 		// pre-load featured images path
 		$this->the_images = glob(get_template_directory() . '/admin/demo-data/images/*.jpg');
 
+		// attachments that will be fetched from original source instead of being replaced a random image
+		$this->attachments_original = apply_filters('bunyad_import_attachments_original', $this->attachments_original);
+
 		//add_action('wp_insert_post', array($this, 'send_flush'));
+	}
+
+	public function process_posts()
+	{
+		do_action('bunyad_import_process_posts_pre', $this);
+
+		parent::process_posts();
 	}
 
 	/**
@@ -38,17 +51,104 @@ class Bunyad_Admin_Importer_WpImport extends WP_Import {
 	 */
 	public function process_attachment($post, $url)
 	{
-		
-		// pick a random image 
-		if (is_array($this->the_images) && count($this->the_images)) {
-			$image = $this->the_images[ array_rand($this->the_images) ];
-			$url = content_url(substr($image, strrpos($image, '/themes/')));
-		}
-		else {
-			return;
+		$this->current_url = $url;
+
+		if (!in_array($url, $this->attachments_original)) {
+			// pick a random image 
+			if (is_array($this->the_images) && count($this->the_images)) {
+
+				$image = $this->the_images[ array_rand($this->the_images) ];
+				$url = content_url(substr($image, strrpos($image, '/themes/')));
+			}
+			else {
+				return;
+			}
 		}
 
-		return parent::process_attachment($post, $url);
+		// process at the parent
+		// return parent::process_attachment($post, $url);
+		/**
+		 * Code from WordPress Importer WP_Import::process_attachment()
+		 */
+		
+		// if the URL is absolute, but does not contain address, then upload it assuming base_site_url
+		if ( preg_match( '|^/[\w\W]+$|', $url ) )
+			$url = rtrim( $this->base_url, '/' ) . $url;
+
+		$upload = $this->fetch_remote_file( $url, $post );
+		if ( is_wp_error( $upload ) )
+			return $upload;
+
+		if ( $info = wp_check_filetype( $upload['file'] ) )
+			$post['post_mime_type'] = $info['type'];
+		else
+			return new WP_Error( 'attachment_processing_error', __('Invalid file type', 'wordpress-importer') );
+
+		$post['guid'] = $upload['url'];
+
+		// as per wp-admin/includes/upload.php
+		$post_id = wp_insert_attachment( $post, $upload['file'] );
+		$metadata = wp_generate_attachment_metadata( $post_id, $upload['file'] );
+		wp_update_attachment_metadata( $post_id, $metadata );
+
+		// remap resized image URLs, works by stripping the extension and remapping the URL stub.
+		if ( preg_match( '!^image/!', $info['type'] ) ) {
+			$url = $this->current_url;
+			
+			// old file - the local file from demo-data
+			// new file - the new local file in uploads
+			$parts = pathinfo($url);
+			$parts_new = pathinfo($upload['url']);
+			
+			/**
+			 * Since images are dynamic, the aspect ratio might be different - so images that don't have a crop
+			 * will need changing the -1024xYYY.jpg part too
+			 */
+					$old_sizes = array();
+			foreach ($this->posts as $orig_post) {
+				if ($orig_post['post_id'] == $post['import_id']) {
+					foreach ($orig_post['postmeta'] as $meta) {
+						if ($meta['key'] == '_wp_attachment_metadata') {
+							$old_sizes = unserialize($meta['value']);
+							$old_sizes = $old_sizes['sizes'];
+							break;	
+						}
+					}
+					break;
+				}
+			}
+			
+			/* Large */
+			if (!empty($old_sizes['large'])) {
+				$dims = image_resize_dimensions($metadata['width'], $metadata['height'], 1024, 1024);
+				list( $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ) = $dims;
+
+				$old_ext = pathinfo($old_sizes['large']['file'], PATHINFO_EXTENSION);			
+
+				$name = $parts['filename']. '-' . $old_sizes['large']['width'] . 'x' . $old_sizes['large']['height'] . '.' . $old_ext; 
+				$name_new = $parts_new['filename'] . "-{$dst_w}x{$dst_h}" . '.' . $parts['extension'];
+				$this->url_remap[$parts['dirname'] . '/' . $name] = $parts_new['dirname'] . '/' . $name_new;
+			}
+			
+			/* Medium */
+			if (!empty($old_sizes['medium'])) {
+				$dims = image_resize_dimensions($metadata['width'], $metadata['height'], 300, 300);
+				list( $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ) = $dims;
+
+				$old_ext = pathinfo($old_sizes['medium']['file'], PATHINFO_EXTENSION);			
+
+				$name = $parts['filename']. '-' . $old_sizes['medium']['width'] . 'x' . $old_sizes['medium']['height'] . '.' . $old_ext; 
+				$name_new = $parts_new['filename'] . "-{$dst_w}x{$dst_h}" . '.' . $parts['extension'];
+				$this->url_remap[$parts['dirname'] . '/' . $name] = $parts_new['dirname'] . '/' . $name_new;
+			}
+			
+			/* Others - remap resized image URLs, works by stripping the extension and remapping the URL stub. */
+			$name = basename($parts['basename'], ".{$parts['extension']}"); // PATHINFO_FILENAME in PHP 5.2
+			$name_new = basename($parts_new['basename'], ".{$parts_new['extension']}");
+			$this->url_remap[$parts['dirname'] . '/' . $name] = $parts_new['dirname'] . '/' . $name_new;
+		}
+		
+		return $post_id;
 	}
 
 	public function send_flush()

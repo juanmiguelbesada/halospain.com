@@ -4,7 +4,6 @@
  * Default Page Template
  */
 
-
 get_header();
 
 

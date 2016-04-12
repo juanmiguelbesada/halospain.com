@@ -36,69 +36,29 @@
 
 </head>
 
+
 <body <?php body_class(); ?>>
 
+<div class="main-wrap">
+
 	<?php 
-	
+
 	/**
-	 * Get the partial template for top bar
+	 * Get the selected header template
+	 * 
+	 * Note: Default is partials/header/layout.php
 	 */
-	get_template_part('partials/header/top-bar'); 
+	get_template_part('partials/header/layout', Bunyad::options()->header_style);
 	
 	?>
 	
-	<div id="main-head" class="main-head">
+<?php if (!Bunyad::options()->disable_breadcrumbs): ?>
+	<div <?php Bunyad::markup()->attribs('breadcrumbs-wrap', array('class' => array('breadcrumbs-wrap'))); ?>>
 		
 		<div class="wrap">
-		
-		
-			<?php 
-					
-				/**
-				 * Get the header based on settings
-				 */
-				$header = Bunyad::options()->header_style ? Bunyad::options()->header_style : 'default';
-				
-				get_template_part('partials/header/' . $header); 
-
-				
-				/**
-				 * Setup data variables to enable or disable sticky nav functionality
-				 */
-				$attribs = array('class' => array('navigation cf', Bunyad::options()->nav_align));
-				
-				if (Bunyad::options()->sticky_nav) {
-					
-					$attribs['data-sticky-nav'] = 1;
-								
-					// sticky navigation logo?
-					if (Bunyad::options()->sticky_nav_logo) {
-						$attribs['data-sticky-logo'] = 1;
-					}
-				}
-
-			?>
-			
-			<nav <?php Bunyad::markup()->attribs('navigation', $attribs); ?>>
-			
-				<div class="mobile" data-type="<?php echo Bunyad::options()->mobile_menu_type; ?>" data-search="<?php echo Bunyad::options()->mobile_nav_search; ?>">
-					<a href="#" class="selected">
-						<span class="text"><?php _e('Navigate', 'bunyad'); ?></span><span class="current"></span> <i class="hamburger fa fa-bars"></i>
-					</a>
-				</div>
-				
-				<?php wp_nav_menu(array('theme_location' => 'main', 'fallback_cb' => '', 'walker' =>  'Bunyad_Menu_Walker')); ?>
-			</nav>
-			
+		<?php Bunyad::core()->breadcrumbs(); ?>
 		</div>
 		
-	</div>
-
-<div class="main-wrap">
-	
-<?php if (!Bunyad::options()->disable_breadcrumbs): ?>
-	<div class="wrap">
-		<?php Bunyad::core()->breadcrumbs(); ?>
 	</div>
 <?php endif; ?>
 

@@ -6,7 +6,7 @@
 
 <?php if (!Bunyad::options()->disable_topbar): ?>
 	
-	<div class="top-bar">
+	<div <?php Bunyad::markup()->attribs('top-bar', array('class' => array('top-bar', Bunyad::options()->topbar_style))); ?>>
 
 		<div class="wrap">
 			<section class="top-bar-content cf">
@@ -16,7 +16,7 @@
 					<span class="heading"><?php echo Bunyad::options()->topbar_ticker_text; // filtered html allowed for admins ?></span>
 
 					<ul>
-						<?php $query = new WP_Query(apply_filters('bunyad_ticker_query_args', array('orderby' => 'date', 'order' => 'desc'))); ?>
+						<?php $query = new WP_Query(apply_filters('bunyad_ticker_query_args', array('orderby' => 'date', 'order' => 'desc', 'posts_per_page' => 8))); ?>
 						
 						<?php while($query->have_posts()): $query->the_post(); ?>
 						

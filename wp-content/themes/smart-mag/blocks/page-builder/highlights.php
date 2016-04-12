@@ -10,8 +10,8 @@ class Bunyad_PageBuilder_Highlights extends Bunyad_PageBuilder_WidgetBase
 	{
 		parent::__construct(
 			'bunyad_pagebuilder_highlights',
-			__('Highlights Block', 'bunyad'),
-			array('description' => __('A 2 or 3 column block to highlight the latest post and show more posts from 2 or 3 categories.', 'bunyad'))
+			__('Highlights Block', 'bunyad-admin'),
+			array('description' => __('A 2 or 3 column block to highlight the latest post and show more posts from 2 or 3 categories.', 'bunyad-admin'))
 		);
 	}
 	
@@ -35,7 +35,7 @@ class Bunyad_PageBuilder_Highlights extends Bunyad_PageBuilder_WidgetBase
 		
 		
 		// supported attrs		
-		$attrs = array('type', 'posts', 'cat', 'column', 'columns', 'cats', 'tags', 'headings', 'sort_by', 'sort_order', 'offsets', 'post_type');
+		$attrs = array('type', 'posts', 'cat', 'column', 'columns', 'cats', 'tags', 'headings', 'sort_by', 'sort_order', 'offsets', 'post_type', 'heading_type');
 		
 		// do_shortcode will be run by pagebuilder		
 		echo '[highlights '. implode(' ', $this->shortcode_attribs($instance, $attrs)) .' /]';		
@@ -57,85 +57,94 @@ class Bunyad_PageBuilder_Highlights extends Bunyad_PageBuilder_WidgetBase
 	
 	<input type="hidden" name="<?php echo $this->get_field_name('no_container'); ?>" value="1" />
 	
-	<p><strong><?php _e('Important:', 'bunyad'); ?></strong> <?php _e('Select 2 categories for 2 columns and 3 categories for 3 columns.', 'bunyad'); ?></p>
+	<p><strong><?php _e('Important:', 'bunyad-admin'); ?></strong> <?php _e('Select 2 categories for 2 columns and 3 categories for 3 columns.', 'bunyad-admin'); ?></p>
 	
 	<p>
-		<label><?php _e('Number of Posts:', 'bunyad'); ?></label>
+		<label><?php _e('Number of Posts:', 'bunyad-admin'); ?></label>
 		<input name="<?php echo esc_attr($this->get_field_name('posts')); ?>" type="text" value="<?php echo esc_attr($posts); ?>" />
 	</p>
-	<p class="description"><?php _e('Configures posts to show in each column. Leave empty to use theme default number of posts.', 'bunyad'); ?></p>
+	<p class="description"><?php _e('Configures posts to show in each column. Leave empty to use theme default number of posts.', 'bunyad-admin'); ?></p>
 	
 		
 	<p>
-		<label><?php _e('Sort By:', 'bunyad'); ?></label>
+		<label><?php _e('Sort By:', 'bunyad-admin'); ?></label>
 		<select name="<?php echo esc_attr($this->get_field_name('sort_by')); ?>">
-			<option value=""><?php _e('Published Date', 'bunyad'); ?></option>
-			<option value="modified"><?php _e('Modified Date', 'bunyad'); ?></option>
-			<option value="random"><?php _e('Random', 'bunyad')?></option>
+			<option value=""><?php _e('Published Date', 'bunyad-admin'); ?></option>
+			<option value="modified"><?php _e('Modified Date', 'bunyad-admin'); ?></option>
+			<option value="random"><?php _e('Random', 'bunyad-admin')?></option>
 		</select>
 		
 		<select name="<?php echo esc_attr($this->get_field_name('sort_order')); ?>">
-			<option value="desc"><?php _e('Latest First - Descending', 'bunyad'); ?></option>
-			<option value="asc"><?php _e('Oldest First - Ascending', 'bunyad'); ?></option>
+			<option value="desc"><?php _e('Latest First - Descending', 'bunyad-admin'); ?></option>
+			<option value="asc"><?php _e('Oldest First - Ascending', 'bunyad-admin'); ?></option>
 		</select>
 	</p>
 	
 	<div>
-		<label><?php _e('Columns:', 'bunyad'); ?></label>
+		<label><?php _e('Columns:', 'bunyad-admin'); ?></label>
 	
 		<select class="widefat" name="<?php echo esc_attr($this->get_field_name('columns')); ?>">
-			<option value="2"><?php _e('2 Columns', 'bunyad'); ?></option>
-			<option value="3"><?php _e('3 Columns', 'bunyad'); ?></option>
+			<option value="2"><?php _e('2 Columns', 'bunyad-admin'); ?></option>
+			<option value="3"><?php _e('3 Columns', 'bunyad-admin'); ?></option>
+		</select>
+	</div>
+	
+	<div>
+		<label><?php _e('Heading Style:', 'bunyad-admin'); ?></label>
+	
+		<select class="widefat" name="<?php echo esc_attr($this->get_field_name('heading_type')); ?>">
+			<option value="auto"><?php _e('Auto: Overlay for 2 Column - Block Heading for 3 Columns', 'bunyad-admin'); ?>
+			<option value="none"><?php _e('No Heading', 'bunyad-admin'); ?></option>
 		</select>
 	</div>
 	
 	<hr />
 	
 	<div>
-		<h3><?php _e('First Column', 'bunyad'); ?></h3>
+		<h3><?php _e('First Column', 'bunyad-admin'); ?></h3>
 		
-		<label><?php _e('Category', 'bunyad'); ?></label>
+		<label><?php _e('Category', 'bunyad-admin'); ?></label>
 		<?php wp_dropdown_categories(array(
-			'show_option_all' => __('-- None - Use a Tag --', 'bunyad'), 'hierarchical' => 1, 'hide_empty' => 0, 'order_by' => 'name', 'class' => 'widefat', 'name' => $this->get_field_name('cat_1')
+			'show_option_all' => __('-- None - Use a Tag --', 'bunyad-admin'), 'hierarchical' => 1, 'hide_empty' => 0, 'order_by' => 'name', 'class' => 'widefat', 'name' => $this->get_field_name('cat_1')
 		)); ?>
 		
-		<p class="tag"><label><?php _e('or Enter a Tag:', 'bunyad'); ?></label> <input type="text" name="<?php echo $this->get_field_name('tag_1'); ?>" value="" /></p>
+		<p class="tag"><label><?php _e('or Enter a Tag:', 'bunyad-admin'); ?></label> <input type="text" name="<?php echo $this->get_field_name('tag_1'); ?>" value="" /></p>
 		
 		<p>
-			<label><?php _e('Custom Heading (optional)', 'bunyad'); ?></label>
+			<label><?php _e('Custom Heading (optional)', 'bunyad-admin'); ?></label>
 			<input type="text" class="widefat" name="<?php echo $this->get_field_name('heading_1'); ?>" value="" />
 		</p>
 		
 		<p>
-			<label><?php _e('Offset: (Advanced)', 'bunyad'); ?></label> 
+			<label><?php _e('Offset: (Advanced)', 'bunyad-admin'); ?></label> 
 			<input type="text" name="<?php echo $this->get_field_name('offset_1'); ?>" value="0" />
 		</p>
-		<p class="description"><?php _e('By specifying an offset as 10 (for example), you can ignore 10 posts in the results.', 'bunyad'); ?></p>
+		<p class="description"><?php _e('By specifying an offset as 10 (for example), you can ignore 10 posts in the results.', 'bunyad-admin'); ?></p>
 	
 	</div>
 	
 	<hr />
 	
 	<div>
-		<h3><?php _e('Second Column', 'bunyad'); ?></h3>
+		<h3><?php _e('Second Column', 'bunyad-admin'); ?></h3>
 		
-		<label><?php _e('Category', 'bunyad'); ?></label>
+		<label><?php _e('Category', 'bunyad-admin'); ?></label>
 		<?php wp_dropdown_categories(array(
-			'show_option_all' => __('-- None - Use a Tag --', 'bunyad'), 'hierarchical' => 1, 'hide_empty' => 0, 'order_by' => 'name', 'class' => 'widefat', 'name' => $this->get_field_name('cat_2')
+			'show_option_all' => __('-- None - Use a Tag --', 'bunyad-admin'), 'hierarchical' => 1, 'hide_empty' => 0, 'order_by' => 'name', 'class' => 'widefat', 'name' => $this->get_field_name('cat_2')
 		)); ?>
 		
-		<p class="tag"><label><?php _e('or Enter a Tag:', 'bunyad'); ?></label> <input type="text" name="<?php echo $this->get_field_name('tag_2'); ?>" value="" /></p>
+		<p class="tag"><label><?php _e('or Enter a Tag:', 'bunyad-admin'); ?></label> <input type="text" name="<?php echo $this->get_field_name('tag_2'); ?>" value="" /></p>
 		
 		<p>
-			<label><?php _e('Custom Heading (optional)', 'bunyad'); ?></label>
+			<label><?php _e('Custom Heading (optional)', 'bunyad-admin'); ?></label>
 			<input type="text" class="widefat" name="<?php echo $this->get_field_name('heading_2'); ?>" value="" />
 		</p>
 		
 		<p>
-			<label><?php _e('Offset: (Advanced)', 'bunyad'); ?></label> 
+			<label><?php _e('Offset: (Advanced)', 'bunyad-admin'); ?></label> 
 			<input type="text" name="<?php echo $this->get_field_name('offset_2'); ?>" value="0" />
 		</p>
-		<p class="description"><?php _e('By specifying an offset as 10 (for example), you can ignore 10 posts in the results.', 'bunyad'); ?></p>
+		<p class="description"><?php _e('By specifying an offset as 10 (for example), you can ignore 10 posts in the results.', 'bunyad-admin'); ?></p>
 		
 	</div>
 
@@ -143,37 +152,37 @@ class Bunyad_PageBuilder_Highlights extends Bunyad_PageBuilder_WidgetBase
 	
 		<hr />
 		
-		<h3><?php _e('Third Column', 'bunyad'); ?></h3>
+		<h3><?php _e('Third Column', 'bunyad-admin'); ?></h3>
 		
-		<label><?php _e('Category', 'bunyad'); ?></label>
+		<label><?php _e('Category', 'bunyad-admin'); ?></label>
 		<?php wp_dropdown_categories(array(
-			'show_option_all' => __('-- None - Use a Tag --', 'bunyad'), 'hierarchical' => 1, 'hide_empty' => 0, 'order_by' => 'name', 'class' => 'widefat', 'name' => $this->get_field_name('cat_3')
+			'show_option_all' => __('-- None - Use a Tag --', 'bunyad-admin'), 'hierarchical' => 1, 'hide_empty' => 0, 'order_by' => 'name', 'class' => 'widefat', 'name' => $this->get_field_name('cat_3')
 		)); ?>
 		
-		<p class="tag"><label><?php _e('or Enter a Tag:', 'bunyad'); ?></label> <input type="text" name="<?php echo $this->get_field_name('tag_3'); ?>" value="" /></p>
+		<p class="tag"><label><?php _e('or Enter a Tag:', 'bunyad-admin'); ?></label> <input type="text" name="<?php echo $this->get_field_name('tag_3'); ?>" value="" /></p>
 		
 		<p>
-			<label><?php _e('Custom Heading (optional)', 'bunyad'); ?></label>
+			<label><?php _e('Custom Heading (optional)', 'bunyad-admin'); ?></label>
 			<input type="text" class="widefat" name="<?php echo $this->get_field_name('heading_3'); ?>" value="" />
 		</p>
 		
 		<p>
-			<label><?php _e('Offset: (Advanced)', 'bunyad'); ?></label> 
+			<label><?php _e('Offset: (Advanced)', 'bunyad-admin'); ?></label> 
 			<input type="text" name="<?php echo $this->get_field_name('offset_3'); ?>" value="0" />
 		</p>
-		<p class="description"><?php _e('By specifying an offset as 10 (for example), you can ignore 10 posts in the results.', 'bunyad'); ?></p>
+		<p class="description"><?php _e('By specifying an offset as 10 (for example), you can ignore 10 posts in the results.', 'bunyad-admin'); ?></p>
 		
 	</div>
 	
 	<p>
-		<label><?php _e('Post Types: (Advanced)', 'bunyad'); ?></label>
+		<label><?php _e('Post Types: (Advanced)', 'bunyad-admin'); ?></label>
 		<input name="<?php echo esc_attr($this->get_field_name('post_type')); ?>" type="text" value="<?php echo esc_attr($post_type); ?>" />
 	</p>
-	<p class="description"><?php _e('Only for advanced users! You can use a custom post type here - multiples supported when separated by comma. Leave empty to use the default format. .', 'bunyad'); ?></p>
+	<p class="description"><?php _e('Only for advanced users! You can use a custom post type here - multiples supported when separated by comma. Leave empty to use the default format. .', 'bunyad-admin'); ?></p>
 	
 	<?php /**
 	<div class="taxonomydiv"> <!-- borrow wp taxonomydiv > categorychecklist css rules -->
-		<label><?php _e('Categories:', 'bunyad'); ?></label>
+		<label><?php _e('Categories:', 'bunyad-admin'); ?></label>
 		
 		<div class="tabs-panel">
 			<ul class="categorychecklist">

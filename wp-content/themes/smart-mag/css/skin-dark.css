@@ -110,8 +110,8 @@ a, .highlights h2 a, .block.posts a, .main-head .title a, .author-info [rel="aut
 
 /* Main Border Color Overrides */
 
-code, pre, .main .sidebar:before, .highlights-box .column.half:first-child,  .posts-list .content, .highlights .excerpt, .highlights .block.posts, 
-.block.posts li, .widget li, .widget_categories .children li, .news-focus .posts-list, .main-content .post-meta, .post-share, .listing-alt article, 
+code, pre, .main .sidebar:before, .sidebar .theiaStickySidebar:before, .highlights-box .column.half:first-child,  .posts-list .content, .highlights .excerpt, 
+.highlights .block.posts, .block.posts li, .widget li, .widget_categories .children li, .news-focus .posts-list, .main-content .post-meta, .post-share, .listing-alt article, 
 .list-timeline .heading, .list-timeline, .post-content > .review-box, .review-box .verdict-box, .review-box.stars li, .post-content blockquote, 
 .sc-tabs-panes, .sc-tabs a, .sc-accordion-title, .sc-toggle-title, .sc-accordion-title:first-child, .sc-toggle-title:first-child, .sc-accordion-pane, 
 .sc-toggle-content, .comments-list .comment-content, .author .author-info, .navigate-posts, .navigate-posts .next, .comments-list .pingback,

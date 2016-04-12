@@ -6,6 +6,7 @@
 class Bunyad_Posts
 {
 	public $more_text;
+	public $more_html;
 	
 	public function __construct()
 	{
@@ -58,7 +59,7 @@ class Bunyad_Posts
 		$text = str_replace(']]>', ']]&gt;', $text);
 		
 		// get plaintext excerpt trimmed to right length
-		$excerpt = wp_trim_words($text, $length, '&hellip;' . ($add_more !== false ? $this->excerpt_read_more() : '')); 
+		$excerpt = wp_trim_words($text, $length, apply_filters('bunyad_excerpt_hellip', '&hellip;') . ($add_more !== false ? $this->excerpt_read_more() : '')); 
 
 
 		/*
@@ -117,7 +118,7 @@ class Bunyad_Posts
 		$content = apply_filters('the_content',  $content, 'bunyad_main_content');
 		$content = str_replace(']]>', ']]&gt;', $content);
 
-		echo $content;
+		echo $content; // pre-filtered/escaped content from get_the_content()
 	}
 
 	/**
@@ -449,8 +450,11 @@ class Bunyad_Posts
 				$text = __('Read More', 'bunyad');
 			}
 			
+			if (empty($this->more_html)) {
+				$this->more_html = '<div class="read-more"><a href="%s" title="%s">%s</a></div>';
+			}
 
-			return '<div class="read-more"><a href="'. get_permalink($post->ID) . '" title="'. esc_attr($text) . '">'. $text .'</a></div>';	
+			return sprintf(apply_filters('bunyad_read_more_html', $this->more_html), get_permalink($post->ID), esc_attr($text), $text);
 		}
 		
 		return '';

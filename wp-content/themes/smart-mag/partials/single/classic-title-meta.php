@@ -11,7 +11,7 @@
 				}
 			?>
 	
-			<<?php echo $tag; ?> class="post-title item fn" itemprop="name">
+			<<?php echo $tag; ?> class="post-title item fn" itemprop="name headline">
 			<?php if (!is_front_page() && is_singular()): the_title(); else: ?>
 			
 				<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" rel="bookmark">

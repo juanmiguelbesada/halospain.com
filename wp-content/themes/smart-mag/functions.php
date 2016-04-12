@@ -12,6 +12,7 @@
  * 
  *  /          -  WordPress default template files
  *  lib/       -  Contains the core Bunyad framework files
+ *  inc/       -  Theme functions: Helpers, Hooks, Utilities
  *  admin/     -  Admin-only content
  *  partials/  -  Template parts (partials) called via get_template_part()
  *  blocks/    -  Page-builder block views
@@ -21,16 +22,25 @@
  * 
  */
 
-// already initialized? some buggy plugin call?
+// Already initialized? some buggy plugin call?
 if (class_exists('Bunyad_Core')) {
 	return;
 }
 
-// Initialize Framework
-require_once get_template_directory() . '/lib/bunyad.php';
+/**
+ * Initialize Framework
+ * 
+ * Include the Bunyad_Base and extend it using our theme-specific class.
+ */ 
+locate_template('lib/bunyad.php', true, true);
+locate_template('inc/bunyad.php', true, true);
 
-// fire up the theme-specific extra functionality
-$smart_mag = new Bunyad_Theme_SmartMag;
+
+// Fire up the theme - make available in Bunyad::get('smart_mag')
+Bunyad::register('smart_mag', array(
+	'class' => 'Bunyad_Theme_SmartMag',
+	'init' => true
+));
 
 /**
  * Main Framework Configuration
@@ -39,7 +49,7 @@ $bunyad = Bunyad::core()->init(apply_filters('bunyad_init_config', array(
 
 	'theme_name' => 'smartmag',
 	'meta_prefix' => '_bunyad',
-	'theme_version' => '2.5.1',
+	'theme_version' => '2.6.2',
 
 	// widgets enabled
 	'widgets'    => array('about', 'latest-posts', 'popular-posts', 'tabbed-recent', 'flickr', 'ads', 'latest-reviews', 'bbp-login', 'tabber', 'blocks'),
@@ -53,9 +63,9 @@ $bunyad = Bunyad::core()->init(apply_filters('bunyad_init_config', array(
 	
 	// enabled metaboxes and prefs
 	'meta_boxes' => array(
-		array('id' => 'post-options', 'title' => __('Post Options', 'bunyad'), 'priority' => 'high', 'page' => array('post')),
-		array('id' => 'post-reviews', 'title' => __('Review', 'bunyad'), 'priority' => 'high', 'page' => array('post')),
-		array('id' => 'page-options', 'title' => __('Page Options', 'bunyad'), 'priority' => 'high', 'page' => array('page')),
+		array('id' => 'post-options', 'title' => __('Post Options', 'bunyad-admin'), 'priority' => 'high', 'page' => array('post')),
+		array('id' => 'post-reviews', 'title' => __('Review', 'bunyad-admin'), 'priority' => 'high', 'page' => array('post')),
+		array('id' => 'page-options', 'title' => __('Page Options', 'bunyad-admin'), 'priority' => 'high', 'page' => array('page')),
 	),
 	
 	// page builder blocks
@@ -64,6 +74,7 @@ $bunyad = Bunyad::core()->init(apply_filters('bunyad_init_config', array(
 		// special
 		'highlights' => 'Bunyad_PageBuilder_Highlights',
 		'news-focus' => 'Bunyad_PageBuilder_NewsFocus',
+		'focus-grid' => 'Bunyad_PageBuilder_FocusGrid',
 		'blog' => 'Bunyad_PageBuilder_Blog',
 		'latest-gallery' => 'Bunyad_PageBuilder_LatestGallery',
 		'separator' => 'Bunyad_PbBasic_Separator',
@@ -71,10 +82,10 @@ $bunyad = Bunyad::core()->init(apply_filters('bunyad_init_config', array(
 		
 		// native
 		'text' => 'WP_Widget_Text',
-		'latest-posts' => array('class' => 'Bunyad_LatestPosts_Widget', 'name' => __('Latest Posts', 'bunyad')),
-		'flickr' => array('class' => 'Bunyad_Flickr_Widget', 'name' => __('Flickr Images', 'bunyad')),
-		'ads' => array('class' => 'Bunyad_Ads_Widget', 'name' => __('Advertisement', 'bunyad')),
-		'latest-reviews' => array('class' => 'Bunyad_LatestReviews_Widget', 'name' => __('Latest Reviews', 'bunyad'))
+		'latest-posts' => array('class' => 'Bunyad_LatestPosts_Widget', 'name' => __('Latest Posts', 'bunyad-admin')),
+		'flickr' => array('class' => 'Bunyad_Flickr_Widget', 'name' => __('Flickr Images', 'bunyad-admin')),
+		'ads' => array('class' => 'Bunyad_Ads_Widget', 'name' => __('Advertisement', 'bunyad-admin')),
+		'latest-reviews' => array('class' => 'Bunyad_LatestReviews_Widget', 'name' => __('Latest Reviews', 'bunyad-admin'))
 	),
 
 )));
@@ -83,7 +94,9 @@ $bunyad = Bunyad::core()->init(apply_filters('bunyad_init_config', array(
 /**
  * SmartMag Theme!
  * 
- * Anything theme-specific that won't go into the core framework goes here. Rest goes into lib/core.php
+ * Anything theme-specific that won't go into the core framework goes here. 
+ * 
+ * Also see: inc/admin.php for the admin bootstrap.
  */
 class Bunyad_Theme_SmartMag
 {
@@ -92,12 +105,32 @@ class Bunyad_Theme_SmartMag
 	
 	public function __construct() 
 	{
-		// setup plugins before init
-		$this->setup_plugins();
-
+		// init skins
+		add_action('bunyad_core_post_init', array($this, 'init_skins'));
+		
 		// perform the after_setup_theme 
 		add_action('after_setup_theme', array($this, 'theme_init'), 12);
 		
+		/**
+		 * Require theme functions, hooks, and helpers
+		 * 
+		 * Can be overriden in Child Themes by creating the same structure. For
+		 * instance, you can create inc/blocks.php in your Child Theme folder
+		 * and that will be included.
+		 * 
+		 * The includes below can be retrieved using the Bunyad::get() method.
+		 * 
+		 * @see Bunyad::get()
+		 */
+		require_once locate_template('inc/blocks.php');
+		require_once locate_template('inc/bbpress.php');
+		require_once locate_template('inc/navigation.php');
+		require_once locate_template('inc/custom-css.php');
+		
+		if (is_admin()) {
+			require_once locate_template('inc/admin.php');
+		}
+			
 		// include WooCommerce 
 		if (function_exists('is_woocommerce')) {
 			require_once get_template_directory() . '/woocommerce/init.php';
@@ -106,84 +139,162 @@ class Bunyad_Theme_SmartMag
 	}
 	
 	/**
+	 * Setup any skin data and configs
+	 */
+	public function init_skins()
+	{
+		// include our skins constructs
+		if (Bunyad::options()->predefined_style) {
+			locate_template('inc/skins/' . sanitize_file_name(Bunyad::options()->predefined_style) .'.php', true);
+		}
+	}	
+	
+	/**
 	 * Setup enque data and actions
 	 */
 	public function theme_init()
 	{
-		/*
-		 * Enqueue assets (css, js)
-		 * 
-		 * Register Custom CSS at a lower priority for CSS specificity
+		/**
+		 * Use this hook instead of after_setup_theme to keep the priority setting
+		 * consistent amongst all helpers and utils.
 		 */
-		add_action('wp_enqueue_scripts', array($this, 'register_assets'));
-		add_action('wp_enqueue_scripts', array($this, 'register_custom_css'), 99);
+		do_action('bunyad_theme_init');
+
 		
-		/*
-		 * Featured images settings
+		/**
+		 * Set theme image sizes used in different areas, blocks and posts
+		 * 
+		 * Notes:
+		 * 
+		 * - 1280x612 images should be used for no cropping to happen.
+		 * - Some images are shared between multiple listing styles and blocks.
+		 *   This is done to save space on the server
 		 */
-		set_post_thumbnail_size(110, 96, true); // 17:15, also used in 85x75 and more similar aspect ratios
+		$image_sizes = apply_filters('bunyad_image_sizes', array(
+
+			// Default WordPress thumbnail. 
+			'post-thumbnail' => array('width'=> 110, 'height' => 96),
+		
+			// Featured image in posts with no sidebar.
+			'main-full' => array('width' => 1078, 'height' => 516),
+		
+			// Default slider and posts with sidebar.
+			'main-slider' => array('width' => 702, 'height' => 336),
+		
+			// Shared by several blocks like highlights (when sidebar enabled).
+			// Also used at 326x160.
+			'main-block' => array('width' => 351, 'height' => 185),
+		
+			// Smaller image for the default slider.
+			'slider-small' => array('width' => 168, 'height' => 137),
+		
+			// Latest gallery carousel block uses it.
+			'gallery-block' => array('width' => 214, 'height' => 140),
+		
+			// Grid Overlay listing image (categories or Blog block). 
+			'grid-overlay' => array('width' => 343, 'height' => 215),
+		
+			// Tall Grid Overlay listing image (categories or Blog block).
+			'tall-overlay'  => array('width' => 233, 'height' => 300),
+		
+			// Images for the Grid Slider.
+			'grid-slider-large' => array('width' => 536, 'height' => 386),
+			'grid-slider-small' => array('width' => 269, 'height' => 192),
+		
+			// Small image for the Focus Grid block.
+			'focus-grid-small'  => array('width' => 164, 'height' => 82),
+		
+		));
+		
+		foreach ($image_sizes as $key => $size) {
+			
+			// set default crop to true
+			$size['crop'] = (!isset($size['crop']) ? true : $size['crop']);
+			
+			if ($key == 'post-thumbnail') {
+				set_post_thumbnail_size($size['width'], $size['height'], $size['crop']);
+			}
+			else {
+				add_image_size($key, $size['width'], $size['height'], $size['crop']);
+			}
+			
+		} 
+		
+		/*set_post_thumbnail_size(110, 96, true); // 17:15, also used in 85x75 and more similar aspect ratios
 
 		// 1280x612 images for no cropping of featured and slider image
-		add_image_size('main-full', 1078, 516, true); // main post image in full width
+		add_image_size('main-full', 1078, 516, true); 
 		add_image_size('main-slider', 702, 336, true);
 		
-		add_image_size('main-block', 351, 185, true); // also usable at 326x160
+		add_image_size('main-block', 351, 185, true); 
 		add_image_size('slider-small', 168, 137, true); // small thumb for slider
-		add_image_size('gallery-block', 214, 140, true); // small thumb for slider
+		add_image_size('gallery-block', 214, 140, true); // gallery block image
 		
 		add_image_size('grid-overlay', 343, 215, true); // size for grid overlay listing
+		add_image_size('tall-overlay', 233, 300, true); // size for tall grid overlay listing
+		
+		
+		add_image_size('grid-slider-large', 536, 386, true);
+		add_image_size('grid-slider-small', 269, 192, true);
 
-		// i18n
+		add_image_size('focus-grid-small', 164, 82, true);
+		//add_image_size('focus-grid-small', 164, 87, true);
+		
+		//add_image_size('grid-slider-large', 536, 354, true);
+		//add_image_size('grid-slider-small', 269, 176, true);
+		*/
+		
+		// Enqueue assets (css, js)
+		add_action('wp_enqueue_scripts', array($this, 'register_assets'));
+		
+
+		/**
+		 * i18n
+		 * 
+		 * We have split front-end and backend translations in separate files. 
+		 * 
+		 * For en_US, following files be used:
+		 * 
+		 * smart-mag/languages/en_US.mo
+		 * smart-mag/languages/bunyad-admin-en_US.mo
+		 * 
+		 * @see Bunyad_Thmeme_SmartMag::load_admin_textdomain()
+		 */
 		load_theme_textdomain('bunyad', get_template_directory() . '/languages');
 		
+		if (is_admin()) {
+			$this->load_admin_textdomain('bunyad-admin', get_template_directory() . '/languages');
+		}
+		
 		// setup navigation menu with "main" key
-		register_nav_menu('main', __('Main Navigation', 'bunyad'));
+		register_nav_menu('main', __('Main Navigation', 'bunyad-admin'));
+		register_nav_menu('main-mobile', __('Main Navigation - Mobile Optional', 'bunyad-admin'));
 		
-		/*
-		 * Category meta 
-		 */
-		add_action('category_edit_form_fields', array($this, 'edit_category_meta'), 10, 2);
-		add_action('category_add_form_fields', array($this, 'edit_category_meta'), 10, 2);
-		
-		add_action('edited_category', array($this, 'save_category_meta'), 10, 2);
-		add_action('create_category', array($this, 'save_category_meta'), 10, 2);
-		
-		// user fields
-		add_filter('user_contactmethods', array($this, 'add_profile_fields'));
-		
-		/*
+		/**
 		 * Reviews Support
 		 */
 		add_filter('the_content', array($this, 'add_review'));
 		add_filter('bunyad_review_main_snippet', array($this, 'add_review_snippet'), 10, 2);
 		
-		// 3.5 has content_width removed, add it for oebmed
+		// Content width is required for for oebmed and Jetpacks
 		global $content_width;
 		
 		if (!isset($content_width)) {
 			$content_width = 702;
 		}
 		
-		/*
+		/**
 		 * Register Sidebars
 		 */		
 		$this->register_sidebars();
 
-		/*
-		 * Mega menu support
-		 */
-		add_filter('bunyad_custom_menu_fields', array($this, 'custom_menu_fields'));
-		add_filter('bunyad_mega_menu_end_lvl', array($this, 'attach_mega_menu'));
-		
-		// menu sticky logo support
-		add_filter('wp_nav_menu_items', array($this, 'add_navigation_logo'), 10, 2);
-		
-		/*
+
+		/**
 		 * Posts related filter
 		 */
 		
-		// add authorship
-		add_filter('wp_head', array($this, 'add_header_meta'));
+		// prepare to add body classes in advance
+		add_action('wp_head', array($this, 'add_body_classes'));
 		
 		// custom font icons for post formats
 		add_filter('bunyad_post_formats_icon', array($this, 'post_format_icon'));
@@ -211,7 +322,7 @@ class Bunyad_Theme_SmartMag
 			add_filter('pre_get_posts', array($this, 'limit_search'));
 		}
 		
-		/*
+		/**
 		 * Prevent duplicate posts
 		 */
 		if (Bunyad::options()->no_home_duplicates) {
@@ -228,31 +339,13 @@ class Bunyad_Theme_SmartMag
 			}
 		}
 		
-		/*
+		/**
 		 * Widgets related hooks
 		 */
-		
 		add_filter('bunyad_widget_tabbed_recent_options', array($this, 'tabbed_recent_options'));
-		
-		
-		/*
-		 * bbPress
-		 */
-		add_theme_support('bbpress');
-		
-		// is bbpress active?
-		if (class_exists('bbpress')) {
-			add_action('wp_footer', array($this, 'bbpress_footer'));
-		}
-		
-		add_filter('nav_menu_css_class', array($this, 'add_nav_login'), 10, 2);
-				
+					
 		// add image sizes to the editor
 		add_filter('image_size_names_choose', array($this, 'add_image_sizes_editor'));
-		
-		// sample import actions
-		add_filter('bunyad_import_menu_fields', array($this, 'import_menu_fields'));
-		add_action('bunyad_import_completed', array($this, 'import_fix_menu'));
 		
 		// set dynamic widget columns for footer
 		add_filter('dynamic_sidebar_params', array($this, 'set_footer_columns'));
@@ -263,7 +356,6 @@ class Bunyad_Theme_SmartMag
 		
 		// setup the init hook
 		add_action('init', array($this, 'init'));
-		
 
 	}
 	
@@ -272,10 +364,6 @@ class Bunyad_Theme_SmartMag
 	 */
 	public function init() 
 	{		
-		if ($this->has_custom_css()) {			
-			add_action('template_redirect', array($this, 'global_external_custom_css'), 1);
-		}
-		
 		Bunyad::reviews();
 		
 		/*
@@ -287,51 +375,6 @@ class Bunyad_Theme_SmartMag
 		
 		// setup page builder blocks
 		$this->setup_page_builder();
-	}
-		
-	/**
-	 * Check if the theme has any custom css
-	 */
-	public function has_custom_css()
-	{
-		if (count(Bunyad::options()->get_all('css_'))) {
-			return true;
-		} 
-		
-		// check if a cat has custom color
-		foreach ((array) Bunyad::options()->get_all('cat_meta_') as $cat) 
-		{
-			if (!empty($cat)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Action callback: Output Custom CSS using external CSS method
-	 */
-	public function global_external_custom_css()
-	{		
-		// custom css requested?
-		if (empty($_GET['bunyad_custom_css']) OR intval($_GET['bunyad_custom_css']) != 1) {
-			return;
-		}
-		
-		// set 200 - might be 404
-		status_header(200);
-		header("Content-type: text/css; charset: utf-8"); 
-
-		include_once get_template_directory() . '/custom-css.php';
-		
-		/*
-		 * Output the CSS customizations
-		 */
-		$render = new Bunyad_Custom_Css;
-		$render->args = $_GET;
-		echo $render->render();
-		exit;
 	}
 	
 	/**
@@ -350,14 +393,16 @@ class Bunyad_Theme_SmartMag
 			 */
 			
 			// add google fonts
-			$args = array('family' => 'Open+Sans:400,400Italic,600,700|Roboto+Slab');
-			if (Bunyad::options()->font_charset) {
-				$args['subset'] = implode(',', array_keys(array_filter(Bunyad::options()->font_charset)));
-			}
+			$style = $this->get_style(Bunyad::options()->predefined_style);
+			$args  = $style['font_args'];
 			
 			// blockquote font for single
 			if (is_singular()) {
 				$args['family'] .= '|Merriweather:300italic';
+			}
+		
+			if (Bunyad::options()->font_charset) {
+				$args['subset'] = implode(',', array_keys(array_filter(Bunyad::options()->font_charset)));
 			}
 			
 			wp_enqueue_style('smartmag-fonts', add_query_arg($args, (is_ssl() ? 'https' : 'http') . '://fonts.googleapis.com/css'),	array(), null);
@@ -381,13 +426,13 @@ class Bunyad_Theme_SmartMag
 			}
 			
 			// bbPress?
-			if (class_exists('bbpress')) {
+			if (class_exists('bbPress')) {
 				wp_enqueue_style('smartmag-bbpress', get_template_directory_uri() . '/css/' . (is_rtl() ? 'rtl-' : '') . 'bbpress-ext.css', array(), Bunyad::options()->get_config('theme_version'));
 			}			
 			
 			// CDN for font awesome?
 			if (Bunyad::options()->font_awesome_cdn) {
-				wp_enqueue_style('smartmag-font-awesome', (is_ssl() ? 'https' : 'http') . '://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css');
+				wp_enqueue_style('smartmag-font-awesome', (is_ssl() ? 'https' : 'http') . '://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css');
 			}
 			else {
 				wp_enqueue_style('smartmag-font-awesome', get_template_directory_uri() . '/css/fontawesome/css/font-awesome.min.css', array(), Bunyad::options()->get_config('theme_version'));
@@ -418,90 +463,6 @@ class Bunyad_Theme_SmartMag
 	}
 	
 	/**
-	 * Action callback: Register Custom CSS with low priority 
-	 */
-	public function register_custom_css()
-	{
-		if (is_admin()) {
-			return;
-		}
-		
-		// pre-defined scheme / skin
-		if (Bunyad::options()->predefined_style) {
-			wp_enqueue_style('smartmag-skin', get_template_directory_uri() . '/css/skin-' . Bunyad::options()->predefined_style . '.css');
-		}
-		
-		// add custom css
-		if ($this->has_custom_css()) {
-			
-			$query_args = array();
-			
-			/*
-			 * Global color changes?
-			 */ 
-			if (is_category() OR is_single()) {
-	
-				$object = get_queried_object();
-				$query_args['anchor_obj'] = '';
-				
-				if (is_category()) {
-					$query_args['anchor_obj'] = $object->cat_ID;
-				}
-				else {
-					// be consistent with the behavior that's like cat labels
-					$categories = current((array) get_the_category($object->ID));
-					
-					if (is_object($categories)) {
-						$query_args['anchor_obj'] = $categories->cat_ID;
-					}
-				}
-				
-				// only used for main color
-				$meta = Bunyad::options()->get('cat_meta_' . $query_args['anchor_obj']);
-				if (empty($meta['main_color'])) {
-					unset($query_args['anchor_obj']);
-				}
-				
-			}
-			
-			$query_args = array_merge($query_args, array('bunyad_custom_css' => 1));
-			
-			/*
-			 * Custom CSS Output Method - external or on-page?
-			 */
-			if (Bunyad::options()->css_custom_output == 'external') 
-			{
-				wp_enqueue_style('custom-css', add_query_arg($query_args, get_site_url() . '/'));
-						
-				// add css that's supposed to be per page
-				$this->add_per_page_css();
-			}
-			else {
-
-				include_once get_template_directory() . '/custom-css.php';
-
-				// associate custom css at the end
-				$source = 'smartmag-core';
-				
-				if (wp_style_is('smartmag-skin', 'enqueued')) {
-					$source = 'smartmag-skin';
-				}
-				else if (wp_style_is('smartmag-woocommerce', 'enqueued')) {
-					$source = 'smartmag-woocommerce';
-				} 
-				else if (wp_style_is('smartmag-font-awesome', 'enqueued')) {
-					$source = 'smartmag-font-awesome';
-				}
-				
-				// add to on-page custom css
-				$render = new Bunyad_Custom_Css;
-				$render->args = $query_args;
-				Bunyad::core()->enqueue_css($source, $render->render() . $this->add_per_page_css(true));
-			}
-		}
-	}
-	
-	/**
 	 * Setup the sidebars
 	 */
 	public function register_sidebars()
@@ -509,9 +470,9 @@ class Bunyad_Theme_SmartMag
 	
 		// register dynamic sidebar
 		register_sidebar(array(
-			'name' => __('Main Sidebar', 'bunyad'),
+			'name' => __('Main Sidebar', 'bunyad-admin'),
 			'id'   => 'primary-sidebar',
-			'description' => __('Widgets in this area will be shown in the default sidebar.', 'bunyad'),
+			'description' => __('Widgets in this area will be shown in the default sidebar.', 'bunyad-admin'),
 			'before_title' => '<h3 class="widgettitle">',
 			'after_title'  => '</h3>',
 		));
@@ -519,9 +480,9 @@ class Bunyad_Theme_SmartMag
 		
 		// register dynamic sidebar
 		register_sidebar(array(
-			'name' => __('Top Bar (Above Header)', 'bunyad'),
+			'name' => __('Top Bar (Above Header)', 'bunyad-admin'),
 			'id'   => 'top-bar',
-			'description' => __('Please place only a single widget. Preferably a text widget.', 'bunyad'),
+			'description' => __('Please place only a single widget. Preferably a text widget.', 'bunyad-admin'),
 			'before_title' => '',
 			'after_title'  => '',
 			'before_widget' => '',
@@ -531,9 +492,9 @@ class Bunyad_Theme_SmartMag
 		
 		// register dynamic sidebar
 		register_sidebar(array(
-			'name' => __('Header Right', 'bunyad'),
+			'name' => __('Header Right', 'bunyad-admin'),
 			'id'   => 'header-right',
-			'description' => __('Please place only a single widget. Preferably text-widget.', 'bunyad'),
+			'description' => __('Please place only a single widget. Preferably text-widget.', 'bunyad-admin'),
 			'before_title' => '',
 			'after_title'  => '',
 			'before_widget' => '',
@@ -543,9 +504,9 @@ class Bunyad_Theme_SmartMag
 		
 		// register dynamic sidebar
 		register_sidebar(array(
-			'name' => __('Footer (3 widgets columns)', 'bunyad'),
+			'name' => __('Footer (3 widgets columns)', 'bunyad-admin'),
 			'id'   => 'main-footer',
-			'description' => __('Widgets in this area will be shown in the footer. Max 3 widgets.', 'bunyad'),
+			'description' => __('Widgets in this area will be shown in the footer. Max 3 widgets.', 'bunyad-admin'),
 			'before_title' => '<h3 class="widgettitle">',
 			'after_title'  => '</h3>',
 			'before_widget' => '<li class="widget column %2$s">',
@@ -555,9 +516,9 @@ class Bunyad_Theme_SmartMag
 		
 		// register dynamic sidebar
 		register_sidebar(array(
-			'name' => __('Lower Footer', 'bunyad'),
+			'name' => __('Lower Footer', 'bunyad-admin'),
 			'id'   => 'lower-footer',
-			'description' => __('Prefer simple text widgets here.', 'bunyad'),
+			'description' => __('Prefer simple text widgets here.', 'bunyad-admin'),
 			'before_title' => '',
 			'after_title'  => '',
 			'before_widget' => '',
@@ -566,138 +527,35 @@ class Bunyad_Theme_SmartMag
 	}
 	
 	/**
-	 * Custom CSS for pages and posts that shouldn't be cached through custom-css.php because 
-	 * the size will increase exponentially.
+	 * Load admin textdomain
 	 * 
+	 * WordPress's default theme textdomain can get too cluttered with translations. Our Admin
+	 * translations are split up from the main translations.
+	 * 
+	 * @see load_theme_textdomain()
 	 */
-	public function add_per_page_css($return = false) 
+	public function load_admin_textdomain($domain, $path)
 	{
-		if (!is_admin() && is_singular() && Bunyad::posts()->meta('bg_image')) {
-			
-			$bg_type = Bunyad::posts()->meta('bg_image_bg_type');
-			$the_css = 'background: url("' . esc_attr(Bunyad::posts()->meta('bg_image')) . '");';
-			
-			if (!empty($bg_type)) {
-				
-				if ($bg_type == 'cover') {
-					$the_css .= 'background-repeat: no-repeat; background-attachment: fixed; background-position: center center; '  
-			 		. '-webkit-background-size: cover; -moz-background-size: cover;-o-background-size: cover; background-size: cover;';
-				}
-				else {
-					$the_css .= 'background-repeat: ' . esc_attr($bg_type) .';';
-				}
-			}
-			
-			$the_css = 'body.boxed { ' . $the_css . ' }';
-			
-			// return the css?
-			if ($return) {
-				return $the_css;
-			}
-			
-			// or enqueue it for inline css
-			Bunyad::core()->enqueue_css(
-				(wp_style_is('custom-css', 'enqueued') ? 'custom-css' : 'smartmag-core'), 
-				$the_css
-			);
-		}
-	}
-	
-	/**
-	 * Action callback: Save custom meta for categories
-	 */
-	public function save_category_meta($term_id)
-	{
-		// have custom meta?
-		if (!empty($_POST['meta']) && is_array($_POST['meta'])) 
-		{
-			$meta = $_POST['meta'];
-			
-			// editing?
-			if (($option = Bunyad::options()->get('cat_meta_' . $term_id))) {
-				$meta = array_merge($option, $_POST['meta']);
-			}
-			
-			Bunyad::options()->update('cat_meta_' . $term_id, $meta);
-			
-			// clear custom css cache
-			delete_transient('bunyad_custom_css_cache');
-		}
-	}
-	
-	/**
-	 * Setup and recommend plugins
-	 */
-	public function setup_plugins()
-	{
-		// don't load if outside admin or if user doesn't have permission
-		if (!is_admin() OR !current_user_can('install_plugins')) {
-			return;
-		}
 		
-		require_once get_template_directory() . '/lib/vendor/tgm-activation.php';
-
-		$plugins = array(
-			array(
-				'name'     	=> 'Bunyad Shortcodes', // The plugin name
-				'slug'     	=> 'bunyad-shortcodes', // The plugin slug (typically the folder name)
-				'source'   	=> get_template_directory() . '/lib/vendor/plugins/bunyad-shortcodes.zip', // The plugin source
-				'required' 	=> true, // If false, the plugin is only 'recommended' instead of required
-				'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
-
-			),
-	
-			array(
-				'name'     	=> 'Bunyad Page Builder',
-				'slug'     	=> 'bunyad-siteorigin-panels',
-				'source'   	=> get_template_directory() . '/lib/vendor/plugins/bunyad-siteorigin-panels.zip', 
-				'required' 	=> true,
-				'force_activation' => false,
-
-			),
-			
-			array(
-				'name'      => 'Bunyad Widgets',
-				'slug'      => 'bunyad-widgets',
-				'source'    => get_template_directory() . '/lib/vendor/plugins/bunyad-widgets.zip',
-				'required'  => true,
-				'force_activation' => false
-			),
-			
-			array(
-				'name' => 'Custom sidebars (Optional)',
-				'slug' => 'custom-sidebars',
-				'required' => false,			
-			),
-			
-			array(
-				'name' => 'WP Retina 2x (Recommended)',
-				'slug' => 'wp-retina-2x',
-				'required' => false,	
-			),
-			
-			array(
-				'name'   => 'Contact Form 7 (Optional)',
-				'slug'   => 'contact-form-7',
-				'required' => false,
-			),
-			
-			array(
-				'name'     => 'Revolution Slider (Optional)',
-				'slug'     => 'revslider',
-				'source'   => get_template_directory() . '/lib/vendor/plugins/revslider.zip',
-				'required' => false,
-			)
-	
-		);
-
-		tgmpa($plugins, array('is_automatic' => true));
+		$locale = get_locale();
 		
-		// set revslider as packaged
-		if (function_exists('set_revslider_as_theme')) {
-			set_revslider_as_theme();
+		/**
+		 * Filter a theme's locale.
+		 * 
+		 * @param string $locale The theme's current locale.
+		 * @param string $domain Text domain. Unique identifier for retrieving translated strings.
+		 */
+		$locale = apply_filters('theme_locale', $locale, $domain);
+	
+		// Load the textdomain according to the theme
+		$mofile = untrailingslashit($path) . "/{$domain}-{$locale}.mo";
+		if ($loaded = load_textdomain($domain, $mofile)) {
+			return $loaded;
 		}
-		
+	
+		// Otherwise, load from the languages directory
+		$mofile = WP_LANG_DIR . "/themes/{$domain}-{$locale}.mo";
+		return load_textdomain($domain, $mofile);
 	}
 	
 	/**
@@ -713,14 +571,15 @@ class Bunyad_Theme_SmartMag
 		Bunyad::options()->shortcodes->add_blocks(array(
 			// file based
 			'blog' => array('render' => locate_template('blocks/blog.php'), 'attribs' => array(
-				'pagination' => 0, 'heading' => '', 'heading_type' => '', 'posts' => 4, 'type' => '', 'cats' => '', 'tags' => '',
+				'pagination' => 0, 'heading' => '', 'heading_type' => '', 'posts' => 4, 'type' => '', 'cat' => '', 'cats' => '', 'tags' => '',
 				'sort_by' => '', 'sort_order' => '', 'taxonomy' => '', 'offset' => '', 'post_type' => '', 'pagination_type' => '',
+				'cat_labels' => 1
 			)),
 			
 			'highlights' => array('render' => locate_template('blocks/highlights.php'), 'attribs' => array(
 				'type' => '', 'posts' => 4, 'cat' => null, 'column' => '', 'columns' => '', 'cats' => '', 'tags' => '', 
 				'tax_tag' => '', 'headings' => '', 'title' => '', 'sort_by' => '', 'sort_order' => '', 'taxonomy' => '',
-				'offset' => '', 'offsets' => '', 'post_type' => ''
+				'offset' => '', 'offsets' => '', 'post_type' => '', 'heading_type' => 'auto'
 			)),
 			
 			'review' => array('render' => locate_template('blocks/review.php'), 'attribs' => array('position' => 'bottom')),
@@ -728,8 +587,14 @@ class Bunyad_Theme_SmartMag
 			'news_focus' => array('render' => locate_template('blocks/news-focus.php'), 'attribs' => array(
 				'posts' => 5, 'cat' => null, 'column' => '', 'tax_tag' => '', 'sub_cats' => '', 'sub_tags' => '',
 				'sort_by' => '', 'sort_order' => '', 'highlights' => 1, 'taxonomy' => '', 'offset' => '', 'post_type' => '',
-				'title' => ''
+				'title' => '', 'heading_type' => 'block-filter'
 			)),
+			
+			'focus_grid' => array('render' => locate_template('blocks/focus-grid.php'), 'attribs' => array(
+				'posts' => 5, 'cat' => null, 'column' => '', 'tax_tag' => '', 'sub_cats' => '', 'sub_tags' => '',
+				'sort_by' => '', 'sort_order' => '', 'highlights' => 1, 'taxonomy' => '', 'offset' => '', 'post_type' => '',
+				'title' => '', 'heading_type' => 'block-filter'
+			)),			
 			
 			// string based
 			'main-color' => array('template' => '<span class="main-color">%text%</span>', 'attribs' => array('text' => '')),
@@ -766,26 +631,26 @@ class Bunyad_Theme_SmartMag
 		$formats = array(
 		
 			array(
-				'title'   => __('Quote - Modern', 'bunyad'),
+				'title'   => __('Quote - Modern', 'bunyad-admin'),
 				'block'   => 'blockquote',
 				'classes' => 'modern-quote full',
 				'wrapper' => true,
 			),
 			
 			array(
-				'title'  => __('Citation (for quote)', 'bunyad'),
+				'title'  => __('Citation (for quote)', 'bunyad-admin'),
 				'inline' => 'cite',
 			),
 			
 			array(
-				'title'   => __('Quote Left - Modern', 'bunyad'),
+				'title'   => __('Quote Left - Modern', 'bunyad-admin'),
 				'block'   => 'aside',
 				'classes' => 'modern-quote pull alignleft',
 				'wrapper' => true,
 			),
 			
 			array(
-				'title'   => __('Quote Right - Modern', 'bunyad'),
+				'title'   => __('Quote Right - Modern', 'bunyad-admin'),
 				'block'   => 'aside',
 				'classes' => 'modern-quote pull alignright',
 				'wrapper' => true,
@@ -889,129 +754,60 @@ class Bunyad_Theme_SmartMag
 	}
 	
 	/**
-	 * Action callback: Add form fields to category editing / adding form
+	 * Get a skin settings
+	 * 
+	 * @param string $style
 	 */
-	public function edit_category_meta($term = null)
+	public function get_style($style = '')
 	{
-		// add required assets
-		wp_enqueue_style('cat-options', get_template_directory_uri() . '/admin/css/cat-options.css');
-		wp_enqueue_style('wp-color-picker');
-		wp_enqueue_script('wp-color-picker');
-		
-		// add media scripts
-		wp_enqueue_media(); 
-		
-		wp_enqueue_script('theme-options', get_template_directory_uri() . '/admin/js/options.js', array('jquery'));
-		
-		// get our category meta template
-		include_once locate_template('admin/category-meta.php');
-	}	
-	
-	/**
-	 * Filter callback: Custom menu fields
-	 */
-	public function custom_menu_fields($fields)
-	{
-		$fields = array(
-			'mega_menu' => array(
-				'label' => __('Mega Menu', 'bunyad'), 
-				'element' => array(
-					'type' => 'select',
-					'class' => 'widefat',
-					'options' => array(
-						0 => __('Disabled', 'bunyad'), 'category' => __('Category Mega Menu (Subcats, Featured & Recent)', 'bunyad'), 'normal' => __('Mega Menu for Links', 'bunyad')
-					)
-				),
-				'parent_only' => true,
-				'locations' => array('main'),
-			)
+		$styles = array(
+			'default' => array(
+				'font_args' => array('family' => 'Open+Sans:400,400Italic,600,700|Roboto+Slab'),
+			),
+			
+			'tech' => array(
+				'font_args' => array('family' => 'Open+Sans:400,400italic,600,700|Roboto:400,500|Roboto+Condensed:400,600'),
+			),
 		);
 		
-		return $fields;
+		if (empty($styles[$style])) {
+			return $styles['default'];
+		}
+		
+		return $styles[$style];
 	}
 	
 	/**
-	 * Filter Callback: Add our custom mega-menus
-	 *
-	 * @param array $args
+	 * Action callback: Add classes to body
 	 */
-	public function attach_mega_menu($args)
+	public function add_body_classes()
 	{
-		extract($args);
 		
-		/**
-		 * @todo when not using a cache plugin, wrap in functions or cache the menu
-		 */
-		
-		// category mega menu
-		if ($item->mega_menu == 'category') {
-			$template = 'blocks/mega-menu-category.php';
-		} 
-		else if ($item->mega_menu == 'normal') {
-			$template = 'blocks/mega-menu-links.php';
+		// Add body class for pages with slider
+		if (is_page() && Bunyad::posts()->meta('featured_slider')) {
+			Bunyad::core()->add_body_class('has-featured');
 		}
 		
-		if ($template) {
-			ob_start();
-			include locate_template($template);
-			$output = ob_get_clean();
-			
-			return $output;
-		}
-		
-		return $sub_menu;
-	}
-	
-	/**
-	 * Filter callback: Add logo to the sticky navigation
-	 */
-	public function add_navigation_logo($items, $args)
-	{
-		if (!Bunyad::options()->sticky_nav OR !Bunyad::options()->sticky_nav_logo OR $args->theme_location != 'main') {
-			return $items;
-		}
-		
-		if (Bunyad::options()->image_logo_nav) {
-			$logo = '<img src="' . esc_attr(Bunyad::options()->image_logo_nav) .'" />'; 
-		}
-		else {
-			$logo = do_shortcode(Bunyad::options()->text_logo);
-		}
-		
-		$items = '<li class="sticky-logo"><a href="'. esc_url(home_url('/')) .'">' . $logo . '</a></li>' . $items;
-		
-		return $items;
-	}
-	
-	/**
-	 * Filter callback: Add theme-specific profile fields
-	 */
-	public function add_profile_fields($fields)
-	{
-		$fields = array_merge((array) $fields, array(
-			'twitter' => __('Twitter URL', 'bunyad'),
-			'gplus'   => __('Google+ URL', 'bunyad'),
-			'facebook' => __('Facebook URL', 'bunyad'),
-			'linkedin' => __('LinkedIn URL', 'bunyad'),
-		));
-		
-		return $fields;
-	}
-	
-	/**
-	 * Action callback: Add meta tags such as Google Authorship
-	 */
-	public function add_header_meta()
-	{
-		global $post; // get current post
+		// Add body class for archives with slider
+		if (is_category()) {
+			$meta = Bunyad::options()->get('cat_meta_' . get_query_var('cat'));
 
-		if (is_single()) {
-			
-			$gplus = get_the_author_meta('gplus', $post->post_author);
-			
-			if ($gplus) {
-				echo '<link href="' . esc_url($gplus) .'" rel="author" />';
+			if (!empty($meta['slider'])) {
+				Bunyad::core()->add_body_class('has-featured');
 			}
+		}
+		
+		// Add navigation style, such as has-nav-light
+		Bunyad::core()->add_body_class('has-' . (Bunyad::options()->nav_style ? Bunyad::options()->nav_style : 'nav-dark'));
+		
+		// Add navigation layout style, such has has-nav-full
+		if (Bunyad::options()->nav_layout) {
+			Bunyad::core()->add_body_class('has-' . Bunyad::options()->nav_layout);
+		}
+		
+		// Add mobile header style class
+		if (Bunyad::options()->mobile_header == 'modern') {
+			Bunyad::core()->add_body_class('has-mobile-head');
 		}
 	}
 	
@@ -1065,13 +861,12 @@ class Bunyad_Theme_SmartMag
 	 */
 	public function limit_search($query)
 	{
-		// not search query? reutrn early
-		if (!$query->is_search) {
+		if (!$query->is_search OR !$query->is_main_query()) {
 			return $query;
 		}
-		
-		// ignore if on bbpress and woocommerce - is_bbpress() / is_woocommerce() cause 404 due to using get_queried_object()
-		if (is_admin() OR (function_exists('bbp_get_query_name') && bbp_get_query_name()) OR (function_exists('is_shop') && is_shop())) {
+
+		// ignore if on bbpress and woocommerce - is_woocommerce() cause 404 due to using get_queried_object()
+		if (is_admin() OR (function_exists('is_bbpress') && is_bbpress()) OR (function_exists('is_shop') && is_shop())) {
 			return $query;
 		}
 		
@@ -1268,30 +1063,6 @@ class Bunyad_Theme_SmartMag
 		
 		return $options;
 	}	
-
-	/**
-	 * Action callback: Add login/register modal if bbPress is active
-	 */
-	public function bbpress_footer()
-	{
-		get_template_part('bbpress/auth-modal');
-	}
-	
-	/**
-	 * Filter callback: Add user login class to the correct menu item.
-	 * 
-	 * Mainly used for bbPress!
-	 * 
-	 * @param array $classes
-	 */
-	public function add_nav_login($classes, $item)
-	{
-		if (strstr($item->url, '#user-login')) {
-			$classes[] = 'user-login';
-		}
-		
-		return $classes;
-	}
 	
 	/**
 	 * Filter callback: Add custom image sizes to the editor image size selection
@@ -1309,7 +1080,7 @@ class Bunyad_Theme_SmartMag
 		foreach ($_wp_additional_image_sizes as $id => $data) {
 
 			if (in_array($id, array('main-full', 'main-slider', 'main-block', 'gallery-block')) && !isset($sizes[$id])) {
-				$sizes[$id] = __('Theme - ', 'bunyad') . ucwords(str_replace('-', ' ', $id));
+				$sizes[$id] = __('Theme - ', 'bunyad-admin') . ucwords(str_replace('-', ' ', $id));
 			}
 		}
 		
@@ -1402,34 +1173,5 @@ class Bunyad_Theme_SmartMag
 
 		// terminate ajax request
 		wp_die();
-	}
-	
-	
-	/**
-	 * Action callback: Fix menu on sample import
-	 * 
-	 * @param object $import
-	 */
-	public function import_fix_menu($import)
-	{
-		// remove an item from menu
-		$item = get_page_by_title('Shop With Sidebar', OBJECT, 'nav_menu_item');
-		
-		if (is_object($item)) {
-			wp_delete_post($item->ID);
-		}
-	}
-
-	/**
-	 * Custom Menu fields for the sample menu
-	 * 
-	 * @param array $values
-	 */
-	public function import_menu_fields($values = array())
-	{
-		return array(
-			'mega_menu' => array('Entertainment' => 'category', 'Tidbits' => 'category', 'Features' => 'normal'),
-			'url' => array('Forums' => home_url('/forums/')),
-		);
 	}
 }

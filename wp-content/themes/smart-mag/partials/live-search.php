@@ -4,7 +4,12 @@
  */
 
 // setup the search query
-$posts = new WP_Query(array('s' => $_GET['query'], 'posts_per_page' => intval(Bunyad::options()->live_search_number)));
+$posts = new WP_Query(array(
+	's' => $_GET['query'], 
+	'posts_per_page' => intval(Bunyad::options()->live_search_number),
+	'post_status' => 'publish',
+	'post_type'   => (Bunyad::options()->search_posts_only ? 'post' : 'any'), // limit to posts or all
+));
 
 ?>
 
@@ -36,13 +41,12 @@ $posts = new WP_Query(array('s' => $_GET['query'], 'posts_per_page' => intval(Bu
 				
 				<div class="content">
 				
-					<time datetime="<?php echo get_the_date(DATE_W3C); ?>"><?php echo get_the_date(); ?> </time>
-				
-					<span class="comments"><a href="<?php echo esc_attr(get_comments_link()); ?>"><i class="fa fa-comments-o"></i>
-						<?php echo get_comments_number(); ?></a></span>
+					<?php echo Bunyad::blocks()->meta('above', 'live-search', array('type' => 'widget')); ?>
 				
 					<a href="<?php the_permalink(); ?>" title="<?php echo esc_attr(get_the_title() ? get_the_title() : get_the_ID()); ?>">
 						<?php if (get_the_title()) the_title(); else the_ID(); ?></a>
+						
+					<?php echo Bunyad::blocks()->meta('below', 'live-search', array('type' => 'widget')); ?>
 						
 					<?php if (class_exists('Bunyad') && Bunyad::options()->review_show_widgets): ?>
 						<?php echo apply_filters('bunyad_review_main_snippet', '', 'stars'); ?>

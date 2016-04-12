@@ -14,7 +14,7 @@ class Bunyad_Options
 	 */
 	public function init()
 	{
-		// save defaults
+		// save defaults - also used by custom-css generator via Bunyad::options()->default
 		$options_tree = include get_template_directory() . '/admin/options.php';
 		$this->defaults = Bunyad::factory('admin/options')->get_elements_from_tree($options_tree);
 		

@@ -37,17 +37,11 @@
 						<?php endif; ?>
 					</a>
 					
-					<div class="meta">
-						<time datetime="<?php echo esc_attr(get_the_date(DATE_W3C)); ?>"><?php echo get_the_date(); ?> </time>
-						
-						<?php echo apply_filters('bunyad_review_main_snippet', ''); ?>
-											
-						<span class="comments"><i class="fa fa-comments-o"></i>
-							<?php echo get_comments_number(); ?></span>	
-						
-					</div>
+					<?php echo Bunyad::blocks()->meta('above', 'related-posts', array('type' => 'widget')); ?>
 					
 					<h2><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h2>
+					
+					<?php echo Bunyad::blocks()->meta('below', 'related-posts', array('type' => 'widget')); ?>
 					
 				</article>
 			</li>

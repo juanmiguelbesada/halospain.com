@@ -81,7 +81,7 @@ class Bunyad_Menu_Edit_Walker extends Walker_Nav_Menu_Edit
 					
 			$output .= '
 			<p class="field-custom description description-wide">
-				<label for="edit-menu-item-subtitle-<?php echo $item_id; ?>">
+				<label for="edit-menu-item-subtitle-' . esc_attr($item->ID) . '">
 					' . $field['label'] . '<br />' . $template  . '
 				</label>
 			</p>';

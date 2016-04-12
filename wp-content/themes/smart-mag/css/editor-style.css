@@ -9,3 +9,9 @@ body {
 .post-content {
 	font-size: 14px;
 }
+
+.wp-caption-dd {
+	font-size: inherit;
+	font-style: italic;
+	text-align: center;
+}

@@ -17,7 +17,7 @@
 	
 	if ($bunyad_loop->have_posts()):
 	
-		$attribs = array('class' => array('row listing'));
+		$attribs = array('class' => array('row listing', 'meta-' . Bunyad::options()->meta_position));
 		
 		// infinite load?
 		if (Bunyad::options()->pagination_type == 'infinite') {
@@ -46,25 +46,8 @@
 		<div class="column <?php echo ($loop_grid == 3 ? 'one-third' : 'half'); ?>">
 		
 			<article <?php post_class('highlights'); ?> itemscope itemtype="http://schema.org/Article">
-				
-			<?php
-				// object has category taxonomy? i.e., is it a post?
-				if (in_array('category', get_object_taxonomies(get_post_type()))):
-				
-					// custom label selected?				
-					if (($cat_label = Bunyad::posts()->meta('cat_label'))) {
-						$category = get_category($cat_label);
-					}
-					else {
-						$category = current(get_the_category());						
-					}
-			?>
-			
-				<span class="cat-title cat-<?php echo $category->cat_ID; ?>"><a href="<?php echo esc_url(get_category_link($category)); 
-					?>"><?php echo esc_html($category->name); ?></a></span>
-					
-			<?php endif; ?>
-					
+
+			<?php echo Bunyad::blocks()->cat_label(); ?>
 				
 				<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" class="image-link">
 					<?php the_post_thumbnail($image, array('class' => 'image', 'title' => strip_tags(get_the_title()), 'itemprop' => 'image')); ?>
@@ -77,17 +60,11 @@
 					<?php echo apply_filters('bunyad_review_main_snippet', '', 'stars'); ?>
 				</a>
 				
-				<div class="meta">
-					<time datetime="<?php echo get_the_date(__('Y-m-d\TH:i:sP', 'bunyad')); ?>" itemprop="datePublished"><?php echo get_the_date(); ?> </time>
-						
-					<?php echo apply_filters('bunyad_review_main_snippet', ''); ?>
-					
-					<span class="comments"><a href="<?php echo esc_attr(get_comments_link()); ?>"><i class="fa fa-comments-o"></i>
-						<?php echo get_comments_number(); ?></a></span>
-					
-				</div>
+				<?php echo Bunyad::blocks()->meta('above', 'listing'); ?>
 				
-				<h2 itemprop="name"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" itemprop="url"><?php the_title(); ?></a></h2>
+				<h2 itemprop="name headline"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" itemprop="url"><?php the_title(); ?></a></h2>
+				
+				<?php echo Bunyad::blocks()->meta('below', 'listing'); ?>
 				
 				<div class="excerpt"><?php echo Bunyad::posts()->excerpt(null, Bunyad::options()->excerpt_length_modern, array('add_more' => false)); ?></div>
 			

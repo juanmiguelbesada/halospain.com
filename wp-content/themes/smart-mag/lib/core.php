@@ -52,6 +52,9 @@ class Bunyad_Core
 		 */
 		add_action('after_setup_theme', array($this, 'setup'), 11);
 		
+		// execute a hook
+		do_action('bunyad_core_post_init', $this);
+		
 		return $this;
 	}
 	
@@ -419,7 +422,7 @@ class Bunyad_Core
 				$the_cat = get_category(get_query_var('cat'), false);
 				
 				// have parents?
-				if ($the_cat->parent != 0) {
+				if (!is_wp_error($the_cat) && $the_cat->parent != 0) {
 					
 					$cats = get_category_parents($the_cat->parent, true, $delimiter);
 					$cats = preg_replace('#<a([^>]+)>([^<]+)</a>#', $replace, $cats);

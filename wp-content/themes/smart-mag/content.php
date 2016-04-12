@@ -41,7 +41,7 @@ if ($review) {
 	<?php endif; ?>
 		
 
-	<?php if (!Bunyad::posts()->meta('featured_disable')): ?>
+	<?php if (!Bunyad::posts()->meta('featured_disable') OR !is_single()): ?>
 		<div class="featured">
 			<?php if (get_post_format() == 'gallery'): // get gallery template ?>
 			

@@ -44,17 +44,19 @@ if ($heading && $heading_type != 'block'):
 <?php
 elseif ($heading):
 ?>
-	<h3 class="section-head prominent"><?php echo $heading; ?></h3>
+	<h3 class="section-head prominent cat-text-<?php echo esc_attr($cat); ?>"><?php echo $heading; ?></h3>
 <?php
 endif;
 
 /**
  * Setup the loop query
  */
-global $bunyad_loop;
+
+// globals to match load_template() - required for loop timeline
+global $bunyad_loop, $post, $wp_query;
 
 $page = (is_front_page() ? get_query_var('page') : get_query_var('paged'));
-$vars = array('paged' => $page, 'posts_per_page' => intval($posts), 'order' => ($sort_order == 'asc' ? 'asc' : 'desc'), 'offset' => ($offset ? $offset : ''));
+$vars = array('paged' => $page, 'posts_per_page' => intval($posts), 'order' => ($sort_order == 'asc' ? 'asc' : 'desc'), 'offset' => ($offset ? $offset : ''), 'ignore_sticky_posts' => 1);
 
 // have a custom taxonomy?
 if (!empty($taxonomy)) {
@@ -65,6 +67,11 @@ if (!empty($taxonomy)) {
 	));
 }
 else {
+	
+	// add main cat
+	if (!empty($cat)) {
+		$cats = $cat .','. $cats;
+	}
 	
 	// or limiting via cats or tags
 	if (!empty($cats)) {
@@ -87,8 +94,8 @@ else if ($sort_by == 'random') {
 // main loop
 $bunyad_loop = new WP_Query(apply_filters('bunyad_block_query_args', $vars, 'blog', $atts));
 
-// get our loop template
-get_template_part($template);
+// get our loop template with include to preserve local variable scope
+include locate_template(sanitize_file_name($template . '.php'));
 
 // enqueue the js to footer
 if (Bunyad::options()->pagination_type == 'infinite') {

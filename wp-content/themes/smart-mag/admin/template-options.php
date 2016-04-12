@@ -10,17 +10,19 @@ $js_events = array();
 		<?php echo wp_nonce_field($option_key . '_save'); ?>
 	
 	<header class="options-main-head">
-		<h2><?php _e('SmartMag Settings', 'bunyad'); ?></h2>
+		<h2><?php _e('SmartMag Settings', 'bunyad-admin'); ?></h2>
 	</header>
 	
-	<div class="options-header">
+	<div class="options-header cf">
+		<p class="submit alignright">
+			<?php submit_button(__( 'Save Settings', 'bunyad-admin'), 'primary', 'update', false); ?>
+		</p>
+		
 		<p class="submit alignleft">
-			<?php submit_button(__('Reset All Settings', 'bunyad'), 'delete', 'delete', false, array(
-					'data-confirm' => __('Do you really wish to reset your options to default?', 'bunyad')
+			<?php submit_button(__('Reset All Settings', 'bunyad-admin'), 'delete', 'delete', false, array(
+					'data-confirm' => __('Do you really wish to reset your options to default?', 'bunyad-admin')
 				)); ?>
 		</p>
-	
-		<?php submit_button(__( 'Save Settings', 'bunyad'), 'primary', 'update'); ?>
 	</div>
 	
 	<div class="options-main">
@@ -44,12 +46,12 @@ $js_events = array();
 		
 				
 	<?php if (isset($options_saved) && $options_saved === true): ?>
-		<div class="success updated settings-error"><p><?php _e('Options saved!', 'bunyad'); ?></p></div>
+		<div class="success updated settings-error"><p><?php _e('Options saved!', 'bunyad-admin'); ?></p></div>
 	<?php elseif (!empty($options_deleted)): ?>
-		<div class="success updated settings-error"><p><?php _e('Options reset to defaults.', 'bunyad'); ?></p></div>
+		<div class="success updated settings-error"><p><?php _e('Options reset to defaults.', 'bunyad-admin'); ?></p></div>
 	<?php elseif (!empty($form_errors)): ?>
 		<div class="error settings-error">
-			<p><strong><?php _e('Errors:', 'bunyad'); ?></strong></p>
+			<p><strong><?php _e('Errors:', 'bunyad-admin'); ?></strong></p>
 			<p><?php echo implode('<br />', $form_errors); ?></p>
 		</div>
 	<?php endif;?>
@@ -70,7 +72,12 @@ $js_events = array();
 					
 					
 					<?php // finally render the element ?>
-					<?php foreach ($section['fields'] as $element): ?>
+					<?php foreach ($section['fields'] as $element): 
+					
+							if (empty($element['type'])) {
+								continue;
+							}
+					?>
 						
 						<div class="element cf <?php echo (!empty($element['name']) ? 'ele-' . $element['name'] : ''); ?>">
 							<?php echo $this->render($element); ?>
@@ -100,7 +107,7 @@ $js_events = array();
 	</div>
 			
 	<footer class="options-footer">	
-		<?php submit_button(__( 'Save Settings', 'bunyad'), 'primary', 'update'); ?>
+		<?php submit_button(__( 'Save Settings', 'bunyad-admin'), 'primary', 'update'); ?>
 	</footer>
 	
 	</form>

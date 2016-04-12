@@ -25,7 +25,6 @@ class Bunyad_Admin_OptionRenderer
 		// defaults
 		$element = array_merge(array('name' => null, 'label' => null), $element);
 		
-		
 		// set default value if available
 		if (isset($this->default_values[$element['name']])) {
 			$element['value'] = $this->default_values[$element['name']];
@@ -169,7 +168,7 @@ class Bunyad_Admin_OptionRenderer
 		
 		$element = array_merge(array('value' => null), $element);
 		$element['options'] = array_merge(
-			array('checked' => __('Yes', 'bunyad'), 'unchecked' => __('No', 'bunyad')), 
+			array('checked' => __('Yes', 'bunyad-admin'), 'unchecked' => __('No', 'bunyad-admin')), 
 			!empty($element['options']) ? $element['options'] : array()
 		);
 		
@@ -256,7 +255,7 @@ class Bunyad_Admin_OptionRenderer
 	 */
 	public function render_upload($element)
 	{
-		$button_label = __( 'Upload', 'bunyad' );
+		$button_label = __( 'Upload', 'bunyad-admin' );
 		if (!empty($element['options']['button_label'])) {
 			$button_label = $element['options']['button_label'];
 		}
@@ -293,16 +292,16 @@ class Bunyad_Admin_OptionRenderer
 					'name' => $element['name'] . '_bg_type',
 					'value' => $element['bg_type']['value'],
 					'options' => array(
-						'repeat' => __('Repeat Horizontal and Vertical - Pattern', 'bunyad'),
-						'cover'  => __('Fully Cover Background - Photo', 'bunyad'),
-						'repeat-x' => __('Repeat Horizontal', 'bunyad'),
-						'repeat-y' => __('Repeat Vertical', 'bunyad'),
-						'no-repeat' => __('No Repeat', 'bunyad'),
+						'repeat' => __('Repeat Horizontal and Vertical - Pattern', 'bunyad-admin'),
+						'cover'  => __('Fully Cover Background - Photo', 'bunyad-admin'),
+						'repeat-x' => __('Repeat Horizontal', 'bunyad-admin'),
+						'repeat-y' => __('Repeat Vertical', 'bunyad-admin'),
+						'no-repeat' => __('No Repeat', 'bunyad-admin'),
 					),
 				));
 			}
 			
-			$output .= '<a href="" class="remove-image button after-upload'. $classes .'">'. __('Remove', 'bunyad') .'</a>';			
+			$output .= '<a href="" class="remove-image button after-upload'. $classes .'">'. __('Remove', 'bunyad-admin') .'</a>';			
 			$output .= '<div class="image-upload'. $classes .'">'. $image . '</div>';
 			
 			$output .= '<div class="image-type after-upload'. $classes .'">' . $type . '</div>';
@@ -349,7 +348,7 @@ class Bunyad_Admin_OptionRenderer
 			$fields = $this->_render_multiple_fields($element);	
 		}
 		
-		$output = '<div class="element-multiple">' . $fields . '<a href="#">' . __('Add More', 'bunyad')  . '</a></div>';
+		$output = '<div class="element-multiple">' . $fields . '<a href="#">' . __('Add More', 'bunyad-admin')  . '</a></div>';
 		
 		return $output;
 	}
@@ -398,7 +397,7 @@ class Bunyad_Admin_OptionRenderer
 			
 		}
 		
-		return '<div class="fields'. ($key == null ? ' default' : '') .'">' . $fields . '<a href="#" class="remove">' . __('Remove', 'bunyad') . '</a></div>';
+		return '<div class="fields'. ($key == null ? ' default' : '') .'">' . $fields . '<a href="#" class="remove">' . __('Remove', 'bunyad-admin') . '</a></div>';
 		
 	}
 	
@@ -448,11 +447,11 @@ class Bunyad_Admin_OptionRenderer
 		
 		// add suggested fonts
 		if (is_array($element['suggested'])) {
-			$options[__('Suggested Fonts', 'bunyad')] = $element['suggested'];
+			$options[__('Suggested Fonts', 'bunyad-admin')] = $element['suggested'];
 		}
 		
-		$options[__('Google Fonts', 'bunyad')] = $google;
-		$options[__('System Fonts', 'bunyad')] = $stacks;
+		$options[__('Google Fonts', 'bunyad-admin')] = $google;
+		$options[__('System Fonts', 'bunyad-admin')] = $stacks;
 
 		// add Typekit Fonts if available
 		if (Bunyad::options()->fonts_typekit) {
@@ -465,7 +464,7 @@ class Bunyad_Admin_OptionRenderer
 			}
 			
 			// use font name as both display and value
-			$options[__('Typekit Fonts', 'bunyad')] = array_combine($keys, $values);
+			$options[__('Typekit Fonts', 'bunyad-admin')] = array_combine($keys, $values);
 		}
 		
 		// add Custom Fonts if available 
@@ -479,7 +478,7 @@ class Bunyad_Admin_OptionRenderer
 			}
 			
 			// use font name as both display and value
-			$options[__('Custom Fonts', 'bunyad')] = array_combine($keys, $values);
+			$options[__('Custom Fonts', 'bunyad-admin')] = array_combine($keys, $values);
 		}
 
 		

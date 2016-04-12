@@ -33,7 +33,7 @@ class Bunyad_Admin_Options
 		}
 		
 		// create link
-		$title = __('Theme Settings', 'bunyad');
+		$title = __('Theme Settings', 'bunyad-admin');
 		$page  = add_theme_page($title, $title, 'edit_theme_options', 'bunyad-admin-options', array($this, 'render_options'));
 		//add_object_page($title, $title, 'edit_theme_options', 'bunyad-options', array($this, 'render_page'));
 		
@@ -216,7 +216,7 @@ class Bunyad_Admin_Options
 	/**
 	 * Delete / reset options - security checks done outside
 	 */
-	public function delete_options($type = null)
+	public function delete_options($type = null, $render_form = true)
 	{
 		// get options object
 		$options_obj = Bunyad::options();
@@ -241,8 +241,13 @@ class Bunyad_Admin_Options
 		// save in database
 		$options_obj->update();
 		
-		// render populated form
-		$this->_render_form(null, array('options_deleted' => true));
+		if ($render_form == true) {
+			
+			// render populated form
+			return $this->_render_form(null, array('options_deleted' => true));
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -268,6 +273,12 @@ class Bunyad_Admin_Options
 		
 		foreach ($elements as $key => $element) 
 		{
+			// hidden element not in form? set default
+			if (!isset($_POST[$key])) {
+				$options[$key] = $element['value'];
+				continue;
+			}
+			
 			// data available? save only if not the same as default
 			$value = $_POST[$key];
 			
@@ -350,7 +361,7 @@ class Bunyad_Admin_Options
 				$options_saved = true;
 			}
 			else {
-				$form_errors = array(__('Could not import options. Are you sure the uploaded file was a valid backup file?',  'bunyad'));
+				$form_errors = array(__('Could not import options. Are you sure the uploaded file was a valid backup file?',  'bunyad-admin'));
 			}
 			
 			// remove temporary backup file

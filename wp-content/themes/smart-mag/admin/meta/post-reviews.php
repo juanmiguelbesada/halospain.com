@@ -1,58 +1,11 @@
 <?php 
 
-$options = $this->options(array(
-	array(
-		'label' => __('Enable Review?', 'bunyad'),
-		'name'  => 'reviews', 
-		'type'  => 'checkbox',
-		'value' => 0,
-	),
-	
-	array(
-		'label' => __('Display Position', 'bunyad'),
-		'name'  => 'review_pos',
-		'type'  => 'select',
-		'options' => array(
-			'none' => __('Do not display - Disabled', 'bunyad'), 
-			'top'  => __('Top', 'bunyad'),
-			'bottom' => __('Bottom', 'bunyad')
-		)
-	),
-	
-	array(
-		'label' => __('Show Rating As', 'bunyad'),
-		'name'  => 'review_type',
-		'type'  => 'radio',
-		'options' => array(
-			'percent' => __('Percentage', 'bunyad'),
-			'points'  => __('Points', 'bunyad'),
-			'stars'   => __('Stars', 'bunyad'),
-		), 
-		'value' => 'points',
-	),
-	
-	array(
-		'label' => __('Heading (optional)', 'bunyad'),
-		'name'  => 'review_heading',
-		'type'  => 'text',
-	),
-	
-	array(
-		'label' => __('Verdict', 'bunyad'),
-		'name'  => 'review_verdict',
-		'type'  => 'text',
-		'value' => __('Awesome', 'bunyad'),
-	),
-	
-	array(
-		'label' => __('Verdict Summary', 'bunyad'),
-		'name'  => 'review_verdict_text',
-		'type'  => 'textarea',
-		'options' => array('rows' => 5, 'cols' => 90),
-		'value' => '',
-	),
-	
-));
+/**
+ * Meta box for post reviews
+ */
+
+include locate_template('admin/meta/options/reviews.php');
+$options = $this->options($options);
 
 $this->default_values['_bunyad_review_overall'] = (isset($this->default_values['_bunyad_review_overall']) ? $this->default_values['_bunyad_review_overall'] : '');
 
@@ -76,11 +29,11 @@ if (!isset($this->default_values['_bunyad_review_percent'])) {
 <?php endforeach; ?>
 
 	<div class="option">
-		<span class="label"><?php _e('Criteria', 'bunyad'); ?></span>
+		<span class="label"><?php _e('Criteria', 'bunyad-admin'); ?></span>
 		<div class="field criteria">
 		
-			<p><input type="button" class="button add-more" value="<?php esc_attr_e('Add More Criteria', 'bunyad'); ?>" /></p>
-			<p><?php _e('Overall rating auto-calculated:', 'bunyad'); ?> <strong>
+			<p><input type="button" class="button add-more" value="<?php esc_attr_e('Add More Criteria', 'bunyad-admin'); ?>" /></p>
+			<p><?php _e('Overall rating auto-calculated:', 'bunyad-admin'); ?> <strong>
 				<input type="text" name="_bunyad_review_overall" value="<?php echo esc_attr($this->default_values['_bunyad_review_overall']); ?>" size="3" />
 				</strong></p>
 		</div>
@@ -90,9 +43,9 @@ if (!isset($this->default_values['_bunyad_review_percent'])) {
 
 <script type="text/html" class="template-criteria">
 	<div>
-		<strong><?php _e('Criterion %number%', 'bunyad'); ?></strong> &mdash; 
-		<?php _e('Label:', 'bunyad'); ?> <input type="text" name="_bunyad_criteria_label_%number%" />
-		<?php _e('Rating:', 'bunyad'); ?>  <input type="text" name="_bunyad_criteria_rating_%number%" size="3" /> / 10
+		<strong><?php _e('Criterion %number%', 'bunyad-admin'); ?></strong> &mdash; 
+		<?php _e('Label:', 'bunyad-admin'); ?> <input type="text" name="_bunyad_criteria_label_%number%" />
+		<?php _e('Rating:', 'bunyad-admin'); ?>  <input type="text" name="_bunyad_criteria_rating_%number%" size="3" /> / 10
 	</div>
 </script>
 
@@ -167,7 +120,7 @@ jQuery(function($) {
 
 	$('.criteria').delegate('input[name*="criteria_rating"]', 'blur', function() {
 		if ($(this).val() > 10) {
-			alert("<?php esc_attr_e('Rating cannot be greater than 10.', 'bunyad'); ?>");
+			alert("<?php esc_attr_e('Rating cannot be greater than 10.', 'bunyad-admin'); ?>");
 			$(this).val(10);
 		}
 

@@ -1,3 +1,8 @@
+/**
+ * =Light Skin - Relies on default CSS and overrides the rules. 
+ * ----------------------------------------------------------------------------
+ */
+ 
 .navigation { background-color: #f2f2f2; }
 
 .navigation.sticky { background: rgb(239,239,239); background: rgba(239,239,239, 0.9); }
