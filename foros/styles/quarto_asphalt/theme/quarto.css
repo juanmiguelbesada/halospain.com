@@ -1,11 +1,6 @@
 /* Body background
 ---------------------------------------- */
-body {
-  background-image: url("./images/bg-images/halo5.jpg");
-  background-attachment: fixed;
-  background-position: center top;
-  background-repeat: no-repeat;
-}
+
 
 /* Main block 
 ---------------------------------------- */
@@ -333,10 +328,9 @@ li.icon-pm strong.private-message-count {
 }
 #page-footer-links {
 	min-height: 60px;
-	background-color: #243D54;
 }
 #page-footer-links ul.linklist {
-	padding: 20px;
+	padding-top: 20px;
 }
 
 

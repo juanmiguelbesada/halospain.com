@@ -678,15 +678,15 @@ Colours and backgrounds for buttons.css
 .post-icon, .newpm-icon, .reply-all,
 .reply-icon,
 .pmreply-icon, .forwardpm-icon {
-	background-color: #F01F4B;
-	border: solid 3px #F01F4B;
+	background-color: #F27935;
+	border: solid 3px #F27935;
 }
 .post-icon:hover, .newpm-icon:hover, .reply-all:hover,
 .reply-icon:hover,
 .pmreply-icon:hover, .forwardpm-icon:hover {
 	background-color: #FFFFFF !important;
-	border-color: #F01F4B;
-	color: #F01F4B;
+	border-color: #F27935;
+	color: #F27935;
 }
 form#login p > .button2 {
 	background-color: #F01F4B;
